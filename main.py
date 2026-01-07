@@ -16,19 +16,28 @@ mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com/globalchat$globalchat?charset=utf8mb4'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
+
+
+if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
+    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'pool_recycle': 290,
-    'pool_pre_ping': True
+    "pool_size": 5,
+    "max_overflow": 10,
+    "pool_timeout": 30,
+    "pool_recycle": 1800,
+    "pool_pre_ping": True,
 }
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
 bad_words = profanity.load_censor_words()
 db = SQLAlchemy(app)
-
+migrate = Migrate(app, db)
 limiter = Limiter(app=app, key_func=get_remote_address)
-
+@app.route('/health')
+def health_check():
+    return "OK", 200
 #init db
 class Users(db.Model):
     userid = db.Column(db.Integer, primary_key=True)
