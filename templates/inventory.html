@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory!</title>
+    <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+    <script src="/static/DragDropTouch.js"></script>
+
+    <style>
+        #inv-grid {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            height: 100vh;
+            max-height: 400px;
+            box-sizing: border-box;
+            overflow-y: hidden;
+            gap: 15px;
+            padding: 20px;
+            margin-left: 240px;
+
+
+        }
+        .item {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .swatch {
+            border: 2px solid rgba(0,0,0,0.6);
+            transition: transform 0.1s;
+            cursor: grab;
+            background-color: currentColor;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+            touch-action: none;
+            -webkit-user-drag: element;
+            -webkit-touch-callout: none;
+        }
+        .swatch:hover { transform: scale(1.1); }
+
+        .ct {
+        position: absolute;
+        background: white;
+        color: black;
+        font-size: 8px;
+        padding: 1px 4px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        pointer-events: none;
+        }
+        .rarity-ct { top: -5px; left: -5px; }
+        .amount-ct { bottom: -5px; right: -5px; }
+
+            #navbar {
+                width: 200px;
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 40px;
+                left: 20px;
+                gap: 10px;
+                padding: 0;
+            }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #9db1b3;
+        color: black;
+        font-size: 18px;
+        border-radius: 10px;
+        border: 4px solid gray;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+    .swatch:active {
+        cursor: grabbing;
+        transform: scale(0.95);
+    }
+    .zone-container {
+        position: fixed;
+        right: 450px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        z-index: 1000;
+    }
+
+    #dropzone, #sellzone {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: sans-serif;
+        font-weight: bold;
+        padding: 15px;
+        box-sizing: border-box;
+        transition: transform 0.2s;
+    }
+#globecount {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+#globecount::before {
+    content: '🌍';
+    font-size: 1.2em;
+}
+    #dropzone {
+        border: 4px dashed black;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    #sellzone {
+        border: 4px dashed #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+    }
+        </style>
+</head>
+
+<body>
+    <div id="navbar">
+    <button class='btn' id='register' onclick="window.location.href='/register'"><strong>Register!</strong></button>
+    <button class='btn' onclick='window.location.href = "/"'><strong>Chat!</strong></button>
+    <button class='btn' onclick="window.location.href='/click'"><strong>Click!</strong></button>
+    <button class='btn' onclick="window.location.href='/shop'"><strong>Shop!</strong></button>
+    <button class='btn' onclick="window.location.href='/changelog'"><strong>Changelog!</strong></button>
+    </div>
+
+    <div id="inv-grid"></div>
+    <div class="zone-container">
+    <div id="dropzone">
+    Drag Color To Equip
+    </div>
+    <div id="sellzone">
+        Drag Color Here <br> To SELL
+    </div></div>
+    <div id="globecount"></div>
+    <script>
+    let dragging = false;
+    let justEquipped = false;
+    if (window.DragDropTouch) {
+        DragDropTouch._data.pressHoldDelayMS = 5;
+    }
+    window.onload = changebutton;
+    function changebutton() {
+                fetch('/user/info')
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/user/info'; };
+                    }
+
+                    document.getElementById('globecount').innerText = user.globes;
+                    get_inv();
+                });
+            }
+    function updateglobes() {
+        fetch('/user/info')
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('globecount').innerText = user.globes;
+            });
+
+        }
+
+    document.addEventListener('dragstart', (e) => {
+       if (e.target.classList.contains('swatch')) {
+            dragging = true;
+            e.dataTransfer.setData("text/plain", e.target.dataset.name)
+            const style = window.getComputedStyle(e.target);
+            let color = style.backgroundImage !== "none" ? style.backgroundImage : style.backgroundColor;
+            if (color === 'rgba(0, 0, 0, 0)' || color === 'transparent') {
+                color = style.color;
+            }
+
+           e.dataTransfer.setData("color", color);
+
+       }
+
+    });
+    document.addEventListener("dragover", (e) => {
+        e.preventDefault();
+
+    });
+    document.addEventListener('dragend', () => {
+        dragging = false;
+
+    });
+    document.addEventListener('drop', (e) => {
+
+        e.preventDefault();
+        dragging = false;
+
+        const dropZone = document.getElementById("dropzone");
+        const sellZone = document.getElementById("sellzone");
+        const isSell = e.target.closest('#sellzone') !== null;
+        const name = e.dataTransfer.getData("text/plain");
+        const color = e.dataTransfer.getData("color");
+
+        if (isSell) {
+            fetch('/sell_color', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            }).then(response => response.json()).then((data) => {
+                sellZone.innerText = data.message;
+                get_inv();
+            })
+            setTimeout(() => { sellZone.innerHTML = "Drag Color Here <br> To SELL";}, 2000);
+
+        } else {
+            fetch('/equip_color', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            })
+            dropZone.style.background = color;
+            document.body.style.background = color;
+            dropZone.style.backgroundClip = "border-box";
+            dropZone.style.webkitBackgroundClip = "border-box";
+            dropZone.style.webkitTextStroke = "2px black";
+            dropZone.style.paintOrder = "stroke fill";
+            dropZone.style.color = "white";
+            dropZone.innerText = `Equipped: ${name}`;
+            dropZone.style.color = "#fff";
+            justEquipped = true;
+            setTimeout(() => { justEquipped = false; }, 2000)
+        }
+    });
+    function get_inv() {
+
+        if (dragging || justEquipped) return;
+        fetch('/user/inventory?t=' + Date.now())
+        .then(response => response.json())
+        .then(data => {
+            const dz = document.getElementById("dropzone");
+
+
+            if (data.equipped_info && dz) {
+                let eqs = data.equipped_info;
+                if (eqs === "TRIGGER:rainbow;") {
+                    eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
+            }
+
+
+            document.body.style.background = eqs;
+            document.body.style.backgroundClip = "border-box";
+            document.body.style.webkitBackgroundClip = "border-box";
+
+
+            dz.style.background = eqs;
+            dz.style.backgroundClip = "border-box";
+            dz.innerText = `Equipped: ${data.equipped_item}`;
+            dz.style.webkitTextStroke = "2px black";
+            dz.style.color = "white";
+            }
+
+            const ctn = document.getElementById('inv-grid');
+            if (ctn && data.items) {
+                const sortedItems = data.items.sort((a, b) => a.rarity - b.rarity);
+                    ctn.innerHTML = sortedItems.map(item =>
+                {
+                let content = "";
+                let style = item.info;
+                if (item.info === "TRIGGER:rainbow;") {
+                    style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
+                }
+
+                if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
+                    content = 'AAAA';
+                    style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
+                }
+                return `
+                    <div class="item">
+                    <div class="swatch"
+                         draggable="true"
+                         data-name="${item.name}"
+                         style="${style}; width: 50px; height: 50px; border-radius: 12px; cursor: grab; border: 1px solid rgba(0,0,0,0.1);">
+                         ${content}
+                    </div>
+
+                    <div class="ct rarity-ct">T${item.rarity}</div>
+                    <div class="ct amount-ct">${item.count}</div></div>
+                    `}).join('');
+
+            }
+        });
+    }
+    setInterval(() => {
+    get_inv();
+    updateglobes();
+}, 1000);
+
+    </script>
+</body>
+</html>

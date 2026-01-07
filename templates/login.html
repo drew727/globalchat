@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login!</title>
+    <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+<style><style>
+    :root {
+        --bg-color: #0f0f12;
+        --card-bg: #1a1a20;
+        --accent-color: #50c878;
+        --text-color: #000000;
+        --input-bg: #25252d;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    #form {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
+        border: 1px solid #333;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 6px;
+        border: 1px solid #444;
+        background: var(--input-bg);
+        color: black;
+        box-sizing: border-box;
+        transition: border 0.3s;
+    }
+
+    input:focus {
+        border-color: var(--accent-color);
+        outline: none;
+    }
+
+    /* Buttons */
+    button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        transition: transform 0.1s, opacity 0.2s;
+    }
+
+    #login {
+        background-color: var(--accent-color);
+        color: #000;
+    }
+
+    #redirect {
+        background: transparent;
+        color: #888;
+        font-size: 0.85rem;
+        text-decoration: underline;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        opacity: 0.9;
+    }
+
+    button:active {
+        transform: scale(0.98);
+    }
+
+    #status {
+        margin-top: 15px;
+        font-size: 0.9rem;
+        height: 1.2rem;
+    }
+</style>
+</style>
+</head>
+<body>
+    <h1>Login</h1>
+    <img src="/static/download-removebg-preview.png" width='300px' height='300px'>
+    <div id="form">
+    <form id="submit" action=/register method="POST">
+            <input type="text" autocomplete="off" id="username_input" placeholder="Username">
+            <input type="password" autocomplete="off" id="password_input" placeholder="Password">
+            <button type="button" id='login' onclick='send_register()'>Login</button>
+    </form></div>
+    <button id='redirect' onclick="window.location.href='/register'">Don't have an account yet? Click to register.</button>
+    <p id="status"></p>
+    <script>
+    window.onload = hideform;
+        function hideform() {
+            fetch('/user/info')
+            .then(response => response.json())
+            .then(user => {
+                if (user.isguest === false) {
+                    window.location.href='/'
+                }
+            })
+
+
+
+        }
+        function send_register() {
+            const nameinput = document.getElementById('username_input').value;
+            const password = document.getElementById('password_input').value;
+            const text = document.getElementById('status')
+            fetch('/login', {
+                method: 'POST',
+                body: `username=${encodeURIComponent(nameinput)}&password=${encodeURIComponent(password)}`,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
+                .then(response => response.json()).then(data => {
+                        if (data.status === "success"){
+                            text.textContent = "Login Successful, redirecting to home page";
+                            setTimeout(() => { window.location.href = "/"; }, 1000);
+                        } else {
+                            text.textContent = data.error;
+                        }
+                    });
+        }
+    </script>
+</body>
+</html>
