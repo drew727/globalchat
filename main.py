@@ -585,5 +585,6 @@ def sell_color():
                 db.session.delete(inv_entry)
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
-
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
 
