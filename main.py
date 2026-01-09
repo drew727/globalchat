@@ -16,21 +16,26 @@ from sqlalchemy.pool import NullPool
 mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
+is_pa = 'PYTHONANYWHERE_SITE' in os.environ
 app = Flask(__name__)
 
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
-
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "poolclass": NullPool,
-    "connect_args": {
-        "sslmode": "require",
-        "prepare_threshold": 0
+if not is_pa:
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        "poolclass": NullPool,
+        "connect_args": {
+            "sslmode": "require",
+            "prepare_threshold": 0
+        }
     }
-}
-
+else:
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        "pool_recycle": 280,
+        "pool_pre_ping": True
+    }
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
 bad_words = profanity.load_censor_words()
@@ -581,6 +586,4 @@ def sell_color():
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+
