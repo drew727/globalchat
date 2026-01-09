@@ -12,6 +12,7 @@ import secrets
 import random
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from sqlalchemy.pool import NullPool
 mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
@@ -20,7 +21,7 @@ app = Flask(__name__)
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
 
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "poolclass": NullPool,
@@ -580,3 +581,6 @@ def sell_color():
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    app.run(host="0.0.0.0", port=port)
