@@ -16,17 +16,18 @@ mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
+
+db_url = os.environ.get('DATABASE_URL')
+if db_url and db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
 
-
-if app.config['SQLALCHEMY_DATABASE_URI'].startswith("postgres://"):
-    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_size": 5,
-    "max_overflow": 10,
-    "pool_timeout": 30,
-    "pool_recycle": 1800,
-    "pool_pre_ping": True,
+    "poolclass": NullPool,
+    "connect_args": {
+        "sslmode": "require",
+        "prepare_threshold": 0
+    }
 }
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
@@ -191,7 +192,6 @@ class ClickCount(db.Model):
     count = db.Column(db.Integer, default=1)
 
 with app.app_context():
-    db.create_all()
     for i in items:
         if not Item.query.filter_by(name=i['name']).first():
             db.session.add(Item(name=i['name'], info=i['info'], itemtype=i['itemtype'], rarity=i['rarity'], weight=i['weight'], active=i['active']))
