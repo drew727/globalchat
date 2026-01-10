@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+    db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
 if not is_pa:
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
@@ -187,24 +187,18 @@ class Inventory(db.Model):
     count = db.Column(db.Integer, default=0)
     item = db.relationship('Item', backref='owners')
 class Message(db.Model):
-    __table_args__ = {'mysql_charset': 'utf8mb4'}
+
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'))
-    text = db.Column(db.String(300, collation='utf8mb4_unicode_ci'))
+    if is_pa:
+        __table_args__ = {'mysql_charset': 'utf8mb4'}
+        text = db.Column(db.String(300, collation='utf8mb4_unicode_ci'))
+    text = db.Column(db.String(300))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     room_id = db.Column(db.Integer, default=0, index=True)
 class ClickCount(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, default=1)
-try:
-        with app.app_context():
-            if Item.query.count() == 0:
-                for i in items:
-                    db.session.add(Item(**i))
-                db.session.commit()
-    except Exception as e:
-        pass
-
 
 @app.route('/')
 def route():
@@ -584,6 +578,7 @@ def sell_color():
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
 '''
 with app.app_context():
     for i in items:
