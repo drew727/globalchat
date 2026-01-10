@@ -584,7 +584,7 @@ def sell_color():
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
+'''
 with app.app_context():
     for i in items:
         if not Item.query.filter_by(name=i['name']).first():
@@ -594,4 +594,4 @@ with app.app_context():
     if server:
         server.username = "SERVER"
         server.isguest = False
-        db.session.commit()
+        db.session.commit()'''
