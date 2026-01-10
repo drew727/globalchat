@@ -196,19 +196,16 @@ class Message(db.Model):
 class ClickCount(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, default=1)
+try:
+        with app.app_context():
+            if Item.query.count() == 0:
+                for i in items:
+                    db.session.add(Item(**i))
+                db.session.commit()
+    except Exception as e:
+        pass
 
-with app.app_context():
-    for i in items:
-        if not Item.query.filter_by(name=i['name']).first():
-            db.session.add(Item(name=i['name'], info=i['info'], itemtype=i['itemtype'], rarity=i['rarity'], weight=i['weight'], active=i['active']))
-            db.session.commit()
-    server = db.session.get(Users, 1)
-    if server:
-        server.username = "SERVER"
-        server.isguest = False
-        db.session.commit()
 
-#on load
 @app.route('/')
 def route():
     session.permanent = True
@@ -588,3 +585,13 @@ def sell_color():
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
+with app.app_context():
+    for i in items:
+        if not Item.query.filter_by(name=i['name']).first():
+            db.session.add(Item(name=i['name'], info=i['info'], itemtype=i['itemtype'], rarity=i['rarity'], weight=i['weight'], active=i['active']))
+            db.session.commit()
+    server = db.session.get(Users, 1)
+    if server:
+        server.username = "SERVER"
+        server.isguest = False
+        db.session.commit()
