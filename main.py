@@ -12,30 +12,17 @@ import secrets
 import random
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from sqlalchemy.pool import NullPool
 mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
 is_pa = 'PYTHONANYWHERE_SITE' in os.environ
 app = Flask(__name__)
-
+app.config.pop("SQLALCHEMY_ENGINE_OPTIONS", None)
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
-if not is_pa:
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "poolclass": NullPool,
-        "connect_args": {
-            "sslmode": "require",
-            "prepare_threshold": 0
-        }
-    }
-else:
-    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-        "pool_recycle": 280,
-        "pool_pre_ping": True
-    }
+
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
 bad_words = profanity.load_censor_words()
