@@ -24,7 +24,7 @@ if db_url and db_url.startswith("postgres://"):
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g&F#&@V*$BFV*(&$BR(*B%*)#B)*B$)%%$%G$^666herhe6he456h52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
 bad_words = profanity.load_censor_words()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
