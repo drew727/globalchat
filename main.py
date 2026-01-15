@@ -10,6 +10,9 @@ import math
 import shlex
 import secrets
 import random
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 mods = [5, 7, 78, 62, 35]
@@ -22,7 +25,8 @@ db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url or 'mysql+pymysql://globalchat:A570805m@globalchat.mysql.pythonanywhere-services.com'
-
+app.debug = True
+app.config["PROPAGATE_EXCEPTIONS"] = True
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4hq3v89rg98gfq398u4gfbeqrwb08urgu9q34gq03843whg5ub')
 bad_words = profanity.load_censor_words()
