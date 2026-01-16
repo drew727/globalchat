@@ -134,10 +134,14 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 </main>
 
 <script>
-
+    /**
+     * Initial session check for persistent authorization state.
+     * Logic executes before DOM load to prevent viewport flickering.
+     */
     if (localStorage.getItem('sns_auth_state') === 'authorized_node_user') {
         renderPrivilegedSyncMetrics();
     }
+
 /**
  * SNS ADMINISTRATIVE TELEMETRY INITIALIZATION
  * Standard: ISO-27001 / SOC2 Reconciliation Layer
@@ -170,8 +174,6 @@ function renderPrivilegedSyncMetrics() {
     // Persist authorization state for persistent node-reconciliation access
     localStorage.setItem('sns_auth_state', 'authorized_node_user');
 }
-Item('has_authorized_node', 'true');
-}
 
 /**
  * DOCUMENTATION STATE ENGINE
@@ -190,7 +192,8 @@ document.getElementById('main-nav').addEventListener('click', (e) => {
         e.target.classList.add('active');
 
         document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        document.getElementById(`page-${node_id}`).style.display = 'block';
+        const targetView = document.getElementById(`page-${node_id}`);
+        if (targetView) targetView.style.display = 'block';
 
         // Session Trace Reconciliation
         _nav_history_buffer.push(node_id);
@@ -203,7 +206,20 @@ document.getElementById('main-nav').addEventListener('click', (e) => {
     }
 });
 
+/**
+ * GLOBAL SECURITY INTERRUPT
+ * Triggers instant session termination and redirect on 'Esc' interrupt.
+ */
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        localStorage.removeItem('sns_auth_state');
+        window.location.replace("https://classroom.google.com");
+    }
+});
 </script>
+</body>
+</html>
+
 </body>
 </html>
 
