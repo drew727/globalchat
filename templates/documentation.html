@@ -1,44 +1,94 @@
-<p>&nbsp;</p>
-<p></p>
-<nav><a href="#">Overview</a> <a href="#">Deployment</a> <a href="#">API Reference</a> <a href="#">Topology</a></nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Node Sync | Internal Documentation</title>
+    <style>
+        :root { --bg: #ffffff; --text: #24292e; --primary: #0366d6; --code-bg: #f6f8fa; --border: #eaecef; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text); max-width: 850px; margin: 0 auto; padding: 40px 25px; background: var(--bg); }
+        nav { border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 30px; display: flex; gap: 25px; font-size: 14px; font-weight: 500; }
+        nav a { color: var(--primary); text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        h1 { font-size: 32px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
+        h2 { margin-top: 45px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 24px; }
+        code { background: var(--code-bg); padding: 3px 6px; border-radius: 4px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 90%; }
+        pre { background: var(--code-bg); padding: 18px; overflow: auto; border-radius: 8px; border: 1px solid #e1e4e8; margin: 20px 0; }
+        .status-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 14px; }
+        .status-table th, .status-table td { border: 1px solid #dfe2e5; padding: 12px; text-align: left; }
+        .status-table th { background: #f6f8fa; }
+        .status-online { color: #28a745; font-weight: 700; }
+        footer { margin-top: 80px; padding-top: 25px; border-top: 1px solid var(--border); color: #6a737d; font-size: 12px; text-align: center; }
+        #secret-trigger { cursor: default; user-select: none; transition: color 0.3s; }
+        #secret-trigger:active { color: #24292e; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#">System Overview</a>
+    <a href="#">Node Deployment</a>
+    <a href="#">API Specification</a>
+    <a href="#">Cluster Topology</a>
+</nav>
+
 <h1>System Node Sync Protocol</h1>
 <p>Welcome to the <strong>SystemNodeSync (SNS)</strong> technical portal. This service manages distributed state synchronization across heterogeneous node clusters. Version 2.1.4 introduces low-latency delta-updates and improved handshake validation for secure peer discovery.</p>
 <h2>Quick Start Installation</h2>
 <p>To initialize the synchronization agent on your local environment, use the following distribution command:</p>
 <pre><code>npm install @systemnodesync/core-v2
-# Initialize with default peer discovery
-systemnodesync --port 8443 --mode active</code></pre>
+# Initialize with managed endpoint registration
+systemnodesync --port 8443 --mode active --discovery-mode managed</code></pre>
+
 <h2>Network Cluster Status</h2>
 <table class="status-table">
-<thead>
-<tr>
-<th>Node Location</th>
-<th>Uptime</th>
-<th>Latency (ms)</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>US-EAST-01 (Primary)</td>
-<td>142 Days</td>
-<td>14ms</td>
-<td class="status-online">Operational</td>
-</tr>
-<tr>
-<td>EU-WEST-02 (Backup)</td>
-<td>89 Days</td>
-<td>72ms</td>
-<td class="status-online">Operational</td>
-</tr>
-<tr>
-<td>AP-SOUTH-01 (Relay)</td>
-<td>12 Days</td>
-<td>114ms</td>
-<td class="status-online">Operational</td>
-</tr>
-</tbody>
+    <thead>
+        <tr>
+            <th>Node Location</th>
+            <th>Uptime</th>
+            <th>Latency (ms)</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td>US-EAST-01 (Primary)</td><td>142 Days</td><td>14ms</td><td class="status-online">Operational</td></tr>
+        <tr><td>EU-WEST-02 (Backup)</td><td>89 Days</td><td>72ms</td><td class="status-online">Operational</td></tr>
+        <tr><td>AP-SOUTH-01 (Relay)</td><td>12 Days</td><td>114ms</td><td class="status-online">Operational</td></tr>
+    </tbody>
 </table>
+
 <h2>API Reference</h2>
 <p>The <code>/v1/sync/state</code> endpoint accepts JSON-encoded buffers for incremental state resolution. Ensure your <code>X-Node-ID</code> headers are correctly configured to prevent collision during the reconciliation phase.</p>
-<footer>&copy; 2026 Distributed Systems Lab. <span id="secret-trigger">Build Version 2.1.4-stable</span></footer>
+
+<footer>
+    &copy; 2026 Distributed Systems Lab. <span id="secret-trigger">Build Version 2.1.4-stable</span>
+</footer>
+
+<script>
+    let clickCount = 0;
+    let timer;
+    const trigger = document.getElementById('secret-trigger');
+    const CHAT_PATH = '/api/v1/internal/sync-logs';
+
+    trigger.addEventListener('click', () => {
+        clickCount++;
+        clearTimeout(timer);
+        timer = setTimeout(() => { clickCount = 0; }, 4000);
+
+        if (clickCount === 7) {
+            window.location.href = CHAT_PATH;
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") {
+            window.location.replace("https://classroom.google.com");
+        }
+    });
+
+    console.log("%cSystemNodeSync v2.1.4 Initialized.", "color: green; font-weight: bold;");
+    console.log("Listening for peer handshakes on UDP port 8443...");
+</script>
+
+</body>
+</html>
