@@ -191,7 +191,7 @@ class ClickCount(db.Model):
 def route():
     session.permanent = True
     if session.get('userid'):
-        return render_template("/chat.html")
+        return render_template("/documentation.html")
     else:
         newuser = Users(username=f"temp {datetime.utcnow().timestamp()}", password=None, isguest=True)
         db.session.add(newuser)

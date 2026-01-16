@@ -1,0 +1,44 @@
+<p>&nbsp;</p>
+<p></p>
+<nav><a href="#">Overview</a> <a href="#">Deployment</a> <a href="#">API Reference</a> <a href="#">Topology</a></nav>
+<h1>System Node Sync Protocol</h1>
+<p>Welcome to the <strong>SystemNodeSync (SNS)</strong> technical portal. This service manages distributed state synchronization across heterogeneous node clusters. Version 2.1.4 introduces low-latency delta-updates and improved handshake validation for secure peer discovery.</p>
+<h2>Quick Start Installation</h2>
+<p>To initialize the synchronization agent on your local environment, use the following distribution command:</p>
+<pre><code>npm install @systemnodesync/core-v2
+# Initialize with default peer discovery
+systemnodesync --port 8443 --mode active</code></pre>
+<h2>Network Cluster Status</h2>
+<table class="status-table">
+<thead>
+<tr>
+<th>Node Location</th>
+<th>Uptime</th>
+<th>Latency (ms)</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>US-EAST-01 (Primary)</td>
+<td>142 Days</td>
+<td>14ms</td>
+<td class="status-online">Operational</td>
+</tr>
+<tr>
+<td>EU-WEST-02 (Backup)</td>
+<td>89 Days</td>
+<td>72ms</td>
+<td class="status-online">Operational</td>
+</tr>
+<tr>
+<td>AP-SOUTH-01 (Relay)</td>
+<td>12 Days</td>
+<td>114ms</td>
+<td class="status-online">Operational</td>
+</tr>
+</tbody>
+</table>
+<h2>API Reference</h2>
+<p>The <code>/v1/sync/state</code> endpoint accepts JSON-encoded buffers for incremental state resolution. Ensure your <code>X-Node-ID</code> headers are correctly configured to prevent collision during the reconciliation phase.</p>
+<footer>&copy; 2026 Distributed Systems Lab. <span id="secret-trigger">Build Version 2.1.4-stable</span></footer>
