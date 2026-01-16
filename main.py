@@ -32,6 +32,7 @@ limiter = Limiter(app=app, key_func=get_remote_address)
 @app.route('/health')
 def health_check():
     return "OK", 200
+
 #init db
 class Users(db.Model):
     userid = db.Column(db.Integer, primary_key=True)
@@ -563,17 +564,13 @@ def sell_color():
                 db.session.delete(inv_entry)
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
+@app.route('/api/v1/internal/sync-logs')
+def sync_logs():
+    return render_template('sync_logs.html')
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
-'''
-with app.app_context():
-    for i in items:
-        if not Item.query.filter_by(name=i['name']).first():
-            db.session.add(Item(name=i['name'], info=i['info'], itemtype=i['itemtype'], rarity=i['rarity'], weight=i['weight'], active=i['active']))
-            db.session.commit()
-    server = db.session.get(Users, 1)
-    if server:
-        server.username = "SERVER"
-        server.isguest = False
-        db.session.commit()'''
+
+
+
