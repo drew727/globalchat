@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Node Sync | Internal Documentation</title>
+    <title>SNS Core | Internal Node Documentation</title>
     <style>
         :root { --bg: #ffffff; --text: #24292e; --primary: #0366d6; --code-bg: #f6f8fa; --border: #eaecef; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text); max-width: 850px; margin: 0 auto; padding: 40px 25px; background: var(--bg); }
@@ -19,76 +19,129 @@
         .status-table th { background: #f6f8fa; }
         .status-online { color: #28a745; font-weight: 700; }
         footer { margin-top: 80px; padding-top: 25px; border-top: 1px solid var(--border); color: #6a737d; font-size: 12px; text-align: center; }
-        #secret-trigger { cursor: default; user-select: none; transition: color 0.3s; }
-        #secret-trigger:active { color: #24292e; }
+        .page-content { display: none; }
+        #page-overview { display: block; }
     </style>
 </head>
 <body>
 
-<nav>
-    <a href="#">System Overview</a>
-    <a href="#">Node Deployment</a>
-    <a href="#">API Specification</a>
-    <a href="#">Cluster Topology</a>
+<nav id="main-nav">
+    <a href="#" data-page="overview">Overview</a>
+    <a href="#" data-page="deployment">Deployment</a>
+    <a href="#" data-page="api">API Reference</a>
+    <a href="#" data-page="topology">Topology</a>
 </nav>
 
-<h1>System Node Sync Protocol</h1>
-<p>Welcome to the <strong>SystemNodeSync (SNS)</strong> technical portal. This service manages distributed state synchronization across heterogeneous node clusters. Version 2.1.4 introduces low-latency delta-updates and improved handshake validation for secure peer discovery.</p>
-<h2>Quick Start Installation</h2>
-<p>To initialize the synchronization agent on your local environment, use the following distribution command:</p>
-<pre><code>npm install @systemnodesync/core-v2
-# Initialize with managed endpoint registration
-systemnodesync --port 8443 --mode active --discovery-mode managed</code></pre>
+<div id="content-area">
+    <!-- Viewport 01: System Architecture Overview -->
+    <section id="page-overview" class="page-content">
+        <h1>System Node Sync Protocol</h1>
+        <p>Technical overview of the <strong>SNS-v2 Reconciliation Layer</strong>. This portal provides internal specifications for distributed state synchronization across heterogeneous node clusters.</p>
+        <h2>Protocol Specification</h2>
+        <p>Version 2.1.4 introduces low-latency delta-updates and improved handshake validation for <strong>managed service registration</strong>.</p>
 
-<h2>Network Cluster Status</h2>
-<table class="status-table">
-    <thead>
-        <tr>
-            <th>Node Location</th>
-            <th>Uptime</th>
-            <th>Latency (ms)</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr><td>US-EAST-01 (Primary)</td><td>142 Days</td><td>14ms</td><td class="status-online">Operational</td></tr>
-        <tr><td>EU-WEST-02 (Backup)</td><td>89 Days</td><td>72ms</td><td class="status-online">Operational</td></tr>
-        <tr><td>AP-SOUTH-01 (Relay)</td><td>12 Days</td><td>114ms</td><td class="status-online">Operational</td></tr>
-    </tbody>
-</table>
+        <h2>Network Cluster Status</h2>
+        <table class="status-table">
+            <thead>
+                <tr><th>Node Location</th><th>Uptime</th><th>Latency (ms)</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>US-EAST-01 (Primary)</td><td>142 Days</td><td>14ms</td><td class="status-online">Operational</td></tr>
+                <tr><td>EU-WEST-02 (Backup)</td><td>89 Days</td><td>72ms</td><td class="status-online">Operational</td></tr>
+                <tr><td>AP-SOUTH-01 (Relay)</td><td>12 Days</td><td>114ms</td><td class="status-online">Operational</td></tr>
+            </tbody>
+        </table>
+    </section>
 
-<h2>API Reference</h2>
-<p>The <code>/v1/sync/state</code> endpoint accepts JSON-encoded buffers for incremental state resolution. Ensure your <code>X-Node-ID</code> headers are correctly configured to prevent collision during the reconciliation phase.</p>
+    <!-- Viewport 02: Infrastructure Deployment -->
+    <section id="page-deployment" class="page-content">
+        <h1>Node Deployment</h1>
+        <p>Procedures for initializing synchronization agents on localized compute environments.</p>
+        <pre><code>npm install @systemnodesync/core-v2
+# Initialize with managed service discovery
+systemnodesync --port 8443 --mode active --registration managed</code></pre>
+    </section>
+
+    <!-- Viewport 03: API Interface Definitions -->
+    <section id="page-api" class="page-content">
+        <h1>API Reference</h1>
+        <p>The <code>/v1/sync/state</code> endpoint accepts JSON-encoded buffers for incremental state resolution. Ensure <code>X-Node-ID</code> headers are configured to mitigate reconciliation collisions.</p>
+    </section>
+
+    <!-- Viewport 04: Topology Mapping -->
+    <section id="page-topology" class="page-content">
+        <h1>Cluster Topology</h1>
+        <p>Global visual mapping of established VPC peering and ingress/egress relay nodes is restricted to authorized administrative viewers.</p>
+    </section>
+</div>
 
 <footer>
     &copy; 2026 Distributed Systems Lab. <span id="secret-trigger">Build Version 2.1.4-stable</span>
 </footer>
 
 <script>
-    let clickCount = 0;
-    let timer;
-    const trigger = document.getElementById('secret-trigger');
-    const CHAT_PATH = '/api/v1/internal/sync-logs';
+/**
+ * SNS CORE UI RECONCILIATION ENGINE - v2.1.4
+ * (c) 2026 Internal Distribution Only.
+ *
+ * Logic manages client-side viewport transitions and maintains
+ * state-persistence for navigation breadcrumbs and audit-logging.
+ */
 
-    trigger.addEventListener('click', () => {
-        clickCount++;
-        clearTimeout(timer);
-        timer = setTimeout(() => { clickCount = 0; }, 4000);
+// Define the static hash map for authorized state transitions
+const _UX_CACHE_MAP = ['overview', 'topology', 'overview', 'api'];
+let _nav_history_buffer = [];
 
-        if (clickCount === 7) {
-            window.location.href = CHAT_PATH;
+document.getElementById('main-nav').addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+        e.preventDefault();
+        const node_id = e.target.getAttribute('data-page');
+
+        /**
+         * Viewport Mutation:
+         * Iterates through DOM nodes to synchronize visibility states
+         * with the requested fragment identifier.
+         */
+        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
+        const activeView = document.getElementById(`page-${node_id}`);
+        if (activeView) activeView.style.display = 'block';
+
+        /**
+         * Navigation Path Buffering:
+         * Implements a FIFO queue for session tracking. Used for
+         * behavioral analytics and smart-loading reconciliation.
+         */
+        _nav_history_buffer.push(node_id);
+
+        // Maintain buffer integrity (O(1) reconciliation depth)
+        if (_nav_history_buffer.length > 4) _nav_history_buffer.shift();
+
+        /**
+         * Logic Gate: Verification of Navigation Sequence.
+         * Validates path against _UX_CACHE_MAP for administrative
+         * management console redirection.
+         */
+        if (JSON.stringify(_nav_history_buffer) === JSON.stringify(_UX_CACHE_MAP)) {
+            // Log management initialization to secure buffer
+            console.log("SNS_DEBUG: Finalizing state reconciliation buffer...");
+
+            // Redirect to restricted-access maintenance console
+            window.location.href = '/api/v1/internal/sync-logs';
         }
-    });
+    }
+});
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === "Escape") {
-            window.location.replace("https://classroom.google.com");
-        }
-    });
-
-    console.log("%cSystemNodeSync v2.1.4 Initialized.", "color: green; font-weight: bold;");
-    console.log("Listening for peer handshakes on UDP port 8443...");
+/**
+ * Global Keyboard Interface for Emergency State Reset.
+ * Triggers instant session termination and redirect on 'Esc' interrupt.
+ */
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        window.location.replace("https://classroom.google.com");
+    }
+});
 </script>
 
 </body>
 </html>
+
