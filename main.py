@@ -200,7 +200,7 @@ def route():
         session['userid'] = newuser.userid
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
-        return render_template("/chat.html")
+        return render_template("/documentation.html")
 @app.route('/changelog')
 def changelog():
     return render_template("/changelog.html")
