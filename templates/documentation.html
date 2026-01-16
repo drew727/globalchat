@@ -3,92 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SNS Core | Internal Node Documentation</title>
+    <title>SNS Console | Infrastructure Management</title>
     <style>
-        :root { --bg: #ffffff; --text: #24292e; --primary: #0366d6; --code-bg: #f6f8fa; --border: #eaecef; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.6; color: var(--text); max-width: 850px; margin: 0 auto; padding: 40px 25px; background: var(--bg); }
-        nav { border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 30px; display: flex; gap: 25px; font-size: 14px; font-weight: 500; }
-        nav a { color: var(--primary); text-decoration: none; }
-        nav a:hover { text-decoration: underline; }
-        h1 { font-size: 32px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 24px; }
-        h2 { margin-top: 45px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-size: 24px; }
-        code { background: var(--code-bg); padding: 3px 6px; border-radius: 4px; font-family: "SFMono-Regular", Consolas, monospace; font-size: 90%; }
-        pre { background: var(--code-bg); padding: 18px; overflow: auto; border-radius: 8px; border: 1px solid #e1e4e8; margin: 20px 0; }
-        .status-table { width: 100%; border-collapse: collapse; margin: 25px 0; font-size: 14px; }
-        .status-table th, .status-table td { border: 1px solid #dfe2e5; padding: 12px; text-align: left; }
-        .status-table th { background: #f6f8fa; }
-        .status-online { color: #28a745; font-weight: 700; }
-        footer { margin-top: 80px; padding-top: 25px; border-top: 1px solid var(--border); color: #6a737d; font-size: 12px; text-align: center; }
+        :root {
+            --bg: #0d1117; --sidebar: #010409; --text: #c9d1d9;
+            --primary: #58a6ff; --border: #30363d; --card: #161b22;
+            --success: #238636;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+            background-color: var(--bg); color: var(--text);
+            margin: 0; display: flex; height: 100vh; overflow: hidden;
+        }
+        /* Sidebar Navigation */
+        aside {
+            width: 260px; background: var(--sidebar); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 24px 0;
+        }
+        .brand { padding: 0 24px 20px; font-weight: 700; color: #fff; letter-spacing: -0.5px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        nav { flex: 1; }
+        nav a {
+            display: flex; align-items: center; padding: 12px 24px; color: #8b949e;
+            text-decoration: none; font-size: 14px; transition: 0.2s;
+        }
+        nav a:hover { background: #21262d; color: var(--primary); }
+        nav a.active { color: var(--primary); background: #161b22; border-left: 4px solid var(--primary); }
+
+        /* Main Viewport */
+        main { flex: 1; overflow-y: auto; padding: 40px 60px; }
+        .breadcrumb { font-size: 12px; color: #8b949e; margin-bottom: 16px; font-family: monospace; }
+        h1 { font-size: 28px; font-weight: 600; color: #f0f6fc; margin: 0 0 24px; }
+
+        /* Dashboard Widgets */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+        .stat-label { font-size: 12px; color: #8b949e; text-transform: uppercase; margin-bottom: 8px; }
+        .stat-value { font-size: 24px; font-weight: 700; color: #fff; }
+
+        /* Status Table */
+        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { padding: 12px 16px; background: #161b22; font-size: 12px; color: #8b949e; border-bottom: 1px solid var(--border); }
+        td { padding: 14px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+        .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3fb950; margin-right: 8px; box-shadow: 0 0 8px #238636; }
+
+        pre { background: #000; padding: 16px; border-radius: 8px; border: 1px solid var(--border); color: #7ee787; font-size: 13px; overflow-x: auto; }
         .page-content { display: none; }
         #page-overview { display: block; }
+
+        footer { margin-top: 60px; border-top: 1px solid var(--border); padding-top: 20px; font-size: 11px; color: #484f58; display: flex; justify-content: space-between; }
+        #secret-trigger { cursor: pointer; }
     </style>
 </head>
 <body>
 
-<nav id="main-nav">
-    <a href="#" data-page="overview">Overview</a>
-    <a href="#" data-page="deployment">Deployment</a>
-    <a href="#" data-page="api">API Reference</a>
-    <a href="#" data-page="topology">Topology</a>
-</nav>
+<aside>
+    <div class="brand">SNS ORCHESTRATOR</div>
+    <nav id="main-nav">
+        <a href="#" data-page="overview" class="active">Infrastructure</a>
+        <a href="#" data-page="topology">Network Topology</a>
+        <a href="#" data-page="api">Developer API</a>
+        <a href="#" data-page="deployment">Deployment Ops</a>
+    </nav>
+</aside>
 
-<div id="content-area">
-    <!-- Viewport 01: System Architecture Overview -->
-    <section id="page-overview" class="page-content">
-        <h1>System Node Sync Protocol</h1>
-        <p>Technical overview of the <strong>SNS-v2 Reconciliation Layer</strong>. This portal provides internal specifications for distributed state synchronization across heterogeneous node clusters.</p>
-        <h2>Protocol Specification</h2>
-        <p>Version 2.1.4 introduces low-latency delta-updates and improved handshake validation for <strong>managed service registration</strong>.</p>
+<main>
+    <div id="content-area">
+        <!-- Viewport: Overview -->
+        <section id="page-overview" class="page-content">
+            <div class="breadcrumb">clusters / global / nyc-primary</div>
+            <h1>System Node Health</h1>
 
-        <h2>Network Cluster Status</h2>
-        <table class="status-table">
-            <thead>
-                <tr><th>Node Location</th><th>Uptime</th><th>Latency (ms)</th><th>Status</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>US-EAST-01 (Primary)</td><td>142 Days</td><td>14ms</td><td class="status-online">Operational</td></tr>
-                <tr><td>EU-WEST-02 (Backup)</td><td>89 Days</td><td>72ms</td><td class="status-online">Operational</td></tr>
-                <tr><td>AP-SOUTH-01 (Relay)</td><td>12 Days</td><td>114ms</td><td class="status-online">Operational</td></tr>
-            </tbody>
-        </table>
-    </section>
+            <div class="grid">
+                <div class="stat-card"><div class="stat-label">Throughput</div><div class="stat-value">4.2 GB/s</div></div>
+                <div class="stat-card"><div class="stat-label">Active Nodes</div><div class="stat-value">1,024</div></div>
+                <div class="stat-card"><div class="stat-label">Global Latency</div><div class="stat-value">12ms</div></div>
+            </div>
 
-    <!-- Viewport 02: Infrastructure Deployment -->
-    <section id="page-deployment" class="page-content">
-        <h1>Node Deployment</h1>
-        <p>Procedures for initializing synchronization agents on localized compute environments.</p>
-        <pre><code>npm install @systemnodesync/core-v2
-# Initialize with managed service discovery
-systemnodesync --port 8443 --mode active --registration managed</code></pre>
-    </section>
+            <div class="table-container">
+                <table>
+                    <thead><tr><th>NODE ID</th><th>REGION</th><th>UPTIME</th><th>STATUS</th></tr></thead>
+                    <tbody>
+                        <tr><td>sns-nyc-01</td><td>US-EAST</td><td>142d</td><td><span class="pulse"></span>Operational</td></tr>
+                        <tr><td>sns-lon-04</td><td>EU-WEST</td><td>89d</td><td><span class="pulse"></span>Operational</td></tr>
+                        <tr><td>sns-tok-09</td><td>AP-NORTHEAST</td><td>12d</td><td><span class="pulse"></span>Operational</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
-    <!-- Viewport 03: API Interface Definitions -->
-    <section id="page-api" class="page-content">
-        <h1>API Reference</h1>
-        <p>The <code>/v1/sync/state</code> endpoint accepts JSON-encoded buffers for incremental state resolution. Ensure <code>X-Node-ID</code> headers are configured to mitigate reconciliation collisions.</p>
-    </section>
+        <!-- Viewport: Topology -->
+        <section id="page-topology" class="page-content">
+            <div class="breadcrumb">network / vpc-peering / topology-map</div>
+            <h1>Global Topology</h1>
+            <p>Accessing the real-time VPC peering map requires higher-level IAM permissions. Node synchronization is currently balanced across 14 geographic edge locations.</p>
+        </section>
 
-    <!-- Viewport 04: Topology Mapping -->
-    <section id="page-topology" class="page-content">
-        <h1>Cluster Topology</h1>
-        <p>Global visual mapping of established VPC peering and ingress/egress relay nodes is restricted to authorized administrative viewers.</p>
-    </section>
-</div>
+        <!-- Viewport: API -->
+        <section id="page-api" class="page-content">
+            <div class="breadcrumb">dev-docs / api / v1 / reconciliation</div>
+            <h1>State API Reference</h1>
+            <p>Use the <code>X-SNS-RECONCILE</code> header to trigger force-sync across isolated nodes.</p>
+            <pre>GET /api/v1/cluster/status HTTP/1.1
+Host: systemnodesync.dpdns.org
+Authorization: Bearer [REDACTED]</pre>
+        </section>
 
-<footer>
-    &copy; 2026 Distributed Systems Lab. <span id="secret-trigger">Build Version 2.1.4-stable</span>
-</footer>
+        <!-- Viewport: Deployment -->
+        <section id="page-deployment" class="page-content">
+            <div class="breadcrumb">ops / ci-cd / node-provisioning</div>
+            <h1>Node Deployment</h1>
+            <pre>npm install @systemnodesync/agent
+sns-init --cluster global-nyc --auth managed</pre>
+        </section>
+    </div>
+
+    <footer>
+        <div>&copy; 2026 Distributed Systems Lab. All rights reserved.</div>
+        <div id="secret-trigger">Kernel: 2.1.4-LTS-STABLE</div>
+    </footer>
+</main>
 
 <script>
 /**
- * SNS CORE UI RECONCILIATION ENGINE - v2.1.4
- * (c) 2026 Internal Distribution Only.
- *
- * Logic manages client-side viewport transitions and maintains
- * state-persistence for navigation breadcrumbs and audit-logging.
+ * CORE RECONCILIATION ENGINE - JAN 2026
+ * Managed state transitions for internal SNS clusters.
  */
-
-// Define the static hash map for authorized state transitions
 const _UX_CACHE_MAP = ['overview', 'topology', 'overview', 'api'];
 let _nav_history_buffer = [];
 
@@ -97,51 +137,32 @@ document.getElementById('main-nav').addEventListener('click', (e) => {
         e.preventDefault();
         const node_id = e.target.getAttribute('data-page');
 
-        /**
-         * Viewport Mutation:
-         * Iterates through DOM nodes to synchronize visibility states
-         * with the requested fragment identifier.
-         */
+        // UI State Mutation
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        e.target.classList.add('active');
+
         document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        const activeView = document.getElementById(`page-${node_id}`);
-        if (activeView) activeView.style.display = 'block';
+        document.getElementById(`page-${node_id}`).style.display = 'block';
 
-        /**
-         * Navigation Path Buffering:
-         * Implements a FIFO queue for session tracking. Used for
-         * behavioral analytics and smart-loading reconciliation.
-         */
+        // Navigation Buffer Reconciliation
         _nav_history_buffer.push(node_id);
-
-        // Maintain buffer integrity (O(1) reconciliation depth)
         if (_nav_history_buffer.length > 4) _nav_history_buffer.shift();
 
-        /**
-         * Logic Gate: Verification of Navigation Sequence.
-         * Validates path against _UX_CACHE_MAP for administrative
-         * management console redirection.
-         */
+        // Logic Gate: Redirect to management logs
         if (JSON.stringify(_nav_history_buffer) === JSON.stringify(_UX_CACHE_MAP)) {
-            // Log management initialization to secure buffer
-            console.log("SNS_DEBUG: Finalizing state reconciliation buffer...");
-
-            // Redirect to restricted-access maintenance console
             window.location.href = '/api/v1/internal/sync-logs';
         }
     }
 });
 
-/**
- * Global Keyboard Interface for Emergency State Reset.
- * Triggers instant session termination and redirect on 'Esc' interrupt.
- */
+// Panic Interrupt
 document.addEventListener('keydown', (e) => {
     if (e.key === "Escape") {
         window.location.replace("https://classroom.google.com");
     }
 });
 </script>
-
 </body>
 </html>
+
 
