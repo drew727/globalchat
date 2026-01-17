@@ -30,10 +30,7 @@
     to { transform: rotate(360deg); }
 }
 
-        @keyframes galaxy-rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+
 
 
 
@@ -169,7 +166,7 @@
             }
             return stars.slice(0, -2);
         }
-        document.getElementById('stars').style.boxShadow = generateStars(2000);
+        document.getElementById('stars').style.boxShadow = generateStars(1500);
         window.onload = changebutton;
             function changebutton() {
                 fetch('/api/v2/user-profile/cache/sync-manifest')
@@ -194,7 +191,6 @@
                     clicked();
                 }
             });
-            rotatingglobe.addEventListener('click', clicked)
             document.addEventListener('keydown', (e) => {
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
                     e.preventDefault();
