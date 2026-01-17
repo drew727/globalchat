@@ -223,7 +223,7 @@
 
             window.onload = changebutton;
             function changebutton() {
-                fetch('/api/v2/user-profile/cache/sync-manifest)
+                fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
                     if (user.isguest === false) {
