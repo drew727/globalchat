@@ -4,20 +4,27 @@
         <title>Click!</title>
         <style>
         body {
-            background-color: black;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-family: Roboto, sans-serif;
-            background-image:
-                radial-gradient(1px 1px at 50px 100px, white, transparent),
-                radial-gradient(1.5px 1.5px at 300px 400px, white, transparent),
-                radial-gradient(1px 1px at 15% 15%, white, transparent),
-                radial-gradient(2px 2px at 250px 250px, rgba(255, 255, 255, 0.8), transparent); /* Combined and cleaned */
-            background-repeat: repeat;
-            background-size: 300px 300px;
-            animation: pan-bg 100s linear infinite;
-        }
+    background-color: #020b16;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    overflow: hidden;
+
+
+    background-image:
+        radial-gradient(1px 1px at 25px 50px, white, transparent),
+        radial-gradient(1px 1px at 75px 150px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(1.5px 1.5px at 100px 250px, white, transparent),
+        radial-gradient(2px 2px at 200px 10px, rgba(255,255,255,0.8), transparent),
+        radial-gradient(1px 1px at 300px 300px, white, transparent);
+    background-size: 400px 400px, 350px 350px, 500px 500px, 200px 200px, 600px 600px;
+    background-repeat: repeat;
+    animation: pan-bg 150s linear infinite;
+}
             @keyframes pan-bg{
                 from { background-position: 0 0; }
                 to { background-position: -300px -300px; }
