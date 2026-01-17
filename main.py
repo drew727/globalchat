@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from better_profanity import profanity
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
 from flask_migrate import Migrate
 import os
@@ -15,7 +16,6 @@ from flask_limiter.util import get_remote_address
 mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
-is_pa = 'PYTHONANYWHERE_SITE' in os.environ
 app = Flask(__name__)
 app.config.pop("SQLALCHEMY_ENGINE_OPTIONS", None)
 app.config['SESSION_COOKIE_SECURE'] = True
@@ -77,9 +77,6 @@ class Message(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'))
-    if is_pa:
-        __table_args__ = {'mysql_charset': 'utf8mb4'}
-        text = db.Column(db.String(300, collation='utf8mb4_unicode_ci'))
     text = db.Column(db.String(300))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     room_id = db.Column(db.Integer, default=0, index=True)
