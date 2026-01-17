@@ -35,7 +35,8 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', '234g52h3g48hq34wg879g4h
 bad_words = profanity.load_censor_words()
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-limiter = Limiter(app=app, key_func=get_remote_address)
+
+limiter = Limiter(app=app, key_func=get_remote_address, storage_uri="memory://")
 @app.route('/health')
 def health_check():
     return "OK", 200
@@ -210,6 +211,8 @@ def send_msg():
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
         if uid in mods:
+            if message_text.startswith("/panic"):
+                toggle_panic()
             if message_text.startswith("/mute"):
                 splittext = message_text.split(None, 2)
                 muted_username = splittext[1].strip().replace('"', ' ')

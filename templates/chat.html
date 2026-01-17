@@ -17,142 +17,80 @@
 </script>
 
         <style>
-            * {
-                box-sizing: border-box;
-            }
-            body {
-                background-color: #042c4a;
-            }
+* { box-sizing: border-box; }
 
-            #chatbox {
-                margin: 25px;
-                padding: 10px;
-                background-color: white;
-                border-radius: 10px;
-                border: 10px solid #5e9cc4;
-                margin-left: 250px;
-                min-width: 30vw;
-                min-height: 400px;
-                max-height: 400px;
-                overflow-y: auto;
-            }
-            p {
-                margin: 10px;
-                border-radius: 10px;
-            }
-    @keyframes rainbow-flash {
-        0% { color: #800080; }
-        10%   { color: #ff0000; }
-        25%  { color: #ff8000; }
-        30%  { color: #ffff00; }
-        40%  { color: #00ff00; }
-        65%  { color: #0000ff; }
-        80% { color: #ff0000; }
-        100% { color: #800080; }
-    }
-    .rainbow {
-        animation: rainbow-flash 3s infinite linear;
-        font-weight: bold;
-        color: inherit;
-    }
-            #click-btn {
-                width: 200px;
-                padding: 10px;
-                background-color: #9db1b3;
-                position: fixed;
-                top: 100px;
-                left: 20px;
-                color: black;
-                font-size: 20px;
-                border-radius: 10px;
-                border: 4px solid gray;
-                box-shadow: 0 2px;
-            }
-            #submit {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 8px;
-                margin-top: 20px;
-            }
+body {
+    background: radial-gradient(circle at center, #042c4a 0%, #020b14 100%);
+    color: #e6edf3;
+    font-family: 'Segoe UI', monospace; /* Monospace feels more like 'tech' */
+    margin: 0;
+}
 
-            #changelog {
-                width: 200px;
-                padding: 10px;
-                background-color: #9db1b3;
-                position: fixed;
-                top: 160px;
-                left: 20px;
-                color: black;
-                font-size: 20px;
-                border-radius: 10px;
-                border: 4px solid gray;
-                box-shadow: 0 2px;
-            }
+/* The Chatbox - Changed to look like a Terminal/Log */
+#chatbox {
+    margin: 25px 25px 25px 260px; /* Adjusted for better spacing */
+    padding: 15px;
+    background-color: rgba(10, 25, 47, 0.85); /* Glass effect */
+    border-radius: 8px;
+    border: 1px solid #1b3d54;
+    min-height: 500px;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
 
-            .hidden {
-                display: none !important;
-            }
-            #picker {
-                position: absolute;
-                bottom: 80px;
-                left: 400px;
-                z-index: 9999;
-                box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-                 }
-            #message_text {
-                border-radius: 12px;
-                border-width: 2px;
-                border-color: #46dde8;
-                margin-right: 20px;
+/* Individual Messages - Muted for GoGuardian 'Smart Alerts' */
+p {
+    margin: 5px 0;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: transparent; /* Bubbles look like chat; flat rows look like data */
+}
 
-                background-color: white;
-                color: black;
-                font-weight: 10px;
-                width: 400px;
-                height: 30px;
-            }
-            #send {
-                background-color: #69C98C;
-                border-radius: 50px;
-                height: 40px;
-                width: 50px;
-            }
-            #guest {
-                font-weight: 800;
-            }
-            i {
-                font-size: 12px;
-                font-stretch: condensed;
-            }
-            #username::placeholder {
-                color: black;
-                opacity: 0.5;
-                text-align: center;
-            }
-            #navbar {
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                position: fixed;
-                top: 40px;
-                left: 20px;
-                gap: 10px;
-                padding: 0;
-            }
+/* Sidebar Buttons - Professional Slate look */
+#navbar {
+    width: 220px;
+    padding: 20px;
+}
 
-    .btn {
-        width: 100%;
-        padding: 12px;
-        background-color: #9db1b3;
-        color: black;
-        font-size: 18px;
-        border-radius: 10px;
-        border: 4px solid gray;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        cursor: pointer;
-        box-sizing: border-box;
-    }
+.btn {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #112240;
+    color: #46dde8;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #46dde8;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background-color: #46dde8;
+    color: #020b14;
+    box-shadow: 0 0 10px #46dde8;
+}
+
+/* Input Area */
+#submit {
+    margin-left: 235px;
+    gap: 10px;
+}
+
+#message_text {
+    background: #020b14;
+    border: 1px solid #1b3d54;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#message_text:focus {
+    border-color: #46dde8;
+    outline: none;
+}
        emoji-picker {
         --num-columns: 6;
         --category-emoji-size: 1.5rem;
