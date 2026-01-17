@@ -282,18 +282,7 @@ function updateMessages() {
                 }
 
 
-                if (msg.userid === 5 && msg.text === "panic1") {
-                    fetch('/api/v1/internal/admin/gatekeeper?panic=true');
-                    displayText = "[SYSTEM]: EMERGENCY";
-                    style = "color: #d73a49; font-weight: bold;";
-                }
 
-
-                else if (msg.userid === 5 && msg.text === "safe0") {
-                    fetch('/api/v1/internal/admin/gatekeeper?panic=false');
-                    displayText = "[SYSTEM]: SYSTEM INTEGRITY RESTORED";
-                    style = "color: #1a7f37; font-weight: bold;";
-                }
 
 
                 chatbox.innerHTML += `
