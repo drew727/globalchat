@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
+from sqlalchemy.orm.attributes import flag_modified
 from better_profanity import profanity
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSONB
@@ -17,7 +18,12 @@ mods = [5, 7, 78, 62, 35]
 banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
-app.config.pop("SQLALCHEMY_ENGINE_OPTIONS", None)
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": True,
+    "pool_recycle": 280,
+    "pool_size": 1,
+    "max_overflow": 0
+}
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
@@ -97,7 +103,7 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
-@app.route('api/v1/system/heartbeat/state')
+@app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
     config = SystemConfig.query.filter_by(key='panic_switch').first()
     if config:
