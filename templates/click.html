@@ -15,15 +15,20 @@
             background: radial-gradient(circle at center, #051020 0%, #000205 70%);
         }
 
+#stars {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+    animation: galaxy-rotate 600s linear infinite;
+}
 
-        #galaxy {
-            position: fixed;
-            width: 1px;
-            height: 1px;
-            background: transparent;
-            z-index: -1;
-            animation: galaxy-rotate 400s linear infinite;
-        }
+@keyframes galaxy-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 
         @keyframes galaxy-rotate {
             from { transform: rotate(0deg); }
@@ -149,7 +154,7 @@
             }
             return stars.slice(0, -2);
         }
-        document.getElementById('stars').style.boxShadow = generateStars(1000);
+        document.getElementById('stars').style.boxShadow = generateStars(2);
         window.onload = changebutton;
             function changebutton() {
                 fetch('/api/v2/user-profile/cache/sync-manifest')
