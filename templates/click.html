@@ -141,10 +141,7 @@
                     }
                 });
             }
-            function tochat() {
-                window.location.href = "/";
 
-            }
             if (window.location.protocol === 'http:') {
                 window.location.replace(window.location.href.replace('http:', 'https:'));
             }
@@ -244,7 +241,7 @@
                 counter.innerHTML = `People Clicked This ${count} Times! ${milestoneText}`;
 }
             function frame() {
-                fetch('/inc_click_counter').then(response => response.json()).then(data => {
+                fetch('/api/v1/telemetry/heartbeat/delta-increment').then(response => response.json()).then(data => {
                     counterupdate(data.count, data.next_milestone)
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
