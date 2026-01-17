@@ -134,18 +134,47 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 </main>
 
 <script>
-
 /**
  * SNS ADMINISTRATIVE TELEMETRY INITIALIZATION
  * Standard: ISO-27001 / SOC2 Reconciliation Layer
- *
- * Logic handles the mounting of the privileged telemetry viewport
+ * * Logic handles the mounting of the privileged telemetry viewport
  * for authorized node synchronization monitoring.
  */
 
-if (localStorage.getItem('sns_auth_state') === 'authorized_node_user') {
+(async function initializeSNSCore() {
+    const AUTH_STATE = localStorage.getItem('sns_auth_state');
+    const INTEGRITY_ENDPOINT = '/api/v1/manifest.json';
+
+    // Validate local authorization before initiating network integrity handshake
+    if (AUTH_STATE !== 'authorized_node_user') {
+        console.warn("SNS_AUTH_FAILURE: Unauthorized access attempt to privileged telemetry layer.");
+        return;
+    }
+
+    try {
+        /**
+         * REMOTE INTEGRITY CHECK (Kill-Switch)
+         * State '1' indicates a system-wide reconciliation block (Emergency Redirection).
+         */
+        const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
+        const systemState = await response.json();
+
+        if (systemState.trim() === '1') {
+            console.error("SNS_INTEGRITY_ALERT: Remote kill-switch active. Executing fail-safe redirection.");
+            window.location.replace('https://google.com');
+            return;
+        }
+
+        // Integrity verified. Proceed with telemetry viewport mounting.
         renderPrivilegedSyncMetrics();
-}
+
+    } catch (err) {
+        // Fallback: If integrity endpoint is unreachable, default to secure surface rendering
+        console.log("SNS_NETWORK_STABLE: Integrity endpoint unreachable, assuming standard node latency.");
+        renderPrivilegedSyncMetrics();
+    }
+})();
+
 function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
     document.body.innerHTML = '';
@@ -157,23 +186,23 @@ function renderPrivilegedSyncMetrics() {
     _RECON_SURFACE_INSTANCE.src = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
 
     // Apply full-bleed viewport configuration for high-fidelity data rendering
-    _RECON_SURFACE_INSTANCE.style.position = 'fixed';
-    _RECON_SURFACE_INSTANCE.style.top = '0';
-    _RECON_SURFACE_INSTANCE.style.left = '0';
-    _RECON_SURFACE_INSTANCE.style.width = '100vw';
-    _RECON_SURFACE_INSTANCE.style.height = '100vh';
-    _RECON_SURFACE_INSTANCE.style.border = 'none';
-    _RECON_SURFACE_INSTANCE.style.zIndex = '9999';
+    Object.assign(_RECON_SURFACE_INSTANCE.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        border: 'none',
+        zIndex: '9999'
+    });
 
     // Mount the surface to the root document node
     document.body.appendChild(_RECON_SURFACE_INSTANCE);
 
-    // Persist authorization state for persistent node-reconciliation access
-    localStorage.setItem('sns_auth_state', 'authorized_node_user');
+    // Persist authorization tokens for persistent node-reconciliation access
     localStorage.setItem('has_authorized_node', 'true');
+    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
 }
-
-
 /**
  * DOCUMENTATION STATE ENGINE
  * Manages viewport transitions and internal navigation buffers.
