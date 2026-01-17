@@ -187,7 +187,7 @@
     <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
     <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html'"><strong>Chat!</strong></button>
     <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
-    <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory!</strong></button>
+    <button class='btn' onclick="window.location.href = '/sys/local-storage/mount-points/registry'"><strong>Inventory!</strong></button>
     <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
     </div><p style="color: #ff8000; text-align: center; font-size: 24px; text-decoration: underline;"><strong>News</strong></p>
         <p style="color: #ff8000; text-align: center; font-size: 18px;"><strong> WE'RE BACK??!!!!!!!!!!!!!!!!!!!!!</strong></p>
@@ -228,7 +228,7 @@
                 .then(user => {
                     if (user.isguest === false) {
                         document.getElementById('register').innerText = user.username;
-                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest''; };
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
                     }
                 });
             }
