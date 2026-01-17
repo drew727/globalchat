@@ -174,7 +174,7 @@
 
     <body>
         <div id="chatbox">        </div>
-        <form id="submit" action=/send_message method="POST">
+        <form id="submit" onsubmit="event.preventDefault(); sendmessage();">
         <div id="emoji-container" style="display: inline-block; vertical-align: middle;">
             <button type="button" id="emoji-trigger"><center>😀</center></button>
 
@@ -194,9 +194,7 @@
         <div style="color: #ff8000; text-align: center; font-size: 18px;">
         <strong></strong>
         <ul style="list-style-position: inside; padding: 0; font-weight: bold;">
-        <li></li>
-        <li></li>
-        <li></li>
+
         </ul>
     </div>
         <script>
@@ -225,7 +223,7 @@
 
             window.onload = changebutton;
             function changebutton() {
-                fetch('/api/v2/user-profile/cache/sync-manifest'')
+                fetch('/api/v2/user-profile/cache/sync-manifest)
                 .then(response => response.json())
                 .then(user => {
                     if (user.isguest === false) {
