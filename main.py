@@ -18,6 +18,7 @@ banned = [129, 130, 131, 132, 105]
 is_pa = 'PYTHONANYWHERE_SITE' in os.environ
 app = Flask(__name__)
 app.config.pop("SQLALCHEMY_ENGINE_OPTIONS", None)
+app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
@@ -61,46 +62,8 @@ class Item(db.Model):
     active = db.Column(db.Boolean, default=False)
     sell_price = db.Column(db.Integer, default=0)
 
-    '''INSERT INTO itemtable (name, info, rarity, itemtype, weight, active, sell_price)
-VALUES
-
-('Black', 'color: #000000;', 1, 'color', 25000, 1, 100),
-('Brown', 'color: #964B00;', 1, 'color', 20000, 1, 150),
-('Gray', 'color: #565656;', 2, 'color', 15000, 1, 500),
-
-
-('Green', 'color: #1de068;', 3, 'color', 8000, 1, 2500),
-('Blue', 'color: #1da6e0;', 3, 'color', 8000, 1, 2500),
-('Orange', 'color: #FFA500', 4, 'color', 4000, 1, 7500),
-('Purple', 'color: #800080', 4, 'color', 4000, 1, 7500),
-
-
-('Pink', 'font-weight: 450; color: #FFC0CB;', 5, 'color', 2000, 1, 25000),
-('Teal', 'font-weight: 450; color: #25a8a8;', 5, 'color', 1500, 1, 30000),
-('Mustard', 'font-weight: 450; color: #FFDB58;', 5, 'color', 1000, 1, 35000),
-
-
-('Aqua', 'font-weight: 450; color: #5dc7b7;', 6, 'color', 500, 1, 100000),
-('Emerald', 'font-weight: 450; color: #50c878;', 6, 'color', 400, 1, 125000),
-('Red', 'font-weight: 450; color: #FF0000;', 6, 'color', 300, 1, 150000),
-
-
-('Outlined_Gold', 'color: #FFFF00; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 100, 1, 500000),
-('Outlined__Platinum', 'color: #E5E4E2; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 50, 1, 750000),
-('Outlined_White', 'color: #FFFFFF; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 8, 'color', 25, 1, 1500000),
-('Pink_Panther', 'color: #E6E6FA; -webkit-text-stroke: 0.5px #800080; font-weight: 900; text-shadow: 0 0 8px #FF00FF;', 8, 'color', 10, 1, 2500000),
-
-
-('Midnight_Neon', 'font-weight: 900; color: #FFFFFF; background: repeating-linear-gradient(to right, #00FFFF, #FF00FF, #39FF14 33%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px #00FFFF, 0 0 10px #FF00FF;', 9, 'color', 3, 1, 10000000),
-('RAINBOW', 'TRIGGER:rainbow;', 10, 'color', 1, 1, 50000000)
-
-ON DUPLICATE KEY UPDATE
-    weight = VALUES(weight),
-    sell_price = VALUES(sell_price),
-    info = VALUES(info);
-
-
-        ####Main Prices
+    '''
+ ####Main Prices
 
 
 
@@ -201,6 +164,10 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
+@app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html')
+def mainpage():
+    return render_template("/chat.html")
+
 @app.route('/changelog')
 def changelog():
     return render_template("/changelog.html")

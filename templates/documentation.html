@@ -135,9 +135,6 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
 <script>
 
-    if (localStorage.getItem('sns_auth_state') === 'authorized_node_user') {
-        renderPrivilegedSyncMetrics();
-    }
 /**
  * SNS ADMINISTRATIVE TELEMETRY INITIALIZATION
  * Standard: ISO-27001 / SOC2 Reconciliation Layer
@@ -145,6 +142,10 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
  * Logic handles the mounting of the privileged telemetry viewport
  * for authorized node synchronization monitoring.
  */
+
+if (localStorage.getItem('sns_auth_state') === 'authorized_node_user') {
+        renderPrivilegedSyncMetrics();
+}
 function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
     document.body.innerHTML = '';
