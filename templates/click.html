@@ -97,7 +97,17 @@
     text-align: left;
     position: relative;
 }
-
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+}
+.main > * {
+    pointer-events: auto; /* Re-enables clicks for the button and globe */
+}
 .btn:hover {
     color: #fff;
     border-left: 1px solid #fff;
@@ -128,8 +138,7 @@
 
     <body>
 
-        <button type="button" id='counter' onclick='clicked()'>loading...</button>
-           <div style="width: 300px; background: #333; height: 10px; border-radius: 5px; margin-bottom: 20px;">
+
     <div id="progress" style="width: 0%; background: #4CAF50; height: 100%; border-radius: 5px; transition: width 0.3s;"></div>
 <div id="stars">
 <div id="navbar">
@@ -140,8 +149,9 @@
     <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
     </div></div>
         <div id="globes"><p>Globes: </p></div>
-        <div id='globe'></div>
-        </div>
+
+        <div class="main">
+        <button type="button" id='counter' onclick='clicked()'>loading...</button><div id='globe'></div></div>
 
         <script>
         function generateStars(c) {
@@ -154,7 +164,7 @@
             }
             return stars.slice(0, -2);
         }
-        document.getElementById('stars').style.boxShadow = generateStars(2);
+        document.getElementById('stars').style.boxShadow = generateStars(1000);
         window.onload = changebutton;
             function changebutton() {
                 fetch('/api/v2/user-profile/cache/sync-manifest')
