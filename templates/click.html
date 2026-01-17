@@ -62,39 +62,50 @@
                 width: 500px;
             }
 
-             #navbar {
-    width: 200px;
+ #navbar {
+    width: 220px;
     display: flex;
     flex-direction: column;
     position: fixed;
     top: 50%;
     left: 40px;
     transform: translateY(-50%);
-    gap: 20px;
-    padding: 0; /* No heavy container box */
+    gap: 15px;
+    padding: 0;
+    z-index: 1000;
 }
 
 .btn {
     width: 100%;
-    padding: 10px 0;
+    padding: 12px 0;
     background: transparent;
-    color: rgba(255, 255, 255, 0.6); /* Dimmer text */
-    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
     font-weight: 300;
-    text-transform: lowercase; /* Lowercase feels more "indie/artistic" and less "corporate tech" */
-    letter-spacing: 2px;
+    text-transform: lowercase;
+    letter-spacing: 3px;
     border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Very faint line */
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 15px;
     cursor: pointer;
-    transition: all 0.5s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
+    position: relative;
 }
 
 .btn:hover {
     color: #fff;
-    border-bottom: 1px solid #fff;
-    padding-left: 10px;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    border-left: 1px solid #fff;
+    padding-left: 25px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+
+.btn-active {
+    color: #fff;
+    border-left: 2px solid #fff;
+    padding-left: 25px;
 }
 
         #globe {
@@ -159,6 +170,9 @@
             const globe = Globe()(rotatingglobe)
             globe.globeImageUrl(globeimg)
             globe.bumpImageUrl(bump)
+            globe.showAtmosphere(true)
+            globe.atmosphereColor('#3a6ba5')
+            globe.atmosphereAltitude(0.25)
             globe.controls().enabled = false;
             globe.width(500);
             globe.height(500);
