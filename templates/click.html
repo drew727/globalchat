@@ -220,7 +220,7 @@
                 }, 50);
             }
             function postcount() {
-                fetch('/inc_click_counter', {
+                fetch('/api/v1/telemetry/heartbeat/delta-increment', {
                     method: 'POST',
                 }).then(response => response.json()).then(data => {
 
