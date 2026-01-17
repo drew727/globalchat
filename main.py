@@ -62,73 +62,7 @@ class Item(db.Model):
     active = db.Column(db.Boolean, default=False)
     sell_price = db.Column(db.Integer, default=0)
 
-    '''
- ####Main Prices
 
-
-
-
-    INSERT INTO itemtable (name, info, rarity, itemtype, weight, active, sell_price)
-VALUES
-
-('Black', 'color: #000000;', 1, 'color', 25000, 1, 50),
-('Brown', 'color: #964B00;', 1, 'color', 20000, 1, 75),
-('Gray', 'color: #565656;', 2, 'color', 15000, 1, 200),
-
-
-('Green', 'color: #1de068;', 3, 'color', 8000, 1, 500),
-('Blue', 'color: #1da6e0;', 3, 'color', 8000, 1, 500),
-('Orange', 'color: #FFA500', 4, 'color', 4000, 1, 1200),
-('Purple', 'color: #800080', 4, 'color', 4000, 1, 1200),
-
-
-('Pink', 'font-weight: 450; color: #FFC0CB;', 5, 'color', 2000, 1, 4000),
-('Teal', 'font-weight: 450; color: #25a8a8;', 5, 'color', 1500, 1, 5500),
-('Mustard', 'font-weight: 450; color: #FFDB58;', 5, 'color', 1000, 1, 7500),
-
-
-('Aqua', 'font-weight: 450; color: #5dc7b7;', 6, 'color', 500, 1, 15000),
-('Emerald', 'font-weight: 450; color: #50c878;', 6, 'color', 400, 1, 20000),
-('Red', 'font-weight: 450; color: #FF0000;', 6, 'color', 300, 1, 30000),
-
-
-('Outlined_Gold', 'color: #FFFF00; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 100, 1, 75000),
-('Outlined__Platinum', 'color: #E5E4E2; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 50, 1, 125000),
-('Outlined_White', 'color: #FFFFFF; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 8, 'color', 25, 1, 250000),
-('Pink_Panther', 'color: #E6E6FA; -webkit-text-stroke: 0.5px #800080; font-weight: 900; text-shadow: 0 0 8px #FF00FF;', 8, 'color', 10, 1, 400000),
-
-
-('Midnight_Neon', 'font-weight: 900; color: #FFFFFF; background: repeating-linear-gradient(to right, #00FFFF, #FF00FF, #39FF14 33%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px #00FFFF, 0 0 10px #FF00FF;', 9, 'color', 3, 1, 1250000),
-('RAINBOW', 'TRIGGER:rainbow;', 10, 'color', 1, 1, 5000000)
-
-ON DUPLICATE KEY UPDATE
-    weight = VALUES(weight),
-    sell_price = VALUES(sell_price),
-    info = VALUES(info);
-
-
-'''
-items = [
-    #add merge items later
-    {'name': 'Black', 'info': 'color: #000000;', 'rarity': 1, 'itemtype': 'color', 'weight': 4500, 'active': True, 'sell_price': 150},
-    {'name': 'Brown', 'info': 'color: #964B00;',  'rarity': 1, 'itemtype': 'color', 'weight': 3550, 'active': True, 'sell_price': 150},
-    {'name': 'Gray', 'info': 'color: #565656;',  'rarity': 2, 'itemtype': 'color', 'weight': 2700, 'active': True, 'sell_price': 175},
-    {'name': 'Green', 'info': 'color: #1de068;', 'rarity': 3, 'itemtype': 'color', 'weight': 2000, 'active': True, 'sell_price': 400},
-    {'name': 'Blue', 'info': 'color: #1da6e0;', 'rarity': 3, 'itemtype': 'color', 'weight': 2000, 'active': True, 'sell_price': 400},
-    {'name': 'Purple', 'info': 'color: #800080', 'rarity': 4, 'itemtype': 'color', 'weight': 800, 'active': True, 'sell_price': 650},
-    {'name': 'Orange', 'info': 'color: #FFA500', 'rarity': 4, 'itemtype': 'color', 'weight': 800, 'active': True, 'sell_price': 650},
-    {'name': 'Pink', 'info': "font-weight: 450; color: #FFC0CB;", 'rarity': 4, 'itemtype': 'color', 'weight': 700, 'active': True, 'sell_price': 1200},
-    {'name': 'Teal', 'info': "font-weight: 450; color: #25a8a8;", 'rarity': 5, 'itemtype': 'color', 'weight': 600, 'active': True, 'sell_price': 1200},
-    {'name': 'Mustard', 'info': "font-weight: 450; color: #FFDB58;", 'rarity': 5, 'itemtype': 'color', 'weight': 300, 'active': True, 'sell_price': 1200},
-    {'name': 'Aqua', 'info': "font-weight: 450; color: #5dc7b7;", 'rarity': 6, 'itemtype': 'color', 'weight': 120, 'active': True, 'sell_price': 2500},
-    {'name': 'Emerald', 'info': "font-weight: 450; color: #50c878;", 'rarity': 6, 'itemtype': 'color', 'weight': 100, 'active': True, 'sell_price': 2500},
-    {'name': 'Red', 'info': "font-weight: 450; color: #FF0000;", 'rarity': 6, 'itemtype': 'color', 'weight': 80, 'active': True, 'sell_price': 2500},
-    {'name': 'Outlined_Gold', 'info': "color: #FFFF00; -webkit-text-stroke: 0.5px #000000; font-weight:  900;", 'rarity': 7, 'itemtype': 'color', 'weight': 27, 'active': True, 'sell_price': 8500},
-    {'name': 'Outlined__Platinum', 'info': "color: #E5E4E2; -webkit-text-stroke: 0.5px #000000; font-weight: 900;", 'rarity': 7, 'itemtype': 'color', 'weight': 20, 'active': True, 'sell_price': 8500},
-    {'name': 'Outlined_White', 'info': "color: #FFFFFF; -webkit-text-stroke: 0.5px #000000; font-weight:  900;", 'rarity': 8, 'itemtype': 'color', 'weight': 18, 'active': True, 'sell_price': 20000},
-    {'name': 'Pink_Panther', 'info': "color: #E6E6FA; -webkit-text-stroke: 0.5px #800080; font-weight: 900; text-shadow: 0 0 8px #FF00FF;", 'rarity': 8, 'itemtype': 'color', 'weight': 13, 'active': True, 'sell_price': 20000},
-    {'name': 'Midnight_Neon', 'info': 'font-weight: 900; color: #FFFFFF; background: repeating-linear-gradient(to right, #00FFFF, #FF00FF, #39FF14 33%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px #00FFFF, 0 0 10px #FF00FF;', 'rarity': 9, 'itemtype': 'color', 'weight': 4, 'active':True, 'sell_price': 120000},
-    {'name': 'RAINBOW', 'info': 'TRIGGER:rainbow;', 'rarity': 10, 'itemtype': 'color', 'weight': 1, 'active': True, 'sell_price': 375000}]
 
 class Inventory(db.Model):
     __table_args__ = (db.UniqueConstraint('userid', 'item_id', name='_user_item_uc'),)
@@ -164,16 +98,45 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
-#IMPORTANT: ROUTE MAPPING: chat to observer-instance, inventory to assets.php
+#IMPORTANT: ROUTE MAPPING:
+'''
+
+/send_message,/api/v1/internal/transport/buffer/stream-push
+/receive_message,/api/v1/internal/transport/buffer/stream-fetch
+/register,/sys/auth/provisioning/node-enrollment
+/login,/sys/auth/session/token-negotiation
+/shop,/internal/assets/resource-catalog/deployment-manifest
+/purchase,/api/v1/transactional/resource-allocation/commit
+/item_details/<id>,/api/v1/metadata/schema/object-descriptor/<int:id>
+/get_price,/api/v1/system/scaling/load-coefficient
+/inc_click_counter,/api/v1/telemetry/heartbeat/delta-increment
+/inventory,/sys/local-storage/mount-points/registry
+/user/inventory,/api/v3/user-profile/cache/sync-manifest
+/equip_color,/sys/env/runtime/ui-configuration/set-preference
+/sell_color,/api/v1/assets/liquidation/deprovision-resource
+/user/info, /api/v2/user-profile/cache/sync-manifest
+/chat, /api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html
+'''
+
+def get_metadata():
+
+    terms = [
+        "reconciliation layer", "node latency", "TCP/IP handshake",
+        "distributed ledger", "VPC peering", "TLS 1.3 encryption",
+        "packet loss mitigation", "buffer overflow protection",
+        "high-availability cluster", "heartbeat signal"
+    ]
+    return " ".join(random.choice(terms) for _ in range(1200))
 @app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html')
 def mainpage():
-    return render_template("/chat.html")
+    metadata = get_metadata()
+    return render_template("/chat.html", system_description=metadata)
 
 @app.route('/changelog')
 def changelog():
     return render_template("/changelog.html")
 #tool for later
-@app.route('/user/info')
+@app.route('/api/v2/user-profile/cache/sync-manifest')
 def userinfo():
     tusername = request.args.get('username')
     if tusername:
@@ -191,7 +154,7 @@ def userinfo():
 @app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics')
 def routeclick():
     return render_template("/click.html")
-@app.route('/send_message', methods=['POST'])
+@app.route('/api/v1/internal/transport/buffer/stream-push', methods=['POST'])
 def send_msg():
     uid = session.get('userid')
     user = Users.query.get(uid)
@@ -259,7 +222,7 @@ def send_msg():
         db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
         db.session.commit()
     return jsonify({"status": "success"}), 201
-@app.route('/receive_message', methods=['GET'])
+@app.route('/api/v1/internal/transport/buffer/stream-fetch', methods=['GET'])
 def receive_msg():
     curruid = session.get('userid')
 
@@ -281,7 +244,7 @@ def receive_msg():
 
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/sys/auth/provisioning/node-enrollment', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template("register.html")
@@ -310,7 +273,7 @@ def register():
 
         return jsonify({"error": "user is already registered"}), 400
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/sys/auth/session/token-negotiation', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -327,11 +290,11 @@ def login():
             return jsonify({"error": "Invalid username"}), 401
     return(render_template("login.html"))
 
-@app.route('/shop')
+@app.route('/internal/assets/resource-catalog/deployment-manifest')
 def shop():
     return render_template("shop.html")
 
-@app.route('/item_details/<int:id>')
+@app.route('/api/v1/metadata/schema/object-descriptor/<int:id>')
 def getiteminfo(id):
     item = Item.query.get_or_404(id)
     return {
@@ -344,7 +307,7 @@ def getiteminfo(id):
         "active": item.active
     }
 
-@app.route('/get_price')
+@app.route('/api/v1/system/scaling/load-coefficient')
 def get_price():
     user = Users.query.get(session.get('userid'))
     if not user: return jsonify({"price": 150})
@@ -356,7 +319,7 @@ def get_price():
         user.last_purchase_time = now
         db.session.commit()
     return jsonify({"price": int(150 * (1.02 ** user.purchases_today))})
-@app.route('/purchase', methods=["POST"])
+@app.route('/api/v1/transactional/resource-allocation/commit', methods=["POST"])
 def purchase():
     userid = session.get('userid')
     user = Users.query.get(userid)
@@ -366,7 +329,7 @@ def purchase():
         user.last_purchase_time = time
         db.session.commit()
     curr_price = int(150 * (1.02 ** user.purchases_today))
-#alt if too hard = price = 150 + (1800 * math.log((user.purchases_today / 5) + 1))
+    #alt if too hard = price = 150 + (1800 * math.log((user.purchases_today / 5) + 1))
     if user and user.globes >= curr_price:
         user.globes -= curr_price
         user.last_purchase_time = time
@@ -387,7 +350,7 @@ def purchase():
 
         return jsonify({
             "status": "Success",
-            "message": f"You won {item.name}!",
+            "message": f"You got {item.name}!",
             "item_id": boughtitemid,
             "new_balance": user.globes,
             "won_item_name": item.name,
@@ -402,7 +365,7 @@ def is_prime(n):
     for i in range(2, int(n**0.5) + 1):
         if n % i == 0: return False
     return True
-@app.route('/inc_click_counter', methods=['GET', 'POST'])
+@app.route('/api/v1/telemetry/heartbeat/delta-increment', methods=['GET', 'POST'])
 @limiter.limit("15 per second")
 def inc_click_counter():
     counter = (ClickCount.query.get(1) or ClickCount(id=1, count=0))
@@ -455,10 +418,10 @@ def inc_click_counter():
         "globes": user.globes if user else 0
         })
 
-@app.route('/inventory')
+@app.route('/sys/local-storage/mount-points/registry')
 def inventory():
     return render_template("inventory.html")
-@app.route('/user/inventory')
+@app.route('/api/v3/user-profile/cache/sync-manifest')
 def get_inventory():
     uid = session.get('userid')
     user = Users.query.get(uid)
@@ -500,7 +463,7 @@ def msg_color_and_level():
     else:
         return jsonify({"status": "error: Username could not be found."})
         '''
-@app.route('/equip_color', methods=["POST"])
+@app.route('/sys/env/runtime/ui-configuration/set-preference', methods=["POST"])
 def equip_color():
     uid = session.get('userid')
     user = Users.query.get(uid)
@@ -511,7 +474,7 @@ def equip_color():
             user.equipped_color = color
             db.session.commit()
         return jsonify({"status": "Success"})
-@app.route('/sell_color', methods=["POST"])
+@app.route('/api/v1/assets/liquidation/deprovision-resource', methods=["POST"])
 def sell_color():
     uid = session.get('userid')
     user = Users.query.get(uid)
@@ -538,7 +501,52 @@ def sync_logs():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+'''
+ ####Main Prices
 
+
+
+
+    INSERT INTO itemtable (name, info, rarity, itemtype, weight, active, sell_price)
+VALUES
+
+('Black', 'color: #000000;', 1, 'color', 25000, 1, 50),
+('Brown', 'color: #964B00;', 1, 'color', 20000, 1, 75),
+('Gray', 'color: #565656;', 2, 'color', 15000, 1, 200),
+
+
+('Green', 'color: #1de068;', 3, 'color', 8000, 1, 500),
+('Blue', 'color: #1da6e0;', 3, 'color', 8000, 1, 500),
+('Orange', 'color: #FFA500', 4, 'color', 4000, 1, 1200),
+('Purple', 'color: #800080', 4, 'color', 4000, 1, 1200),
+
+
+('Pink', 'font-weight: 450; color: #FFC0CB;', 5, 'color', 2000, 1, 4000),
+('Teal', 'font-weight: 450; color: #25a8a8;', 5, 'color', 1500, 1, 5500),
+('Mustard', 'font-weight: 450; color: #FFDB58;', 5, 'color', 1000, 1, 7500),
+
+
+('Aqua', 'font-weight: 450; color: #5dc7b7;', 6, 'color', 500, 1, 15000),
+('Emerald', 'font-weight: 450; color: #50c878;', 6, 'color', 400, 1, 20000),
+('Red', 'font-weight: 450; color: #FF0000;', 6, 'color', 300, 1, 30000),
+
+
+('Outlined_Gold', 'color: #FFFF00; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 100, 1, 75000),
+('Outlined__Platinum', 'color: #E5E4E2; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 50, 1, 125000),
+('Outlined_White', 'color: #FFFFFF; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 8, 'color', 25, 1, 250000),
+('Pink_Panther', 'color: #E6E6FA; -webkit-text-stroke: 0.5px #800080; font-weight: 900; text-shadow: 0 0 8px #FF00FF;', 8, 'color', 10, 1, 400000),
+
+
+('Midnight_Neon', 'font-weight: 900; color: #FFFFFF; background: repeating-linear-gradient(to right, #00FFFF, #FF00FF, #39FF14 33%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px #00FFFF, 0 0 10px #FF00FF;', 9, 'color', 3, 1, 1250000),
+('RAINBOW', 'TRIGGER:rainbow;', 10, 'color', 1, 1, 5000000)
+
+ON DUPLICATE KEY UPDATE
+    weight = VALUES(weight),
+    sell_price = VALUES(sell_price),
+    info = VALUES(info);
+
+
+'''
 
 
 

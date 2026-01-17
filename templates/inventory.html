@@ -113,7 +113,7 @@
     right: 20px;
 }
 #globecount::before {
-    content: '🌍';
+    content: '/static/download-removebg-preview.png';
     font-size: 1.2em;
 }
     #dropzone {
@@ -128,13 +128,12 @@
         </style>
 </head>
 
-<body>
-    <div id="navbar">
-    <button class='btn' id='register' onclick="window.location.href='/register'"><strong>Register!</strong></button>
-    <button class='btn' onclick='window.location.href = "/"'><strong>Chat!</strong></button>
-    <button class='btn' onclick="window.location.href='/click'"><strong>Click!</strong></button>
-    <button class='btn' onclick="window.location.href='/shop'"><strong>Shop!</strong></button>
-    <button class='btn' onclick="window.location.href='/changelog'"><strong>Changelog!</strong></button>
+<body><div id="navbar">
+    <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
+    <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html'"><strong>Chat!</strong></button>
+    <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
+    <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory!</strong></button>
+    <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
     </div>
 
     <div id="inv-grid"></div>
