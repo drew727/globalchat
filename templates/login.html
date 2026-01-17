@@ -97,12 +97,12 @@
     <h1>Login</h1>
     <img src="/static/download-removebg-preview.png" width='300px' height='300px'>
     <div id="form">
-    <form id="submit" action=/register method="POST">
+    <form id="submit" action=/login method="POST">
             <input type="text" autocomplete="off" id="username_input" placeholder="Username">
             <input type="password" autocomplete="off" id="password_input" placeholder="Password">
             <button type="button" id='login' onclick='send_register()'>Login</button>
     </form></div>
-    <button id='redirect' onclick="window.location.href='/register'">Don't have an account yet? Click to register.</button>
+    <button id='redirect' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'">Don't have an account yet? Click to register.</button>
     <p id="status"></p>
     <script>
     window.onload = hideform;
@@ -122,7 +122,7 @@
             const nameinput = document.getElementById('username_input').value;
             const password = document.getElementById('password_input').value;
             const text = document.getElementById('status')
-            fetch('/login', {
+            fetch('/sys/auth/session/token-negotiation', {
                 method: 'POST',
                 body: `username=${encodeURIComponent(nameinput)}&password=${encodeURIComponent(password)}`,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}})

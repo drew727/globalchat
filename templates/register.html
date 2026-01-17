@@ -120,18 +120,18 @@
 
 <body>
     <div id="form">
-    <form id="submit" action=/register method="POST">
+    <form id="submit" action=/sys/auth/provisioning/node-enrollment method="POST">
             <input type="text" autocomplete="off" id="username_input" placeholder="Username">
             <input type="password" autocomplete="off" id="password_input" placeholder="Password">
             <input type="password" autocomplete="off" id="confirm_password" placeholder="Confirm Password">
             <button type="button" id='register' onclick='send_register()'>Register</button>
     </form></div>
-    <button id='redirect' onclick="window.location.href='/login'">Already registered? Click to login.</button>
+    <button id='redirect' onclick="window.location.href='/sys/auth/session/token-negotiation'">Already registered? Click to login.</button>
     <p id="status"></p>
     <script>
         window.onload = hideform;
         function hideform() {
-            fetch('/user/info')
+            fetch('/api/v2/user-profile/cache/sync-manifest')
             .then(response => response.json())
             .then(user => {
                 if (user.isguest === false) {
@@ -150,7 +150,7 @@
                 text.textContent = "Check your spelling, passwords don't match!";
                 return;
             }
-            fetch('/register', {
+            fetch('/sys/auth/provisioning/node-enrollment', {
                 method: 'POST',
                 body: `username=${encodeURIComponent(nameinput)}&password=${encodeURIComponent(password)}`,
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'}})
