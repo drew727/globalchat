@@ -50,14 +50,11 @@
         // 1. Set the persistent Auth Variable
         localStorage.setItem('sns_auth_state', 'authorized_node_user');
 
-        // 2. Set the custom subdomain marker (for future rotation)
         const nodeID = "node-" + Math.floor(Math.random() * 1000);
         localStorage.setItem('sns_assigned_node', nodeID);
 
-        // 3. Redirect to the actual long chat path after a "loading" delay
         setTimeout(() => {
-            // The actual heavy chat path we discussed
-            window.location.href = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
+            window.location.href = '/';
         }, 1500);
     });
 
