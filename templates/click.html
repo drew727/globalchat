@@ -2,32 +2,33 @@
     <html>
     <head>
         <title>Click!</title>
-        <style>
-     body {
-    background-color: #000205;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    background-image:
+        <style>body {
+            background-color: #000205;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background: radial-gradient(circle at center, #051020 0%, #000205 70%);
+        }
 
-        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3), transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.2), transparent),
 
-        radial-gradient(1.5px 1.5px at 30% 70%, #fff, transparent),
-        radial-gradient(2px 2px at 80% 40%, rgba(255,255,255,0.7), transparent),
+        #galaxy {
+            position: fixed;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            z-index: -1;
+            animation: galaxy-rotate 400s linear infinite;
+        }
 
-        radial-gradient(circle at 50% 50%, rgba(10, 25, 50, 0.5), transparent 70%);
-    background-size: 300px 300px, 400px 400px, 500px 500px, 250px 250px, 100% 100%;
-    animation: space-drift 200s linear infinite;
-}
-
-@keyframes space-drift {
-    from { background-position: 0 0; }
-    to { background-position: 1000px 500px; }
-}
+        @keyframes galaxy-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
 
 
