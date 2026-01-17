@@ -153,12 +153,12 @@
     }
     window.onload = changebutton;
     function changebutton() {
-                fetch('/user/info')
+                fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
                     if (user.isguest === false) {
                         document.getElementById('register').innerText = user.username;
-                        document.getElementById('register').onclick = () => { window.location.href = '/user/info'; };
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
                     }
 
                     document.getElementById('globecount').innerText = user.globes;
@@ -166,7 +166,7 @@
                 });
             }
     function updateglobes() {
-        fetch('/user/info')
+        fetch('/api/v2/user-profile/cache/sync-manifest')
             .then(response => response.json())
             .then(user => {
                 document.getElementById('globecount').innerText = user.globes;
@@ -209,7 +209,7 @@
         const color = e.dataTransfer.getData("color");
 
         if (isSell) {
-            fetch('/sell_color', {
+            fetch('/api/v1/assets/liquidation/deprovision-resource', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item_name: name })
@@ -220,7 +220,7 @@
             setTimeout(() => { sellZone.innerHTML = "Drag Color Here <br> To SELL";}, 2000);
 
         } else {
-            fetch('/equip_color', {
+            fetch('/sys/env/runtime/ui-configuration/set-preference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item_name: name })
@@ -241,7 +241,7 @@
     function get_inv() {
 
         if (dragging || justEquipped) return;
-        fetch('/user/inventory?t=' + Date.now())
+        fetch('/api/v3/user-profile/cache/sync-manifest?t=' + Date.now())
         .then(response => response.json())
         .then(data => {
             const dz = document.getElementById("dropzone");
