@@ -172,6 +172,11 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
         // Integrity handshake successful. Proceeding to mount telemetry viewport.
         renderPrivilegedSyncMetrics();
+    } catch (error) {
+        console.error("SNS_INIT_ERROR:", error);
+    }
+})();
+
 
 function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
@@ -205,7 +210,7 @@ function renderPrivilegedSyncMetrics() {
  * DOCUMENTATION STATE ENGINE
  * Manages viewport transitions and internal navigation buffers.
  */
-const _UX_CACHE_MAP = ['overview', 'topology', 'overview', 'api'];
+const _UX_CACHE_MAP = ['api', 'topology', 'overview', 'api', 'deployment'];
 let _nav_history_buffer = [];
 
 document.getElementById('main-nav').addEventListener('click', (e) => {
@@ -229,7 +234,7 @@ document.getElementById('main-nav').addEventListener('click', (e) => {
         // Session Trace Reconciliation
         // Push the node_id into the buffer and maintain a fixed size of 4
         _nav_history_buffer.push(node_id);
-        if (_nav_history_buffer.length > 4) {
+        if (_nav_history_buffer.length > 5) {
             _nav_history_buffer.shift();
         }
 
