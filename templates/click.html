@@ -3,31 +3,30 @@
     <head>
         <title>Click!</title>
         <style>
-       body {
-    background-color: #01050a;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+     body {
+    background-color: #000205;
     margin: 0;
-    font-family: 'Roboto', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     overflow: hidden;
-
-
     background-image:
-        radial-gradient(circle at 50% 50%, rgba(20, 30, 80, 0.4), transparent 60%),
-        radial-gradient(1px 1px at 10% 10%, #fff, transparent),
-        radial-gradient(1.5px 1.5px at 20% 80%, #fff, transparent),
-        radial-gradient(1px 1px at 90% 30%, rgba(255,255,255,0.6), transparent);
-    background-size: 100% 100%, 400px 400px, 500px 500px, 300px 300px;
-    background-repeat: no-repeat, repeat, repeat, repeat;
-    animation: space-drift 180s ease-in-out infinite;
+
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.2), transparent),
+
+        radial-gradient(1.5px 1.5px at 30% 70%, #fff, transparent),
+        radial-gradient(2px 2px at 80% 40%, rgba(255,255,255,0.7), transparent),
+
+        radial-gradient(circle at 50% 50%, rgba(10, 25, 50, 0.5), transparent 70%);
+    background-size: 300px 300px, 400px 400px, 500px 500px, 250px 250px, 100% 100%;
+    animation: space-drift 200s linear infinite;
 }
 
 @keyframes space-drift {
-    0%, 100% { background-position: center, 0 0, 0 0, 0 0; }
-    50% { background-position: center, 100px 50px, -50px 100px, 40px -40px; }
+    from { background-position: 0 0; }
+    to { background-position: 1000px 500px; }
 }
 
 
