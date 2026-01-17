@@ -61,8 +61,10 @@ class Item(db.Model):
     weight = db.Column(db.Integer)
     active = db.Column(db.Boolean, default=False)
     sell_price = db.Column(db.Integer, default=0)
-
-
+class SystemConfig(db.Model):
+    __tablename__ = 'system_configs'
+    key = db.Column(db.String(50), primary_key=True)
+    value = db.Column(JSONB)
 
 class Inventory(db.Model):
     __table_args__ = (db.UniqueConstraint('userid', 'item_id', name='_user_item_uc'),)
@@ -98,6 +100,22 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
+@app.route('api/v1/system/heartbeat/state')
+def checkpanic():
+    config = SystemConfig.query.filter_by(key='panic_switch').first()
+    if config:
+        return jsonify(config.value)
+    return jsonify({"integrity_check": 0}), 404
+@app.route('/api/v1/internal/admin/gatekeeper')
+def toggle_panic():
+    config = SystemConfig.query.filter_by(key='panic_switch').first()
+    current_state = config.value.get('integrity_check', 0)
+    new_state = 1 if current_state == 0 else 0
+    config.value['integrity_check'] = new_state
+    flag_modified(config, "value")
+    db.session.commit()
+    return f"Panic Mode: {'ENABLED' if new_state == 1 else 'DISABLED'}"
+
 #IMPORTANT: ROUTE MAPPING:
 '''
 

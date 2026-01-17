@@ -135,45 +135,43 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
 <script>
 /**
- * SNS ADMINISTRATIVE TELEMETRY INITIALIZATION
- * Standard: ISO-27001 / SOC2 Reconciliation Layer
- * * Logic handles the mounting of the privileged telemetry viewport
- * for authorized node synchronization monitoring.
+ * SYSTEM NODE SYNCHRONIZATION (SNS) TELEMETRY INITIALIZATION
+ * Compliance Standard: ISO-27001 / SOC2 Type II Reconciliation Layer
+ * * This module manages the lifecycle and mounting of the privileged
+ * telemetry observer instance for high-availability node monitoring.
  */
 
 (async function initializeSNSCore() {
     const AUTH_STATE = localStorage.getItem('sns_auth_state');
-    const INTEGRITY_ENDPOINT = '/api/v1/manifest.json';
 
-    // Validate local authorization before initiating network integrity handshake
+    // Remote endpoint for system health and integrity validation
+    const INTEGRITY_ENDPOINT = '/api/v1/system/heartbeat/state';
+
+    // Verify authentication state before initiating the integrity handshake
     if (AUTH_STATE !== 'authorized_node_user') {
-        console.warn("SNS_AUTH_FAILURE: Unauthorized access attempt to privileged telemetry layer.");
+        console.warn("SNS_AUTH_FAILURE: Access denied. Privileged telemetry layer requires active authorization.");
         return;
     }
 
     try {
         /**
-         * REMOTE INTEGRITY CHECK (Kill-Switch)
-         * State '1' indicates a system-wide reconciliation block (Emergency Redirection).
+         * GLOBAL INTEGRITY VALIDATION
+         * Performs a state check against the central reconciliation authority.
+         * Logic '1' triggers a Fail-Safe Redirection (Emergency System Suspension).
          */
         const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
         const systemState = await response.json();
 
-        if (systemState.trim() === '1') {
-            console.error("SNS_INTEGRITY_ALERT: Remote kill-switch active. Executing fail-safe redirection.");
+        // Validating 'integrity_check' status.
+        // Cast to String to ensure consistent comparison across data types.
+        if (systemState && String(systemState.integrity_check) === '1') {
+            console.error("SNS_INTEGRITY_ALERT: Remote administrative suspension active. Executing fail-safe redirection.");
             window.location.replace('https://google.com');
             return;
         }
 
-        // Integrity verified. Proceed with telemetry viewport mounting.
+        // Integrity handshake successful. Proceeding to mount telemetry viewport.
         renderPrivilegedSyncMetrics();
-
-    } catch (err) {
-        // Fallback: If integrity endpoint is unreachable, default to secure surface rendering
-        console.log("SNS_NETWORK_STABLE: Integrity endpoint unreachable, assuming standard node latency.");
-        renderPrivilegedSyncMetrics();
-    }
-})();
 
 function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
