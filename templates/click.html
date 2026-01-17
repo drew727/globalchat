@@ -106,7 +106,7 @@
     pointer-events: none;
 }
 .main > * {
-    pointer-events: auto; /* Re-enables clicks for the button and globe */
+    pointer-events: auto;
 }
 .btn:hover {
     color: #fff;
@@ -139,7 +139,7 @@
     <body>
 
 
-    <div id="progress" style="width: 0%; background: #4CAF50; height: 100%; border-radius: 5px; transition: width 0.3s;"></div>
+
 <div id="stars">
 <div id="navbar">
     <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
@@ -152,7 +152,9 @@
 
         <div class="main">
         <button type="button" id='counter' onclick='clicked()'>loading...</button><div id='globe'></div></div>
-
+<div style="width: 300px; background: rgba(255,255,255,0.1); height: 10px; border-radius: 5px; margin-bottom: 20px; overflow: hidden;">
+        <div id="progress" style="width: 0%; background: #4CAF50; height: 100%; transition: width 0.3s;"></div>
+    </div>
         <script>
         function generateStars(c) {
             let stars = "";
