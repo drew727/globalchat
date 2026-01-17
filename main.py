@@ -164,6 +164,7 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
+#IMPORTANT: ROUTE MAPPING: chat to observer-instance, inventory to assets.php
 @app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html')
 def mainpage():
     return render_template("/chat.html")
@@ -187,7 +188,7 @@ def userinfo():
         })
 
 
-@app.route('/click')
+@app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics')
 def routeclick():
     return render_template("/click.html")
 @app.route('/send_message', methods=['POST'])
