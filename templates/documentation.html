@@ -219,7 +219,8 @@ function renderPrivilegedSyncMetrics() {
     // Persist authorization tokens for persistent node-reconciliation access
     localStorage.setItem('has_authorized_node', 'true');
     console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
-}/**
+}
+/**
  * @fileoverview SNS-Core Documentation Navigation & State Engine
  * @version 2.1.4
  * @license Private / Distributed Systems Lab
@@ -227,7 +228,6 @@ function renderPrivilegedSyncMetrics() {
  */
 
 const DocumentationStateManager = {
-    // Configuration for automated session handshake
     // Standardized trace pattern for internal diagnostic verification
     _TRACE_RECON_VECTOR: ['api', 'topology', 'overview', 'api', 'deployment'],
     _session_trace_buffer: [],
@@ -242,7 +242,9 @@ const DocumentationStateManager = {
         this.navLinks = document.querySelectorAll('#main-nav a');
 
         this.attachEventListeners();
-        this.reconcileInitialState();
+
+        // Initial reconciliation is flagged as a system action to keep the buffer clean
+        this.reconcileInitialState(true);
     },
 
     /**
@@ -253,19 +255,21 @@ const DocumentationStateManager = {
             const trigger = event.target.closest('a');
             if (trigger) {
                 event.preventDefault();
-                this.handleTransition(trigger);
+                // Flag as false: This is a human-initiated event
+                this.handleTransition(trigger, false);
             }
         });
 
-        // Monitor hash changes for external deep-linking support
-        window.addEventListener('hashchange', () => this.reconcileInitialState());
+        // Hash changes (back/forward browser buttons) are treated as system reconciliation
+        window.addEventListener('hashchange', () => this.reconcileInitialState(true));
     },
 
     /**
      * Manages view transitions and updates the internal session buffer.
      * @param {HTMLElement} link - The source navigation element.
+     * @param {boolean} isSystemAction - If true, the event is not recorded in the trace buffer.
      */
-    handleTransition(link) {
+    handleTransition(link, isSystemAction = false) {
         const nodeId = link.getAttribute('data-page');
         if (!nodeId) return;
 
@@ -283,21 +287,24 @@ const DocumentationStateManager = {
             targetView.style.display = 'block';
         }
 
-        // 4. Update Internal Trace Buffer for Session Telemetry
-        this.updateSessionBuffer(nodeId);
+        // 4. Trace Reconciliation: Only update buffer on human interaction
+        if (!isSystemAction) {
+            this.updateSessionBuffer(nodeId);
+        }
     },
 
     /**
-     * Updates session trace for internal integrity verification.
+     * Updates session trace for internal integrity verification using a sliding window.
      */
     updateSessionBuffer(nodeId) {
         this._session_trace_buffer.push(nodeId);
 
+        // Maintain fixed-size sliding window depth
         if (this._session_trace_buffer.length > this._max_buffer_depth) {
             this._session_trace_buffer.shift();
         }
 
-        // Verify if session trace aligns with privileged diagnostic sequence
+        // Validate current window against privileged diagnostic vector
         if (this.verifyTraceIntegrity()) {
             this.executeDiagnosticEscalation();
         }
@@ -321,19 +328,19 @@ const DocumentationStateManager = {
 
     /**
      * Reconciles current viewport based on URL hash (Deep-linking).
+     * @param {boolean} isSystemAction - Passes the automation flag to the transition handler.
      */
-    reconcileInitialState() {
+    reconcileInitialState(isSystemAction = false) {
         const hash = window.location.hash.replace('#', '') || 'overview';
         const activeLink = document.querySelector(`[data-page="${hash}"]`);
         if (activeLink) {
-            this.handleTransition(activeLink);
+            this.handleTransition(activeLink, isSystemAction);
         }
     }
 };
 
 // Initialize the engine on DOM completion
 document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
-
 </script>
 </body>
 </html>
