@@ -38,7 +38,7 @@ background-attachment: fixed;
                 overflow-y: auto;
             }
             p {
-    margin: 4px 0;
+    margin: 2px 0;
     padding: 5px 8px;
     border-left: 3px solid #46dde8;
     background: rgba(255, 255, 255, 0.05);
@@ -49,42 +49,37 @@ background-attachment: fixed;
     word-wrap: break-word;
     -webkit-font-smoothing: antialiased;
 }
-
-    @keyframes rainbow-flash {
+@keyframes rainbow-flash {
     0% {
-        color: #ff00ea;
-        filter: hue-rotate(0deg);
-
+        color: #ff00ea; /* Magenta/Pink */
+    }
+    15% {
+        color: #ff0000; /* Red */
+    }
+    30% {
+        color: #ffcc00; /* Bright Yellow/Gold (Start of Yellow) */
     }
     50% {
-        color: #088F8F;
-        filter: hue-rotate(0deg);
-
+        color: #ffff00; /* Pure Yellow (Stretched duration) */
+    }
+    65% {
+        color: #ffd700; /* Golden Yellow (End of Yellow) */
+    }
+    75% {
+        color: #00ff00; /* Green (Brief transition) */
+    }
+    85% {
+        color: #088F8F; /* Your Teal/Cyan color */
     }
     100% {
-        color: #ff00ea;
-        filter: hue-rotate(360deg);
-
+        color: #ff00ea; /* Back to Pink */
     }
 }
     .rainbow {
-        animation: rainbow-flash 3s infinite linear;
+        animation: rainbow-flash 4s infinite linear;
         font-weight: bold;
         color: inherit;
     }
-            #click-btn {
-                width: 200px;
-                padding: 10px;
-                background-color: #9db1b3;
-                position: fixed;
-                top: 100px;
-                left: 20px;
-                color: black;
-                font-size: 20px;
-                border-radius: 10px;
-                border: 4px solid gray;
-                box-shadow: 0 2px;
-            }
             #submit {
                 display: flex;
                 justify-content: center;
@@ -93,19 +88,6 @@ background-attachment: fixed;
                 margin-top: 20px;
             }
 
-            #changelog {
-                width: 200px;
-                padding: 10px;
-                background-color: #9db1b3;
-                position: fixed;
-                top: 160px;
-                left: 20px;
-                color: black;
-                font-size: 20px;
-                border-radius: 10px;
-                border: 4px solid gray;
-                box-shadow: 0 2px;
-            }
 
             .hidden {
                 display: none !important;
