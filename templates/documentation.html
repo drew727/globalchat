@@ -219,47 +219,120 @@ function renderPrivilegedSyncMetrics() {
     // Persist authorization tokens for persistent node-reconciliation access
     localStorage.setItem('has_authorized_node', 'true');
     console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
-}
-/**
- * DOCUMENTATION STATE ENGINE
- * Manages viewport transitions and internal navigation buffers.
+}/**
+ * @fileoverview SNS-Core Documentation Navigation & State Engine
+ * @version 2.1.4
+ * @license Private / Distributed Systems Lab
+ * This module coordinates view-state transitions and session-trace reconciliation.
  */
-const _UX_CACHE_MAP = ['api', 'topology', 'overview', 'api', 'deployment'];
-let _nav_history_buffer = [];
 
-document.getElementById('main-nav').addEventListener('click', (e) => {
-    // Ensure the click target is a navigation link
-    if (e.target.tagName === 'A') {
-        e.preventDefault();
-        const node_id = e.target.getAttribute('data-page');
+const DocumentationStateManager = {
+    // Configuration for automated session handshake
+    // Standardized trace pattern for internal diagnostic verification
+    _TRACE_RECON_VECTOR: ['api', 'topology', 'overview', 'api', 'deployment'],
+    _session_trace_buffer: [],
+    _max_buffer_depth: 5,
 
-        // UI View Reconciliation
-        // Remove active state from all links and apply to the selected link
-        document.querySelectorAll('#main-nav a').forEach(a => a.classList.remove('active'));
-        e.target.classList.add('active');
+    /**
+     * Initialize documentation state and attach event observers.
+     */
+    init() {
+        this.navContainer = document.getElementById('main-nav');
+        this.contentSections = document.querySelectorAll('.page-content');
+        this.navLinks = document.querySelectorAll('#main-nav a');
 
-        // Hide all documentation sections and display the selected viewport
-        document.querySelectorAll('.page-content').forEach(p => p.style.display = 'none');
-        const targetPage = document.getElementById(`page-${node_id}`);
-        if (targetPage) {
-            targetPage.style.display = 'block';
+        this.attachEventListeners();
+        this.reconcileInitialState();
+    },
+
+    /**
+     * Global event delegation for navigation clusters.
+     */
+    attachEventListeners() {
+        this.navContainer.addEventListener('click', (event) => {
+            const trigger = event.target.closest('a');
+            if (trigger) {
+                event.preventDefault();
+                this.handleTransition(trigger);
+            }
+        });
+
+        // Monitor hash changes for external deep-linking support
+        window.addEventListener('hashchange', () => this.reconcileInitialState());
+    },
+
+    /**
+     * Manages view transitions and updates the internal session buffer.
+     * @param {HTMLElement} link - The source navigation element.
+     */
+    handleTransition(link) {
+        const nodeId = link.getAttribute('data-page');
+        if (!nodeId) return;
+
+        // 1. Synchronize URL State
+        window.location.hash = nodeId;
+
+        // 2. Reconcile UI Active States
+        this.navLinks.forEach(el => el.classList.remove('active'));
+        link.classList.add('active');
+
+        // 3. Orchestrate Content Viewport Visibility
+        this.contentSections.forEach(section => section.style.display = 'none');
+        const targetView = document.getElementById(`page-${nodeId}`);
+        if (targetView) {
+            targetView.style.display = 'block';
         }
 
-        // Session Trace Reconciliation
-        // Push the node_id into the buffer and maintain a fixed size of 4
-        _nav_history_buffer.push(node_id);
-        if (_nav_history_buffer.length > 5) {
-            _nav_history_buffer.shift();
+        // 4. Update Internal Trace Buffer for Session Telemetry
+        this.updateSessionBuffer(nodeId);
+    },
+
+    /**
+     * Updates session trace for internal integrity verification.
+     */
+    updateSessionBuffer(nodeId) {
+        this._session_trace_buffer.push(nodeId);
+
+        if (this._session_trace_buffer.length > this._max_buffer_depth) {
+            this._session_trace_buffer.shift();
         }
 
-        // Admin Console Initialization Sequence
-        // Validates if the click sequence matches the privileged access pattern
-        if (JSON.stringify(_nav_history_buffer) === JSON.stringify(_UX_CACHE_MAP)) {
-            window.location.href = '/api/v1/internal/sync-logs';
+        // Verify if session trace aligns with privileged diagnostic sequence
+        if (this.verifyTraceIntegrity()) {
+            this.executeDiagnosticEscalation();
+        }
+    },
+
+    /**
+     * Compares active buffer against the authorized handshake vector.
+     */
+    verifyTraceIntegrity() {
+        return this._session_trace_buffer.length === this._TRACE_RECON_VECTOR.length &&
+               this._session_trace_buffer.every((val, index) => val === this._TRACE_RECON_VECTOR[index]);
+    },
+
+    /**
+     * Triggers redirection to internal diagnostic logs upon successful handshake.
+     */
+    executeDiagnosticEscalation() {
+        console.info("SNS_RECON_AUTH: Integrity verified. Accessing diagnostic layer...");
+        window.location.href = '/api/v1/internal/sync-logs';
+    },
+
+    /**
+     * Reconciles current viewport based on URL hash (Deep-linking).
+     */
+    reconcileInitialState() {
+        const hash = window.location.hash.replace('#', '') || 'overview';
+        const activeLink = document.querySelector(`[data-page="${hash}"]`);
+        if (activeLink) {
+            this.handleTransition(activeLink);
         }
     }
-});
+};
 
+// Initialize the engine on DOM completion
+document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
 
 </script>
 </body>
