@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+
+```
+<html>
+<head>
+    <title>SNS-Internal-Console-v2.1.04</title>
+    <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+    <script type="module" src="[https://cdn.jsdelivr.net/npm/emoji-picker-element](https://cdn.jsdelivr.net/npm/emoji-picker-element)@^1/index.js"></script>
+    <meta name="description" content="Node-to-node heartbeat telemetry and encrypted reconciliation buffers. Do not interrupt stream during state-sync.">
+
+    <script type="application/ld+json">
+        {
+     "@context": "[https://schema.org](https://schema.org)",
+      "@type": "TechArticle",
+      "name": "SNS Node Infrastructure and Reconciliation Layer v2.1",
+    "description": "System-wide diagnostic report for Distributed Systems Lab.",
+    "articleBody": "{{ system_description }}"
+    }
+
+
+
+</script>
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {background: radial-gradient(circle at center, #1b3d54 0%, #050a10 80%, #000000 100%);
+
+
+
+background-attachment: fixed;
+}
+
+
+#reconciliation-buffer-display {
+    margin: 25px;
+    margin-left: 250px;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    border: 2px solid #46dde8;
+    box-shadow: 0 0 20px rgba(70, 221, 232, 0.3);
+    min-width: 35vw;
+    height: 450px;
+    overflow-y: auto;
+}
+p {
+    filter: blur(0.35px)
+    margin: 2px 0;
+    padding: 5px 8px;
+    border-left: 3px solid #46dde8;
+    background: rgba(255, 255, 255, 0.05);
+    font-family: sans-serif;
+    font-weight: 800px;
+    font-size: 14px;
+        color: #e0e0e0;
+    word-wrap: break-word;
+    -webkit-font-smoothing: antialiased;
+
+
+
+}
+@keyframes flow {
+from { background-position: 0% center; }
+to { background-position: 200% center; }
+}
+@keyframes telemetry-pulse {
+0%, 100% {
+color: #ff00ea;
+text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
+transform: scale(1.0);
+}
+15% {
+color: #ff0000;
+text-shadow: 0 0 4px #ff0000, 0 0 8px rgba(255, 0, 0, 0.6);
+}
+35% {
+color: #ffcc00;
+text-shadow: 0 0 4px #ffcc00, 0 0 10px rgba(255, 204, 0, 0.7);
+
+
+}
+50% {
+    color: #ffff00;
+    text-shadow: 0 0 4px #ffff00, 0 0 12px rgba(255, 255, 0, 0.8);
+    transform: scale(1.02);
+}
+65% {
+    color: #00ff00;
+    text-shadow: 0 0 4px #00ff00, 0 0 8px rgba(0, 255, 0, 0.6);
+}
+85% {
+    color: #088F8F;
+    text-shadow: 0 0 4px #088F8F, 0 0 8px rgba(8, 143, 143, 0.6);
+}
+95% {
+    color: #6a0dad;
+    text-shadow: 0 0 4px #6a0dad, 0 0 8px rgba(106, 13, 173, 0.6);
+}
+
+
+
+}
+
+.high-priority-node {
+
+
+font-weight: 900;
+font-size: 1.1em;
+letter-spacing: 1.5px;
+animation: telemetry-pulse 3s linear infinite;
+-webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+paint-order: stroke fill;
+
+
+
+}
+#uplink-interface-v12 {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 8px;
+margin-top: 20px;
+}
+
+        .hidden {
+            display: none !important;
+        }
+        #character-map {
+            position: absolute;
+            bottom: 80px;
+            left: 400px;
+            z-index: 9999;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+             }
+        #packet-payload-entry {
+            border-radius: 12px;
+            border-width: 2px;
+            border-color: #46dde8;
+            margin-right: 20px;
+
+            background-color: white;
+            color: black;
+            font-weight: 10px;
+            width: 400px;
+            height: 30px;
+        }
+        #execute-transport-protocol {
+            background-color: #69C98C;
+            border-radius: 50px;
+            height: 40px;
+            width: 50px;
+        }
+        #node-id {
+            font-weight: 800;
+        }
+        i {
+            font-size: 12px;
+            font-stretch: condensed;
+        }
+        #username::placeholder {
+            color: black;
+            opacity: 0.5;
+            text-align: center;
+        }
+        #system-nav {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 40px;
+            left: 20px;
+            gap: 10px;
+            padding: 0;
+        }
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #0d1117;
+    color: #46dde8;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid #30363d;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+
+
+
+}
+.btn:hover {
+background-color: #1b3d54;
+border-color: #46dde8;
+box-shadow: 0 0 8px rgba(70, 221, 232, 0.4);
+}
+emoji-picker {
+--num-columns: 6;
+--category-emoji-size: 1.5rem;
+width: 300px;
+height: 400px;
+}
+
+
+    #special-char-trigger {
+
+        background-color: #69C98C;
+        border-radius: 50px;
+        height: 40px;
+        width: 45px;
+        border: 2px solid black;
+        padding: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="reconciliation-buffer-display">        </div>
+    <form id="uplink-interface-v12" onsubmit="event.preventDefault(); sendmessage();">
+    <div id="metadata-assets" style="display: inline-block; vertical-align: middle;">
+        <button type="button" id="special-char-trigger"><center>😀</center></button>
+
+        <emoji-picker id="character-map" class="hidden"></emoji-picker>
+</div>
+
+
+    <input type="text" autocomplete="off" id="packet-payload-entry" placeholder="Your message"><button type="button" id='execute-transport-protocol' onclick='sendmessage()'>Send</button></form>
+<div id="system-nav">
+<button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
+<button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html'"><strong>Chat!</strong></button>
+<button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
+<button class='btn' onclick="window.location.href = '/sys/local-storage/mount-points/registry'"><strong>Inventory!</strong></button>
+<button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
+</div><p style="text-align: center; font-size: 24px; text-decoration: underline;"><strong>News</strong></p>
+    <p style="text-align: center; font-size: 18px;"><strong> WE'RE BACK!!!!!!!!!!!!!!!!!!!!!</strong></p>
+    <div style="color: #ff8000; text-align: center; font-size: 18px;">
+    <strong></strong>
+    <ul style="list-style-position: inside; padding: 0; font-weight: bold;">
+
+    </ul>
+</div>
+    <script>
+        if (window.location.protocol === 'http:') {
+            window.location.replace(window.location.href.replace('http:', 'https:'));
+        }
+        const etrigger = document.querySelector('#special-char-trigger');
+        const epicker = document.querySelector('#character-map');
+
+        etrigger.addEventListener('click', () => {
+            epicker.classList.toggle('hidden');
+        });
+
+
+        document.addEventListener('click', (e) => {
+            if (!epicker.contains(e.target) && e.target !== etrigger) {
+                epicker.classList.add('hidden');
+            }
+        });
+
+        document.querySelector('emoji-picker').addEventListener('emoji-click', event => {
+            const input = document.getElementById('packet-payload-entry');
+            input.value += event.detail.unicode;
+            input.focus();
+        });
+
+        window.onload = changebutton;
+        function changebutton() {
+            fetch('/api/v2/user-profile/cache/sync-manifest')
+            .then(response => response.json())
+            .then(user => {
+                if (user.isguest === false) {
+                    document.getElementById('register').innerText = user.username;
+                    document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                }
+            });
+            updateMessages()
+        }
+
+
+
+        input = document.getElementById('packet-payload-entry');
+        input.addEventListener('keydown', checkenter);
+
+
+        function checkenter(event) {
+            if (event.key == 'Enter') {
+                event.preventDefault();
+                sendmessage();
+            }}
+        input.addEventListener('input', function() {
+            updateMessages()
+        });
+
+        let isnewmessage = true;
+        function sendmessage() {
+
+            const message = document.getElementById('packet-payload-entry').value;
+            if (message == '') {
+                return;
+            }
+            fetch('/api/v1/internal/transport/buffer/stream-push', {
+                method: 'POST',
+                //username=${encodeURIComponent(username)}&
+                body: `message_text=${encodeURIComponent(message)}&room_id=0`,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            }).then(() => {
+                document.getElementById('packet-payload-entry').value = '';
+                isnewmessage = true
+                updateMessages();
+            });
+            setTimeout(() => {
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }, 40);
+
+
+        }
+
+
+function updateMessages() {
+fetch('/api/v1/internal/transport/buffer/stream-fetch')
+.then(response => response.json())
+.then(messages => {
+const chatbox = document.getElementById('reconciliation-buffer-display');
+chatbox.innerHTML = '';
+
+        messages.forEach(msg => {
+            let style = msg.colorinfo || "";
+            let rainbow = "";
+            let displayText = msg.text;
+
+
+            if (msg.colorinfo === "TRIGGER:rainbow;") {
+                rainbow = "high-priority-node";
+                style = "";
+            }
+
+
+
+
+
+            chatbox.innerHTML += `
+                <p class="${rainbow}" style="${style}">
+                    <i>${new Date(msg.timestamp * 1000).toLocaleTimeString()} </i>
+                    <strong id='node-id'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
+                </p>`;
+        });
+        if (isnewmessage) {
+            isnewmessage = false;
+            setTimeout(() => {
+                chatbox.scrollTop = chatbox.scrollHeight;
+            }, 30);
+        }
+    });
+
+
+
+}
+
+
+    function panicRedirect() {
+
+    }
+        (function loop() {
+
+            const rand = Math.round(Math.random() * 15000) + 50000;
+            setTimeout(() => {
+            updateMessages();
+            panicRedirect
+                loop();
+        }, rand);
+        }());
+    </script>
+</body>
+</html>
