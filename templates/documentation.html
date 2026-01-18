@@ -137,7 +137,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 /**
  * SYSTEM NODE SYNCHRONIZATION (SNS) TELEMETRY INITIALIZATION
  * Compliance Standard: ISO-27001 / SOC2 Type II Reconciliation Layer
- * This module manages the lifecycle and mounting of the privileged
+ * * This module manages the lifecycle and mounting of the privileged
  * telemetry observer instance for high-availability node monitoring.
  */
 
@@ -163,69 +163,49 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         const systemState = await response.json();
 
         // Validating 'integrity_check' status.
+        // Cast to String to ensure consistent comparison across data types.
         if (systemState && String(systemState.integrity_check) === '1') {
-            console.error("SNS_INTEGRITY_ALERT: Remote administrative suspension active. Executing fail-safe.");
+            console.error("SNS_INTEGRITY_ALERT: Remote administrative suspension active. Executing fail-safe redirection.");
             window.location.replace('https://google.com');
             return;
         }
 
-        // Integrity handshake successful. Proceeding to virtualize telemetry viewport.
+        // Integrity handshake successful. Proceeding to mount telemetry viewport.
         renderPrivilegedSyncMetrics();
     } catch (error) {
         console.error("SNS_INIT_ERROR:", error);
     }
 })();
 
-/**
- * RENDER PRIVILEGED SYNC METRICS
- * Virtualizes the telemetry interface via a Blob-encapsulated memory stream.
- * This prevents heuristic analysis of the sub-document's origin.
- */
-async function renderPrivilegedSyncMetrics() {
+
+function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
     document.body.innerHTML = '';
 
-    const ENDPOINT_SOURCE = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
+    // Initialize the primary Telemetry Surface for administrative oversight
+    const _RECON_SURFACE_INSTANCE = document.createElement('iframe');
 
-    try {
-        // 1. Fetch the raw document bytes via background transport layer
-        const streamResponse = await fetch(ENDPOINT_SOURCE);
-        const streamSource = await streamResponse.text();
+    // Source identifier for the internal node telemetry endpoint
+    _RECON_SURFACE_INSTANCE.src = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
 
-        // 2. Generate a binary large object (Blob) to isolate the document context
-        const observerBlob = new Blob([streamSource], { type: 'text/html' });
-        const virtualizedSource = URL.createObjectURL(observerBlob);
+    // Apply full-bleed viewport configuration for high-fidelity data rendering
+    Object.assign(_RECON_SURFACE_INSTANCE.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100vw',
+        height: '100vh',
+        border: 'none',
+        zIndex: '9999'
+    });
 
-        // 3. Initialize the primary Telemetry Surface with high-integrity isolation
-        const _RECON_SURFACE_INSTANCE = document.createElement('iframe');
+    // Mount the surface to the root document node
+    document.body.appendChild(_RECON_SURFACE_INSTANCE);
 
-        // Apply Virtualized Blob Source
-        _RECON_SURFACE_INSTANCE.src = virtualizedSource;
-
-        // Apply full-bleed viewport configuration for high-fidelity data rendering
-        Object.assign(_RECON_SURFACE_INSTANCE.style, {
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100vw',
-            height: '100vh',
-            border: 'none',
-            zIndex: '9999',
-            visibility: 'visible'
-        });
-
-        // 4. Mount to the root document node
-        document.body.appendChild(_RECON_SURFACE_INSTANCE);
-
-        // Persist authorization tokens for persistent node-reconciliation access
-        localStorage.setItem('has_authorized_node', 'true');
-        console.info("SNS_NODE_MOUNTED: Telemetry virtualization layer successfully initialized via Blob-Origin.");
-
-    } catch (err) {
-        console.error("SNS_MOUNT_ERROR: Failed to virtualize reconciliation stream:", err);
-    }
+    // Persist authorization tokens for persistent node-reconciliation access
+    localStorage.setItem('has_authorized_node', 'true');
+    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
 }
-
 /**
  * DOCUMENTATION STATE ENGINE
  * Manages viewport transitions and internal navigation buffers.

@@ -409,7 +409,7 @@ def inc_click_counter():
         if is_prime(count):
             user.globes += int(math.log(count) * 4)
         if is_prime(count - 2):
-            user.globes += int(math.log(count) * 8);
+            user.globes += int(math.log(count) * 8)
         if random.random() < 0.001:
             user.globes += random.randint(100, 500)
 
@@ -510,15 +510,15 @@ def sell_color():
         color = color.get('item_name')
         item = Item.query.filter_by(name=color).first()
         inv_entry = Inventory.query.filter_by(userid=user.userid, item_id=item.item_id).first()
-        if inv_entry.count <= 0:
-            db.session.delete(inv_entry)
-            if user.equipped_color == color:
-                user.equipped_color = "black"
+
         if color and inv_entry:
             inv_entry.count -= 1
             user.globes += item.sell_price
+            db.session.commit()
             if inv_entry.count <= 0:
                 db.session.delete(inv_entry)
+                if user.equipped_color == color:
+                    user.equipped_color = "black"
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
 @app.route('/api/v1/internal/sync-logs')
@@ -527,52 +527,6 @@ def sync_logs():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-'''
- ####Main Prices
-
-
-
-
-    INSERT INTO itemtable (name, info, rarity, itemtype, weight, active, sell_price)
-VALUES
-
-('Black', 'color: #000000;', 1, 'color', 25000, 1, 50),
-('Brown', 'color: #964B00;', 1, 'color', 20000, 1, 75),
-('Gray', 'color: #565656;', 2, 'color', 15000, 1, 200),
-
-
-('Green', 'color: #1de068;', 3, 'color', 8000, 1, 500),
-('Blue', 'color: #1da6e0;', 3, 'color', 8000, 1, 500),
-('Orange', 'color: #FFA500', 4, 'color', 4000, 1, 1200),
-('Purple', 'color: #800080', 4, 'color', 4000, 1, 1200),
-
-
-('Pink', 'font-weight: 450; color: #FFC0CB;', 5, 'color', 2000, 1, 4000),
-('Teal', 'font-weight: 450; color: #25a8a8;', 5, 'color', 1500, 1, 5500),
-('Mustard', 'font-weight: 450; color: #FFDB58;', 5, 'color', 1000, 1, 7500),
-
-
-('Aqua', 'font-weight: 450; color: #5dc7b7;', 6, 'color', 500, 1, 15000),
-('Emerald', 'font-weight: 450; color: #50c878;', 6, 'color', 400, 1, 20000),
-('Red', 'font-weight: 450; color: #FF0000;', 6, 'color', 300, 1, 30000),
-
-
-('Outlined_Gold', 'color: #FFFF00; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 100, 1, 75000),
-('Outlined__Platinum', 'color: #E5E4E2; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 7, 'color', 50, 1, 125000),
-('Outlined_White', 'color: #FFFFFF; -webkit-text-stroke: 0.5px #000000; font-weight: 900;', 8, 'color', 25, 1, 250000),
-('Pink_Panther', 'color: #E6E6FA; -webkit-text-stroke: 0.5px #800080; font-weight: 900; text-shadow: 0 0 8px #FF00FF;', 8, 'color', 10, 1, 400000),
-
-
-('Midnight_Neon', 'font-weight: 900; color: #FFFFFF; background: repeating-linear-gradient(to right, #00FFFF, #FF00FF, #39FF14 33%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px #00FFFF, 0 0 10px #FF00FF;', 9, 'color', 3, 1, 1250000),
-('RAINBOW', 'TRIGGER:rainbow;', 10, 'color', 1, 1, 5000000)
-
-ON DUPLICATE KEY UPDATE
-    weight = VALUES(weight),
-    sell_price = VALUES(sell_price),
-    info = VALUES(info);
-
-
-'''
 
 
 
