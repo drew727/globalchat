@@ -111,8 +111,19 @@
                     </tbody>
                 </table>
             </div>
-        </section>
 
+            <h3>Core Operational Principles</h3>
+            <p>The SNS framework is built upon a <strong>stateless reconciliation architecture</strong>, prioritizing eventual consistency across geographically dispersed availability zones. By leveraging a decentralized heartbeat mechanism, the system identifies and isolates degraded nodes before state drift can impact the primary mesh. This proactive isolation is critical for maintaining the integrity of the cryptographic handshake protocols used during peer-to-peer state transfers.</p>
+
+
+
+            <h3>Compliance and Security Standards</h3>
+            <p>To meet the rigorous demands of modern infrastructure, the SNS Reconciliation Layer adheres to industry-standard security frameworks. All node-to-node communication is strictly governed by <strong>TLS 1.3 encryption</strong>, utilizing ephemeral key exchanges to ensure forward secrecy.</p>
+
+            <ul>
+                <li><strong>ISO-27001 Alignment:</strong> Data reconciliation logs are strictly partitioned and audited for administrative compliance.</li>
+                <li><strong>SOC2 Type II Integration:</strong> The managed service discovery layer maintains comprehensive telemetry for audit trails and system integrity monitoring.</li>
+                <li><strong>Encapsulated Data Silos:</strong> State information is cryptographically signed at the source node to prevent tampering during transit through relay egress points.</li>
         <!-- Viewport: Topology -->
         <section id="page-topology" class="page-content">
             <div class="breadcrumb">Docs / Network / Peer-Config</div>
