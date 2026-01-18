@@ -210,7 +210,11 @@ def send_msg():
     if message_text.startswith('/'):
         if uid in mods:
             if message_text.startswith("/panic"):
-                toggle_panic()
+
+                status_msg = toggle_panic()
+                db.session.add(Message(userid=1, text=f"SYSTEM: {status_msg}", room_id=room_id))
+                db.session.commit()
+                return jsonify({"status": "success", "message": "Panic toggled"}), 201
             if message_text.startswith("/mute"):
                 splittext = message_text.split(None, 2)
                 muted_username = splittext[1].strip().replace('"', ' ')
