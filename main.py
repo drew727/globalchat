@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, make_response
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm.attributes import flag_modified
@@ -104,6 +104,33 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
+
+
+
+
+@app.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+
+    pages = []
+
+    hash_routes = ["overview", "topology", "api", "deployment"]
+
+
+    base_url = "https://systemnodesync.dpdns.org"
+
+    for route in hash_routes:
+        pages.append({
+            "loc": f"{base_url}/#{route}",
+            "lastmod": datetime.now().strftime("%Y-%m-%d"),
+            "priority": "0.80"
+        })
+
+
+    sitemap_xml = render_template('sitemap.xml', pages=pages)
+    response = make_response(sitemap_xml)
+    response.headers["Content-Type"] = "application/xml"
+
+    return response
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
     config = SystemConfig.query.filter_by(key='panic_switch').first()
