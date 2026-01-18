@@ -99,6 +99,7 @@ def route():
     else:
         newuser = Users(username=f"temp {datetime.utcnow().timestamp()}", password=None, isguest=True)
         db.session.add(newuser)
+        db.session.commit()
         session['userid'] = newuser.userid
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
