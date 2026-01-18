@@ -103,15 +103,38 @@
             <h2>Global Endpoint Status</h2>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>ENDPOINT ID</th><th>REGION</th><th>RECONCILED</th><th>STATUS</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>ENDPOINT ID</th>
+                            <th>REGION</th>
+                            <th>NODE HASH (SHA-256)</th> <th>LATENCY</th> <th>STATUS</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>nyc-sns-01</td><td>US-EAST-1</td><td>2s ago</td><td><span class="status-dot"></span>Active</td></tr>
-                        <tr><td>lon-sns-04</td><td>EU-WEST-2</td><td>5s ago</td><td><span class="status-dot"></span>Active</td></tr>
-                        <tr><td>tok-sns-09</td><td>AP-NORTHEAST-1</td><td>1s ago</td><td><span class="status-dot"></span>Active</td></tr>
+                        <tr>
+                            <td>nyc-sns-edge-01</td>
+                            <td>US-EAST-1</td>
+                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x8f2a...d3e1</td>
+                            <td>12.04ms</td>
+                            <td><span class="status-dot online"></span>Active</td>
+                        </tr>
+                        <tr>
+                            <td>lon-sns-edge-04</td>
+                            <td>EU-WEST-2</td>
+                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x11b4...c9a2</td>
+                            <td>44.12ms</td>
+                            <td><span class="status-dot online"></span>Active</td>
+                        </tr>
+                        <tr>
+                            <td>tok-sns-edge-09</td>
+                            <td>AP-NORTHEAST-1</td>
+                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x7c4e...f2b0</td>
+                            <td>108.45ms</td>
+                            <td><span class="status-dot online"></span>Active</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
-
             <h3>Core Operational Principles</h3>
             <p>The SNS framework is built upon a <strong>stateless reconciliation architecture</strong>, prioritizing eventual consistency across geographically dispersed availability zones. By leveraging a decentralized heartbeat mechanism, the system identifies and isolates degraded nodes before state drift can impact the primary mesh. This proactive isolation is critical for maintaining the integrity of the cryptographic handshake protocols used during peer-to-peer state transfers.</p>
 
