@@ -49,13 +49,16 @@ background-attachment: fixed;
 }
 
     @keyframes rainbow-flash {
-    0%   { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
-    33%  { color: #7000ff; text-shadow: 0 0 8px #7000ff; }
-    66%  { color: #ff00de; text-shadow: 0 0 8px #ff00de; }
-    100% { color: #00f2ff; text-shadow: 0 0 8px #00f2ff; }
+    0%   { color: #ff0000; } /* Red */
+    17%  { color: #ffff00; } /* Yellow */
+    33%  { color: #00ff00; } /* Green */
+    50%  { color: #00ffff; } /* Cyan */
+    67%  { color: #0000ff; } /* Blue */
+    83%  { color: #ff00ff; } /* Magenta */
+    100% { color: #ff0000; } /* Red */
 }
     .rainbow {
-        animation: rainbow-flash 3s infinite linear;
+        animation: rainbow-flash 2.5s infinite linear;
         font-weight: bold;
         color: inherit;
     }
