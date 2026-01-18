@@ -48,7 +48,12 @@ background-attachment: fixed;
     color: #e0e0e0;
     word-wrap: break-word;
     -webkit-font-smoothing: antialiased;
-}@keyframes rainbow-flash {
+}
+@keyframes flow {
+    from { background-position: 0% center; }
+    to { background-position: 200% center; }
+}
+@keyframes rainbow-flash {
     0%, 100% {
         color: #ff00ea;
         text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
@@ -87,8 +92,6 @@ background-attachment: fixed;
     font-size: 1.1em;
     letter-spacing: 1.5px;
     animation: rainbow-flash 3s linear infinite;
-
-
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
     paint-order: stroke fill;
 }
