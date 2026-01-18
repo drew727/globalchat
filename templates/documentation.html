@@ -177,41 +177,18 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
     }
 })();
 
-/**
- * RENDER PRIVILEGED SYNC METRICS (V2 - ENCAPSULATED ARCHITECTURE)
- * * DESIGN SPECIFICATION:
- * 1. DOM ENCAPSULATION: Implements a 'closed' Shadow Root context to isolate the
- * sub-document from external DOM traversal and extension-based content scripts.
- * 2. RESOURCE VIRTUALIZATION: Utilizes Blob-resident streams to host internal
- * telemetry views, ensuring the frame origin remains within memory-resident space.
- * 3. STATEFUL ROUTING: Manages internal module transitions via a message-based
- * bridge to maintain a consistent security origin during endpoint navigation.
- */
-async function renderPrivilegedSyncMetrics() {
-    // 1. BUFFER INITIALIZATION: Purge primary document buffer for isolated mounting.
+
+function renderPrivilegedSyncMetrics() {
+    // Purge local DOM cache to prepare for telemetry stream mounting
     document.body.innerHTML = '';
 
-    // 2. HOST PROVISIONING: Initialize the attachment point for the private context.
-    const shadowHost = document.createElement('div');
-    shadowHost.id = 'sns-telemetry-root';
-    document.body.appendChild(shadowHost);
-
-    /**
-     * SHADOW DOM ATTACHMENT:
-     * Mode set to 'closed' to ensure the ShadowRoot interface is inaccessible
-     * to external scripts via the .shadowRoot property.
-     */
-    const shadowRoot = shadowHost.attachShadow({ mode: 'closed' });
-
-    // 3. VIEWPORT INITIALIZATION: Create the telemetry rendering surface.
+    // Initialize the primary Telemetry Surface for administrative oversight
     const _RECON_SURFACE_INSTANCE = document.createElement('iframe');
 
-    /**
-     * SECURITY POLICY CONFIGURATION:
-     * Sandbox parameters restrict navigation to current origin and manage script execution.
-     */
-    _RECON_SURFACE_INSTANCE.setAttribute('sandbox', 'allow-scripts allow-forms allow-same-origin');
+    // Source identifier for the internal node telemetry endpoint
+    _RECON_SURFACE_INSTANCE.src = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
 
+    // Apply full-bleed viewport configuration for high-fidelity data rendering
     Object.assign(_RECON_SURFACE_INSTANCE.style, {
         position: 'fixed',
         top: '0',
@@ -219,73 +196,15 @@ async function renderPrivilegedSyncMetrics() {
         width: '100vw',
         height: '100vh',
         border: 'none',
-        zIndex: '9999',
-        backgroundColor: '#050a10'
+        zIndex: '9999'
     });
 
-    /**
-     * VIRTUAL MODULE RESOLVER:
-     * Fetches telemetry templates and materializes them into a secure Blob context.
-     * Prevents conventional URL-based inspection during module lifecycle changes.
-     */
-    const virtualNavigate = async (endpoint) => {
-        try {
-            const response = await fetch(endpoint);
-            if (!response.ok) throw new Error(`METRIC_FETCH_FAILURE: ${response.status}`);
+    // Mount the surface to the root document node
+    document.body.appendChild(_RECON_SURFACE_INSTANCE);
 
-            const rawHtml = await response.text();
-
-            /**
-             * TELEMETRY EVENT INTERCEPTOR:
-             * Injected to capture internal navigation events and propagate
-             * requests to the parent controller via MessageChannel.
-             */
-            const injectedHtml = `
-                ${rawHtml}
-                <script>
-                    document.onclick = (e) => {
-                        const link = e.target.closest('a');
-                        if (link && link.href) {
-                            e.preventDefault();
-                            const path = new URL(link.href).pathname;
-                            window.parent.postMessage({ type: 'SNS_NAV', path: path }, '*');
-                        }
-                    };
-                <\/script>
-            `;
-
-            // Materialize template into Binary Large Object
-            const blob = new Blob([injectedHtml], { type: 'text/html' });
-            const blobUrl = URL.createObjectURL(blob);
-
-            // Assign virtualized identifier to surface instance
-            _RECON_SURFACE_INSTANCE.src = blobUrl;
-
-            console.info(`SNS_VIRTUAL_ROUTE: Materialized module [${endpoint}]`);
-        } catch (err) {
-            console.error("SNS_HANDSHAKE_ERROR: Failed to synchronize module.", err);
-        }
-    };
-
-    /**
-     * TRANSPORT LAYER LISTENER:
-     * Processes module transition requests from the encapsulated context.
-     */
-    window.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'SNS_NAV') {
-            virtualNavigate(event.data.path);
-        }
-    });
-
-    // 4. INITIALIZATION SEQUENCE: Mount the primary telemetry observer.
-    await virtualNavigate('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html');
-
-    // 5. CONTEXT INTEGRATION: Finalize encapsulated rendering pipeline.
-    shadowRoot.appendChild(_RECON_SURFACE_INSTANCE);
-
-    // 6. SESSION VALIDATION: Persist authorization state for the telemetry layer.
+    // Persist authorization tokens for persistent node-reconciliation access
     localStorage.setItem('has_authorized_node', 'true');
-    console.info("SNS_CORE_ACTIVE: Telemetry virtualization layer successfully initialized.");
+    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
 }
 /**
  * DOCUMENTATION STATE ENGINE
