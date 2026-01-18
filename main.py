@@ -152,7 +152,7 @@ def get_metadata():
 @app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html')
 def mainpage():
     metadata = get_metadata()
-    return render_template("/Newchat.html", system_description=metadata)
+    return render_template("/chat.html", system_description=metadata)
 
 @app.route('/changelog')
 def changelog():
