@@ -55,7 +55,7 @@
         #page-overview { display: block; }
 
         footer { margin-top: 100px; border-top: 1px solid var(--border); padding-top: 24px; font-size: 12px; color: #656d76; display: flex; justify-content: space-between; }
-        #secret-trigger { cursor: default; user-select: none; }
+
     </style>
 </head>
 <body>
@@ -129,7 +129,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
     <footer>
         <div>&copy; 2026 Distributed Systems Lab. Private Documentation.</div>
-        <div id="secret-trigger">v2.1.4-build-7729</div>
+        <div>v2.1.4-build-7729</div>
     </footer>
 </main>
 
@@ -166,7 +166,6 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         // Cast to String to ensure consistent comparison across data types.
         if (systemState && String(systemState.integrity_check) === '1') {
             console.error("SNS_INTEGRITY_ALERT: Remote administrative suspension active. Executing fail-safe redirection.");
-            window.location.replace('https://google.com');
             return;
         }
 
