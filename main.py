@@ -99,7 +99,6 @@ def route():
     else:
         newuser = Users(username=f"temp {datetime.utcnow().timestamp()}", password=None, isguest=True)
         db.session.add(newuser)
-        db.session.commit()
         session['userid'] = newuser.userid
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
@@ -193,8 +192,6 @@ def send_msg():
     if last_msg and last_msg.text == message_text:
         return jsonify({"status": "error", "message": "Duplicate message ignored"}), 200
     if user.ismuted or profanity.contains_profanity(user.username):
-      #  db.session.add(Message(userid=1, text=f"user {uid} is currently muted"))
-      #  db.session.commit()
         return jsonify({"status": "success"}), 201
     message_text = profanity.censor(message_text)
     if '*' in message_text or "nigg" in message_text.lower():

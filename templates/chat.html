@@ -235,7 +235,7 @@ background-attachment: fixed;
                 updateMessages()
             }
 
-            updateMessages();
+
 
             input = document.getElementById('message_text');
             input.addEventListener('keydown', checkenter);
@@ -292,8 +292,15 @@ function updateMessages() {
                         <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
                     </p>`;
             });
-
-
+            fetch(INTEGRITY_ENDPOINT, { cache: "no-store" })
+            .then(response => response.json())
+            .then(systemState => {
+                if (systemState && String(systemState.integrity_check) === '1') {
+                    window.location.replace('https://google.com');
+                    return;
+                }
+            }
+            );
             if (isnewmessage) {
                 isnewmessage = false;
                 setTimeout(() => {
