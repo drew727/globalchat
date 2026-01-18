@@ -36,11 +36,17 @@ background-attachment: fixed;
                 min-height: 400px;
                 max-height: 400px;
                 overflow-y: auto;
-            }
-            p {
-                margin: 10px;
-                border-radius: 10px;
-            }
+            }p {
+    margin: 4px 0;
+    padding: 6px 12px;
+    border-left: 3px solid #46dde8; /* Cyan strip instead of a bubble */
+    background: rgba(255, 255, 255, 0.05); /* Transparent dark slate */
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    color: #e0e0e0;
+    word-wrap: break-word;
+}
+p strong { color: #46dde8; } /* Makes the name stand out to the user */
     @keyframes rainbow-flash {
         0% { color: #800080; }
         10%   { color: #ff0000; }
@@ -269,7 +275,7 @@ background-attachment: fixed;
                 });
                 setTimeout(() => {
                     chatbox.scrollTop = chatbox.scrollHeight;
-                }, 50);
+                }, 40);
 
 
             }
