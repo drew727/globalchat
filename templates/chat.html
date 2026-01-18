@@ -48,53 +48,50 @@ background-attachment: fixed;
     color: #e0e0e0;
     word-wrap: break-word;
     -webkit-font-smoothing: antialiased;
-}
-@keyframes rainbow-flash {
-    0% {
+}@keyframes rainbow-flash {
+    0%, 100% {
         color: #ff00ea;
-        text-shadow: 0 0 5px #ff00ea, 0 0 9px #ff00ea;
-    }
-    10% {
-        color: #ff0000;
-        text-shadow: 0 0 5px #ff0000, 0 0 9px #ff0000;
+        text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
+        transform: scale(1.0);
     }
     15% {
-        color: #ffcc00;
-        text-shadow: 0 0 5px #ffcc00, 0 0 9px #ffcc00;
+        color: #ff0000;
+        text-shadow: 0 0 4px #ff0000, 0 0 8px rgba(255, 0, 0, 0.6);
     }
     35% {
-        color: #ffff00;
-        text-shadow: 0 0 5px #ffff00, 0 0 9px #ffff00;
+        color: #ffcc00;
+        text-shadow: 0 0 4px #ffcc00, 0 0 10px rgba(255, 204, 0, 0.7);
+        transform: scale(1.05);
     }
     50% {
-        color: #ffd700;
-        text-shadow: 0 0 5px #ffd700, 0 0 9px #ffd700;
+        color: #ffff00;
+        text-shadow: 0 0 4px #ffff00, 0 0 12px rgba(255, 255, 0, 0.8);
     }
     65% {
         color: #00ff00;
-        text-shadow: 0 0 5px #00ff00, 0 0 9px #00ff00;
+        text-shadow: 0 0 4px #00ff00, 0 0 8px rgba(0, 255, 0, 0.6);
     }
-    80% {
+    85% {
         color: #088F8F;
-        text-shadow: 0 0 5px #088F8F, 0 0 9px #088F8F;
+        text-shadow: 0 0 4px #088F8F, 0 0 8px rgba(8, 143, 143, 0.6);
     }
     95% {
         color: #6a0dad;
-        text-shadow: 0 0 5px #6a0dad, 0 0 90px #6a0dad;
-    }
-    100% {
-        color: #ff00ea;
-        text-shadow: 0 0 5px #ff00ea, 0 0 9px #ff00ea;
+        text-shadow: 0 0 4px #6a0dad, 0 0 8px rgba(106, 13, 173, 0.6);
     }
 }
-    .rainbow {
 
-        color: inherit;
-        font-weight: 800;
-        animation: rainbow-flash 3s linear infinite;
-        font-size: 1.1em;
-        letter-spacing: 2px;"
-    }
+.rainbow {
+    display: inline-block;
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    animation: rainbow-flash 3s linear infinite;
+
+
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
             #submit {
                 display: flex;
                 justify-content: center;
