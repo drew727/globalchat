@@ -131,6 +131,18 @@ def sitemap():
     response.headers["Content-Type"] = "application/xml"
 
     return response
+from flask import Response
+
+@app.route('/robots.txt')
+def robots_txt():
+
+    content = (
+        "User-agent: *\n"
+        "Disallow: /api/v1/internal/\n"
+        "Allow: /\n\n"
+        "Sitemap: https://systemnodesync.dpdns.net/sitemap.xml"
+    )
+    return Response(content, mimetype='text/plain')
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
     config = SystemConfig.query.filter_by(key='panic_switch').first()
