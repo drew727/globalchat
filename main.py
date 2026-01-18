@@ -140,7 +140,7 @@ def robots_txt():
         "User-agent: *\n"
         "Disallow: /api/v1/internal/\n"
         "Allow: /\n\n"
-        "Sitemap: https://systemnodesync.dpdns.net/sitemap.xml"
+        "Sitemap: https://systemnodesync.dpdns.org/sitemap.xml"
     )
     return Response(content, mimetype='text/plain')
 @app.route('/api/v1/system/heartbeat/state')
