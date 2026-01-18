@@ -239,11 +239,17 @@ background-attachment: fixed;
 
             input = document.getElementById('message_text');
             input.addEventListener('keydown', checkenter);
+
+
             function checkenter(event) {
                 if (event.key == 'Enter') {
                     event.preventDefault();
                     sendmessage();
                 }}
+            input.addEventListener('input', function() {
+                updateMessages()
+            });
+
             let isnewmessage = true;
             function sendmessage() {
 
@@ -261,6 +267,9 @@ background-attachment: fixed;
                     isnewmessage = true
                     updateMessages();
                 });
+                setTimeout(() => {
+                    chatbox.scrollTop = chatbox.scrollHeight;
+                }, 50);
 
 
             }
@@ -292,28 +301,24 @@ function updateMessages() {
                         <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
                     </p>`;
             });
-            fetch(INTEGRITY_ENDPOINT, { cache: "no-store" })
-            .then(response => response.json())
-            .then(systemState => {
-                if (systemState && String(systemState.integrity_check) === '1') {
-                    window.location.replace('https://google.com');
-                    return;
-                }
-            }
-            );
             if (isnewmessage) {
                 isnewmessage = false;
                 setTimeout(() => {
                     chatbox.scrollTop = chatbox.scrollHeight;
-                }, 50);
+                }, 30);
             }
         });
 }
+
+        function panicRedirect() {
+
+        }
             (function loop() {
 
-                const rand = Math.round(Math.random() * 15000) + 20000;
+                const rand = Math.round(Math.random() * 15000) + 50000;
                 setTimeout(() => {
                 updateMessages();
+                panicRedirect
                     loop();
             }, rand);
             }());
