@@ -324,7 +324,7 @@ function viewcolorrates() {
             document.getElementById('buycolors').innerHTML = `<span>${pendingPurchases} purchases loading...</span><span id="price" style="display: none;">${price}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(syncPurchases, 300);
+            syncTimeout = setTimeout(syncPurchases, 1500);
         } else {
             alert("Not enough globes!");
         }
@@ -363,7 +363,7 @@ function handleVisuals(items) {
         entry.style.cssText = item.info + "; padding: 5px; border-radius: 4px; border-bottom: 1px solid rgba(0,0,0,0.05);";
 
 
-        list.prependChild(entry);
+        list.prepend(entry);
 
 
         container.scrollTop = 0;
