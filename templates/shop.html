@@ -239,7 +239,7 @@
         let isCooldown = false;
 
         function updateglobes() {
-            fetch('/api/v2/user-profile/cache/sync-manifest)
+            fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
                     document.getElementById('globecount').innerText = user.globes;
@@ -259,9 +259,9 @@
                     }
 
                 })
-            }
 
         }
+    }
         function purchase() {
             if (isCooldown) {
                 return;
