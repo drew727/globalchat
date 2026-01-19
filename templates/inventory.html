@@ -268,7 +268,7 @@
 
             const ctn = document.getElementById('inv-grid');
             if (ctn && data.items) {
-                const sortedItems = data.items.sort((a, b) => a.rarity - b.rarity);
+                const sortedItems = data.items.sort((a, b) => a.weight - b.weight);
                     ctn.innerHTML = sortedItems.map(item =>
                 {
                 let content = "";
