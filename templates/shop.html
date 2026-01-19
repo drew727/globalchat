@@ -27,7 +27,7 @@
         body {
             background-image: linear-gradient(to bottom, #FFFBF5, #FFEDE6, #FFDCD2);
             height: 100vh;
-            overflow: hidden;
+            overflow: visible;
         }
         #packages {
             display: flex;
@@ -262,8 +262,8 @@
 
                 })
 
+            }
         }
-    }
 
 
         function purchase() {
@@ -290,6 +290,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Success") {
+                    document.getElementById('buycolors').innerHTML = `Buy for <span id="price">${data.price}</span> globes`;
                     document.getElementById('globecount').innerText = data.new_balance;
                     document.getElementById('price').innerText = data.price;
                     handleVisuals(data.items_won);
