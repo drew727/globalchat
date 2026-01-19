@@ -191,6 +191,25 @@
         cursor: pointer;
         box-sizing: border-box;
     }
+    #status-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        max-height: 160px;
+        margin-top: 10px;
+        font-family: 'Quicksand';
+        font-size: 0.9rem;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 8px;
+        scroll-behavior: smooth;
+    }
+
+    #status {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
         </style>
     </head>
     <body>
@@ -282,7 +301,7 @@
 
             pElement.innerText = Math.floor(price * 1.02);
 
-            document.getElementById('buycolors').innerHTML = `Queuing <span>${pendingPurchases} clicks...</span><span id="price" style="display: none;">${price}</span>`;
+            document.getElementById('buycolors').innerHTML = `<span>${pendingPurchases} purchases loading...</span><span id="price" style="display: none;">${price}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(syncPurchases, 300);
@@ -313,18 +332,27 @@
 function handleVisuals(items) {
     let i = 0;
     let list = document.getElementById('status');
+    let container = document.getElementById('status-container');
+
     let loop = setInterval(() => {
         let item = items[i];
         let entry = document.createElement('div');
-        entry.innerText = " You Won " + item.name;
-        document.getElementById('status-container').scrollTop = 0;
-        entry.style.cssText = item.info + "; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px;";
-        list.prepend(entry);
+
+
+        entry.innerText = "You Won " + item.name;
+        entry.style.cssText = item.info + "; padding: 5px; border-radius: 4px; border-bottom: 1px solid rgba(0,0,0,0.05);";
+
+
+        list.appendChild(entry);
+
+
+        container.scrollTop = container.scrollHeight;
+
         i++;
         if (i >= items.length) {
             clearInterval(loop);
         }
-    }, 200);
+    }, 300);
 }
         setInterval(updateglobes, 7500);
 
