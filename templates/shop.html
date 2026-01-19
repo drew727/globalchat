@@ -282,10 +282,10 @@
 
             pElement.innerText = Math.floor(price * 1.02);
 
-            document.getElementById('buycolors').innerHTML = `Queuing... <span id="price">${price}</span>`;
+            document.getElementById('buycolors').innerHTML = `Queuing <span>${pendingPurchases} clicks...</span><span id="price" style="display: none;">${price}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(syncPurchases, 600);
+            syncTimeout = setTimeout(syncPurchases, 300);
         } else {
             alert("Not enough globes!");
         }
