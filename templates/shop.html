@@ -236,7 +236,6 @@
     });
 };;
 
-        let isCooldown = false;
 
         function updateglobes() {
             fetch('/api/v2/user-profile/cache/sync-manifest')
@@ -279,10 +278,6 @@
 
                 }
             })
-            .finally(() => {
-                        setTimeout(() => {
-                isCooldown = false;
-                }, 100);
             });
         }
         setInterval(updateglobes, 7500);
