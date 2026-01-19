@@ -241,6 +241,7 @@
 
 
         function updateglobes() {
+            if (pendingPurchases > 0) return;
             fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
@@ -269,19 +270,27 @@
 
 
 
-        function purchase() {
-            let g = parseInt(document.getElementById('globecount').innerText);
-            let price = parseInt(document.getElementById('price').innerText);
-            if (g >= price) {
-                document.getElementById('globecount').innerText = g - price;
-                document.getElementById('buycolors').innerText = "Queuing...";
-                pendingPurchases++;
-                clearTimeout(syncTimeout);
-                syncTimeout = setTimeout(syncPurchases, 600);
-            } else {
-                alert("Not enough globes!");
-            }
+    function purchase() {
+        let gElement = document.getElementById('globecount');
+        let pElement = document.getElementById('price');
+        let g = parseInt(gElement.innerText);
+        let price = parseInt(pElement.innerText);
+
+        if (g >= price) {
+            document.getElementById('globecount').innerText = g - price;
+
+
+            pElement.innerText = Math.floor(price * 1.02);
+
+
+            document.getElementById('buycolors').innerText = "Queuing...";
+            pendingPurchases++;
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(syncPurchases, 600);
+        } else {
+            alert("Not enough globes!");
         }
+    }
         function syncPurchases() {
             if (pendingPurchases === 0) return;
             const amountToSync = pendingPurchases;
@@ -309,7 +318,7 @@ function handleVisuals(items) {
         let item = items[i];
         let entry = document.createElement('div');
         entry.innerText = " You Won " + item.name;
-
+        document.getElementById('status-container').scrollTop = 0;
         entry.style.cssText = item.info + "; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px;";
         list.prepend(entry);
         i++;
