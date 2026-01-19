@@ -281,11 +281,11 @@
                 if (item.name === "Deep_Sea" || item.info.includes("breathe")) {
                     style = "color: #000080; background-color: #000080; font-weight: 800;";
                     content = 'AAAA';
-                if (item.info === "TRIGGER:rainbow;") {
+                else if (item.info === "TRIGGER:rainbow;") {
                     style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
                 }
 
-                if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
+                else if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
                     content = 'AAAA';
                     style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
                 }
