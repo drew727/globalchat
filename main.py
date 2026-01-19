@@ -389,26 +389,25 @@ def purchase():
     userid = session.get('userid')
     user = Users.query.get(userid)
     data = request.get_json(silent=True) or {}
-    batch_count = data.get('batch_count', 1)
+    batch_count = int(data.get('batch_count', 1))
     items_won = []
-    total_cost = 0
     time = datetime.now(timezone.utc)
-    if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
-        user.purchases_today = 0
-        user.last_purchase_time = time
-        db.session.commit()
-
 
     if user:
+        if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
+            user.purchases_today = 0
 
         user.last_purchase_time = time
+
         results = db.session.query(Item.item_id, Item.name, Item.weight, Item.info)\
            .filter(Item.active == True, Item.itemtype == 'color')\
            .order_by(Item.item_id).all()
+
         info = {r.item_id: {"name": r.name, "info": r.info} for r in results}
         rng = secrets.SystemRandom()
         item_ids = [r.item_id for r in results]
         weights = [r.weight for r in results]
+
         for _ in range(batch_count):
             curr_price = int(150 * (1.02 ** user.purchases_today))
             if user.globes >= curr_price:
@@ -432,7 +431,6 @@ def purchase():
 
         db.session.commit()
 
-
         return jsonify({
             "status": "Success",
             "new_balance": user.globes,
@@ -441,7 +439,6 @@ def purchase():
             "info": items_won[-1]["info"] if items_won else "",
             "price": int(150 * (1.02 ** user.purchases_today))
         })
-
 
 
 def is_prime(n):
