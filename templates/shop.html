@@ -282,8 +282,7 @@
 
             pElement.innerText = Math.floor(price * 1.02);
 
-
-            document.getElementById('buycolors').innerText = "Queuing...";
+            document.getElementById('buycolors').innerHTML = `Queuing... <span id="price">${price}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(syncPurchases, 600);
