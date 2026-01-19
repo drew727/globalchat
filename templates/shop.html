@@ -222,16 +222,16 @@
 
         window.onload = function() {
 
-    fetch('/user/info').then(res => res.json()).then(user => {
+    fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
         if (!user.isguest) {
             document.getElementById('register').innerText = user.username;
-            document.getElementById('register').onclick = () => { window.location.href = '/user/info'; };
+            document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
         }
         document.getElementById('globecount').innerText = user.globes;
     });
 
 
-    fetch('/get_price').then(res => res.json()).then(data => {
+    fetch('/api/v1/system/scaling/load-coefficient').then(res => res.json()).then(data => {
         document.getElementById('price').innerText = data.price;
     });
 };;
@@ -239,7 +239,7 @@
         let isCooldown = false;
 
         function updateglobes() {
-            fetch('/user/info')
+            fetch('/api/v2/user-profile/cache/sync-manifest)
                 .then(response => response.json())
                 .then(user => {
                     document.getElementById('globecount').innerText = user.globes;
@@ -250,7 +250,7 @@
             let items = [];
             let count = 0;
             for (let i = 1; i <= 19; i++) {
-                fetch(`/item_details/${i}`).then(response => response.json()).then(data => {
+                fetch(`/api/v1/metadata/schema/object-descriptor/${i}`).then(response => response.json()).then(data => {
                     let p = (data.weight/78251) * 100
                     items.push([p, `${data.name}: ${p.toFixed(4)}%`]);
                     count++;
@@ -267,7 +267,7 @@
                 return;
             }
             isCooldown = true;
-            fetch('/purchase', {method: 'POST'}).then(response => response.json()).then(data =>
+            fetch('/api/v1/transactional/resource-allocation/commit', {method: 'POST'}).then(response => response.json()).then(data =>
             {
                 if (data.status === "Success") {
                     document.getElementById('globecount').innerText = data.new_balance;
