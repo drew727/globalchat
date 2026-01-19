@@ -264,6 +264,9 @@
 
             }
 
+        }
+
+
 
 
         function purchase() {
@@ -281,11 +284,12 @@
         }
         function syncPurchases() {
             if (pendingPurchases === 0) return;
-
+            const amountToSync = pendingPurchases;
+            pendingPurchases = 0;
             fetch('/api/v1/transactional/resource-allocation/commit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ batch_count: pendingPurchases })
+                body: JSON.stringify({ batch_count: amountToSync})
             })
             .then(res => res.json())
             .then(data => {
@@ -294,7 +298,7 @@
                     document.getElementById('globecount').innerText = data.new_balance;
                     document.getElementById('price').innerText = data.price;
                     handleVisuals(data.items_won);
-                    pendingPurchases = 0;
+
         }
     });
 }
