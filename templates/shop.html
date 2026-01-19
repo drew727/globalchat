@@ -324,7 +324,7 @@ function viewcolorrates() {
             document.getElementById('buycolors').innerHTML = `<span>${pendingPurchases} purchases loading...</span><span id="price" style="display: none;">${price}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(syncPurchases, 1500);
+            syncTimeout = setTimeout(syncPurchases, 1000);
         } else {
             alert("Not enough globes!");
         }
@@ -359,8 +359,18 @@ function handleVisuals(items) {
         let entry = document.createElement('div');
 
 
-        entry.innerText = "You Won " + item.name;
-        entry.style.cssText = item.info + "; padding: 5px; border-radius: 4px; border-bottom: 1px solid rgba(0,0,0,0.05);";
+        if (item.info === "TRIGGER:rainbow;") {
+            entry.className = "rainbow";
+            entry.innerText = "You Won " + item.name;
+        } else {
+            entry.innerText = "You Won " + item.name;
+
+            entry.style.cssText = item.info;
+        }
+
+
+        entry.style.padding = "5px";
+        entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
 
 
         list.prepend(entry);
@@ -372,7 +382,7 @@ function handleVisuals(items) {
         if (i >= items.length) {
             clearInterval(loop);
         }
-    }, 300);
+    }, 200);
 }
         setInterval(updateglobes, 7500);
 
