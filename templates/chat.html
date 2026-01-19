@@ -320,6 +320,11 @@ function updateMessages() {
                     rainbow = "rainbow";
                     style = "";
                 }
+                else if (style.includes("breathe")) {
+
+                    style = style.replace(/display:\s?flex;?|align-items:\s?center;?|justify-content:\s?center;?/g, "");
+                    style += " color: #000080 !important; opacity: 1 !important; visibility: visible !important;";
+                }
 
 
 
