@@ -225,19 +225,19 @@
     let syncTimeout;
     window.onload = function() {
 
-    fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
-        if (!user.isguest) {
-            document.getElementById('register').innerText = user.username;
-            document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
-        }
-        document.getElementById('globecount').innerText = user.globes;
-    });
+        fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
+            if (!user.isguest) {
+                document.getElementById('register').innerText = user.username;
+                document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+            }
+            document.getElementById('globecount').innerText = user.globes;
+        });
 
 
-    fetch('/api/v1/system/scaling/load-coefficient').then(res => res.json()).then(data => {
-        document.getElementById('price').innerText = data.price;
-    });
-};;
+        fetch('/api/v1/system/scaling/load-coefficient').then(res => res.json()).then(data => {
+            document.getElementById('price').innerText = data.price;
+        });
+    }
 
 
         function updateglobes() {
@@ -263,7 +263,7 @@
                 })
 
             }
-        }
+
 
 
         function purchase() {
@@ -304,7 +304,7 @@ function handleVisuals(items) {
     let loop = setInterval(() => {
         let item = items[i];
         let entry = document.createElement('div');
-        entry.innerText = " + " + item.name;
+        entry.innerText = " You Won " + item.name;
 
         entry.style.cssText = item.info + "; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px;";
         list.prepend(entry);
