@@ -268,23 +268,43 @@
                 });
 
             }
-        function viewcolorrates() {
-            let items = [];
-            let count = 0;
-            for (let i = 1; i <= 19; i++) {
-                fetch(`/api/v1/metadata/schema/object-descriptor/${i}`).then(response => response.json()).then(data => {
-                    let p = (data.weight/78251) * 100
-                    items.push([p, `${data.name}: ${p.toFixed(4)}%`]);
-                    count++;
-                    if (count === 19) {
-                        alert("All Color Rates:\n" + items.sort((a, b) => b[0] - a[0]).map(m => m[1]).join("\n"));
-                    }
+function viewcolorrates() {
+    let rawData = [];
+    let count = 0;
+    const totalItems = 24;
 
-                })
+    for (let i = 1; i <= totalItems; i++) {
+        fetch(`/api/v1/metadata/schema/object-descriptor/${i}`)
+            .then(response => response.json())
+            .then(data => {
+                rawData.push(data);
+                count++;
 
-            }
 
-        }
+                if (count === totalItems) {
+
+                    const dynamicTotal = rawData.reduce((sum, item) => sum + item.weight, 0);
+
+
+                    let rateLines = rawData.map(item => {
+                        let p = (item.weight / dynamicTotal) * 100;
+                        return {
+                            percent: p,
+                            text: `${item.name}: ${p.toFixed(4)}%`
+                        };
+                    });
+
+
+                    const output = rateLines
+                        .sort((a, b) => b.percent - a.percent)
+                        .map(line => line.text)
+                        .join("\n");
+
+                    alert(`All Color Rates:\n` + output);
+                }
+            });
+    }
+}
 
 
 
