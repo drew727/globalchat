@@ -343,10 +343,10 @@ function handleVisuals(items) {
         entry.style.cssText = item.info + "; padding: 5px; border-radius: 4px; border-bottom: 1px solid rgba(0,0,0,0.05);";
 
 
-        list.appendChild(entry);
+        list.prependChild(entry);
 
 
-        container.scrollTop = container.scrollHeight;
+        container.scrollTop = 0;
 
         i++;
         if (i >= items.length) {
