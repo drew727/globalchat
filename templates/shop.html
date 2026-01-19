@@ -270,14 +270,15 @@
             let g = parseInt(document.getElementById('globecount').innerText);
             let price = parseInt(document.getElementById('price').innerText);
             if (g >= price) {
-                document.getElementById('globecount').innerText = currentGlobes - pricePerItem;
-                document.getElementById('status').innerText = "Queuing... Stop clicking to sync";
+                document.getElementById('globecount').innerText = g - price;
+                document.getElementById('buycolors').innerText = "Queuing...";
                 pendingPurchases++;
                 clearTimeout(syncTimeout);
                 syncTimeout = setTimeout(syncPurchases, 1500);
             } else {
-                document.getElementById('status').innerText = "Not enough globes!";
+                alert("Not enough globes!");
             }
+        }
         function syncPurchases() {
             if (pendingPurchases === 0) return;
 
