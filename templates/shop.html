@@ -215,12 +215,15 @@
         <div id="blue" class="innerbox"></div>
         <div id="green" class="innerbox"></div></div>
             <button id="buycolors" onclick="purchase()">Buy for <span id="price"></span> globes</button>
-            <p id="status"></p></div>
+            <div id="status-container" style="display: flex; flex-direction: column-reverse; overflow-y: auto; max-height: 150px; margin-top: 10px; font-family: 'Quicksand'; font-size: 0.9rem;">
+    <div id="status"></div>
+</div></div>
             <div id="colorsbox"><p id="colors-header">Coming<br>Soon!</p></div>
         </div>
     <script>
-
-        window.onload = function() {
+    let pendingPurchases = 0;
+    let syncTimeout;
+    window.onload = function() {
 
     fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
         if (!user.isguest) {
@@ -261,26 +264,56 @@
 
         }
     }
+
+
         function purchase() {
-            if (isCooldown) {
-                return;
+            let g = parseInt(document.getElementById('globecount').innerText);
+            let price = parseInt(document.getElementById('price').innerText);
+            if (g >= price) {
+                document.getElementById('globecount').innerText = currentGlobes - pricePerItem;
+                document.getElementById('status').innerText = "Queuing... Stop clicking to sync";
+                pendingPurchases++;
+                clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(syncPurchases, 1500);
+            } else {
+                document.getElementById('status').innerText = "Not enough globes!";
             }
-            isCooldown = true;
-            fetch('/api/v1/transactional/resource-allocation/commit', {method: 'POST'}).then(response => response.json()).then(data =>
-            {
+        function syncPurchases() {
+            if (pendingPurchases === 0) return;
+
+            fetch('/api/v1/transactional/resource-allocation/commit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batch_count: pendingPurchases })
+            })
+            .then(res => res.json())
+            .then(data => {
                 if (data.status === "Success") {
                     document.getElementById('globecount').innerText = data.new_balance;
-                    document.getElementById('status').innerText = "You got: " + data.won_item_name;
-                    document.getElementById('status').style.cssText = data.info;
                     document.getElementById('price').innerText = data.price;
-                } else {
-                    document.getElementById('status').innerText = data.message;
-
-                }
-            })
-            });
+                    handleVisuals(data.items_won);
+                    pendingPurchases = 0;
         }
+    });
+}
+function handleVisuals(items) {
+    let i = 0;
+    let list = document.getElementById('status');
+    let loop = setInterval(() => {
+        let item = items[i];
+        let entry = document.createElement('div');
+        entry.innerText = " + " + item.name;
+
+        entry.style.cssText = item.info + "; margin-bottom: 5px; border-bottom: 1px solid rgba(0,0,0,0.05); padding: 2px;";
+        list.prepend(entry);
+        i++;
+        if (i >= items.length) {
+            clearInterval(loop);
+        }
+    }, 200);
+}
         setInterval(updateglobes, 7500);
+
     </script>
     </body>
 </html>

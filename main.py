@@ -388,42 +388,61 @@ def get_price():
 def purchase():
     userid = session.get('userid')
     user = Users.query.get(userid)
+    data = request.get_json(silent=True) or {}
+    batch_count = data.get('batch_count', 1)
+    items_won = []
+    total_cost = 0
     time = datetime.now(timezone.utc)
     if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
         user.purchases_today = 0
         user.last_purchase_time = time
         db.session.commit()
-    curr_price = int(150 * (1.02 ** user.purchases_today))
-    #alt if too hard = price = 150 + (1800 * math.log((user.purchases_today / 5) + 1))
-    if user and user.globes >= curr_price:
-        user.globes -= curr_price
+
+
+    if user:
+
         user.last_purchase_time = time
-        user.purchases_today += 1
-        number = secrets.SystemRandom()
-        results = db.session.query(Item.item_id, Item.name, Item.weight)\
-                   .filter(Item.active == True, Item.itemtype == 'color')\
-                   .order_by(Item.item_id).all()
-        boughtitemid = number.choices([result.item_id for result in results], weights=[result.weight for result in results], k=1)
-        boughtitemid = boughtitemid[0]
-        in_inv = Inventory.query.filter_by(userid=userid, item_id=boughtitemid).first()
-        if in_inv:
-            in_inv.count += 1
-        else:
-            db.session.add(Inventory(userid=userid, item_id=boughtitemid, count=1))
-        item = db.session.query(Item).filter(Item.item_id == boughtitemid).scalar()
+        results = db.session.query(Item.item_id, Item.name, Item.weight, Item.info)\
+           .filter(Item.active == True, Item.itemtype == 'color')\
+           .order_by(Item.item_id).all()
+        info = {r.item_id: {"name": r.name, "info": r.info} for r in results}
+        rng = secrets.SystemRandom()
+        item_ids = [r.item_id for r in results]
+        weights = [r.weight for r in results]
+        for _ in range(batch_count):
+            curr_price = int(150 * (1.02 ** user.purchases_today))
+            if user.globes >= curr_price:
+                user.globes -= curr_price
+                user.purchases_today += 1
+                bought_id = rng.choices(item_ids, weights=weights, k=1)[0]
+                items_won.append({
+                    "name": info[bought_id]["name"],
+                    "info": info[bought_id]["info"]
+                })
+
+                in_inv = Inventory.query.filter_by(userid=userid, item_id=bought_id).first()
+                if in_inv:
+                    in_inv.count += 1
+                else:
+                    db.session.add(Inventory(userid=userid, item_id=bought_id, count=1))
+            else:
+                if items_won:
+                    break
+                return jsonify({"status": "Error", "message": "Not enough globes!"}), 401
+
         db.session.commit()
+
 
         return jsonify({
             "status": "Success",
-            "message": f"You got {item.name}!",
-            "item_id": boughtitemid,
             "new_balance": user.globes,
-            "won_item_name": item.name,
-            "info": item.info,
+            "items_won": items_won,
+            "won_item_name": items_won[-1]["name"] if items_won else None,
+            "info": items_won[-1]["info"] if items_won else "",
             "price": int(150 * (1.02 ** user.purchases_today))
         })
-    else:
-        return jsonify({"status": "Error", "message": "Not enough globes!"}), 401
+
+
 
 def is_prime(n):
     if n < 2: return False
