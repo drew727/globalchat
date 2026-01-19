@@ -54,9 +54,15 @@ background-attachment: fixed;
     to { background-position: 200% center; }
 }
 @keyframes breathe {
-        0%, 100% { opacity: 1; text-shadow: 0 0 5px #0000ff; }
-        50% { opacity: 0.6; text-shadow: 0 0 15px #00ffff; }
+    0%, 100% {
+        color: #000080;
+        text-shadow: 0 0 2px rgba(0,0,128,0.3);
     }
+    50% {
+        color: #0000FF;
+        text-shadow: 0 0 8px #46dde8;
+    }
+}
 @keyframes rainbow-flash {
     0%, 100% {
         color: #ff00ea;
