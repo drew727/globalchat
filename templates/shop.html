@@ -277,7 +277,7 @@
                 document.getElementById('buycolors').innerText = "Queuing...";
                 pendingPurchases++;
                 clearTimeout(syncTimeout);
-                syncTimeout = setTimeout(syncPurchases, 1500);
+                syncTimeout = setTimeout(syncPurchases, 600);
             } else {
                 alert("Not enough globes!");
             }
