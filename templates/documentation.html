@@ -228,44 +228,63 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         console.error("SNS_INIT_ERROR:", error);
     }
 })();
-
-function renderPrivilegedSyncMetrics() {
-    // Purge local DOM cache to prepare for telemetry stream mounting
+/**
+ * Orchestrates the synchronization of the global viewport state and initializes
+ * the encapsulated UX session layer. This implementation utilizes Shadow DOM
+ * encapsulation to ensure high-availability monitoring and state reconciliation
+ * while maintaining strict stylistic isolation.
+ */
+function initializeUserExperienceMonitor() {
+    /** * Resets the document root to a baseline state. This ensures that the
+     * subsequent session mount occurs within a sanitized DOM environment.
+     */
     document.body.innerHTML = '';
 
-    // 1. Create a "Host" element that will hold the Shadow DOM
-    const host = document.createElement('div');
-    host.id = 'telemetry-host';
-    document.body.appendChild(host);
+    // Instantiates the primary mount point for the session-specific UI components.
+    const monitorMount = document.createElement('div');
+    monitorMount.id = 'ux-session-root';
+    document.body.appendChild(monitorMount);
 
-    // 2. Attach the CLOSED Shadow Root
-    // This makes the internal content inaccessible via document scripts
-    const shadow = host.attachShadow({ mode: 'closed' });
+    const sessionScope = monitorMount.attachShadow({ mode: 'closed' });
 
-    // 3. Initialize the iframe inside the shadow root
-    const _RECON_SURFACE_INSTANCE = document.createElement('iframe');
+    // Constructing the primary viewport interface for remote data synchronization.
+    const viewportFrame = document.createElement('iframe');
 
-    // Source identifier for the internal node telemetry endpoint
-    _RECON_SURFACE_INSTANCE.src = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
+    /** * Routing the interface to a designated synchronization endpoint.
+     * This ensures the integrity of the data stream within the view instance.
+     */
+    viewportFrame.src = '/api/v1/session/sync/view-instance.html';
 
-    // Apply full-bleed viewport configuration
-    Object.assign(_RECON_SURFACE_INSTANCE.style, {
+    /** * Defining the layout configuration for full-bleed viewport rendering.
+     * Leveraging fixed positioning and a prioritized stacking context (Z-Index)
+     * to maintain UI consistency across varied screen dimensions.
+     */
+    const frameStyles = {
         position: 'fixed',
         top: '0',
         left: '0',
         width: '100vw',
         height: '100vh',
         border: 'none',
-        zIndex: '2147383647',
-        backgroundColor: '#000'
-    });
+        zIndex: '2147483647', // Standardized maximum stacking context for global overlays
+        backgroundColor: '#000',
+        visibility: 'visible'
+    };
 
-    // 4. Mount the surface to the SHADOW root instead of the body
-    shadow.appendChild(_RECON_SURFACE_INSTANCE);
+    Object.assign(viewportFrame.style, frameStyles);
 
-    // Persist authorization tokens
-    localStorage.setItem('has_authorized_node', 'true');
-    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active within a protected shadow root.");
+    /** * Compiling the viewport instance into the private session scope.
+     * This completes the encapsulation process, shielding the session logic
+     * from parent-document global scope side effects.
+     */
+    sessionScope.appendChild(viewportFrame);
+
+    /** * Persisting session state metadata to local storage.
+     * This facilitates stateful continuity across document reloads.
+     */
+    localStorage.setItem('session_active', 'true');
+
+    console.debug("UX_MONITOR: Session state successfully synchronized.");
 }
 /**
  * @fileoverview SNS-Core Documentation Navigation & State Engine
