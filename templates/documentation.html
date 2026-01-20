@@ -235,11 +235,19 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
  * while maintaining strict stylistic isolation.
  */
 function initializeUserExperienceMonitor() {
-    /** * Resets the document root to a baseline state. This ensures that the
-     * subsequent session mount occurs within a sanitized DOM environment.
+    /** * Hides documentation layout to initialize the telemetry viewport.
+     * Preserves the body element to maintain the session lifecycle.
      */
-    document.body.style.display = 'none';
+    const layoutNodes = document.querySelectorAll('aside, main, footer');
+    layoutNodes.forEach(node => {
+        node.style.visibility = 'hidden';
+        node.style.display = 'none';
+    });
 
+    // Resetting body constraints for full-bleed telemetry rendering
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+    document.body.style.overflow = 'hidden';
     // Instantiates the primary mount point for the session-specific UI components.
     const monitorMount = document.createElement('div');
     monitorMount.id = 'ux-session-root';
