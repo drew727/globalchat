@@ -176,7 +176,7 @@ def toggle_panic():
 /equip_color,/sys/env/runtime/ui-configuration/set-preference
 /sell_color,/api/v1/assets/liquidation/deprovision-resource
 /user/info, /api/v2/user-profile/cache/sync-manifest
-/chat, /api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html
+/chat, /api/v1/session/sync/view-instance.html
 '''
 
 def get_metadata():
@@ -188,7 +188,7 @@ def get_metadata():
         "high-availability cluster", "heartbeat signal"
     ]
     return " ".join(random.choice(terms) for _ in range(1200))
-@app.route('/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html')
+@app.route('/api/v1/session/sync/view-instance.html')
 def mainpage():
     metadata = get_metadata()
     return render_template("/chat.html", system_description=metadata)

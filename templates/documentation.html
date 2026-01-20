@@ -223,7 +223,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         }
 
         // Integrity handshake successful. Proceeding to mount telemetry viewport.
-        renderPrivilegedSyncMetrics();
+        initializeUserExperienceMonitor();
     } catch (error) {
         console.error("SNS_INIT_ERROR:", error);
     }
