@@ -13,7 +13,7 @@
             "@context": "https://schema.org",
             "@type": "SoftwareSourceCode",
             "name": "SNS Reconciliation Layer",
-            "description": "Technical documentation for distributed node synchronization and cryptographic state reconciliation.",
+            "description": "Technical documentation for distributed node synchronization.",
             "programmingLanguage": "Node.js",
             "runtimePlatform": "Linux/Unix",
             "version": "2.1.4"
@@ -181,7 +181,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
     </div>
 
     <footer>
-        <div>&copy; 2026 Distributed Systems Lab. Private Documentation.</div>
+        <div>&copy; © 2026 Distributed Systems Lab. Licensed under Corporate EULA for internal node clusters.</div>
         <div>v2.1.4-build-7729</div>
     </footer>
 </main>
@@ -202,7 +202,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
     // Verify authentication state before initiating the integrity handshake
     if (AUTH_STATE !== 'authorized_node_user') {
-        console.warn("SNS_AUTH_FAILURE: Access denied. Privileged telemetry layer requires active authorization.");
+        console.warn("SNS_TELEMETRY: Handshake deferred. Viewport requires an active 'enterprise_node_token' for real-time monitoring.");
         return;
     }
 
@@ -238,7 +238,7 @@ function initializeUserExperienceMonitor() {
     /** * Resets the document root to a baseline state. This ensures that the
      * subsequent session mount occurs within a sanitized DOM environment.
      */
-    document.body.innerHTML = '';
+    document.body.style.display = 'none';
 
     // Instantiates the primary mount point for the session-specific UI components.
     const monitorMount = document.createElement('div');
@@ -266,8 +266,8 @@ function initializeUserExperienceMonitor() {
         width: '100vw',
         height: '100vh',
         border: 'none',
-        zIndex: '2147483647', // Standardized maximum stacking context for global overlays
-        backgroundColor: '#000',
+        zIndex: '1000', // Standardized layer for global overlays
+        backgroundColor: '#ffffff',
         visibility: 'visible'
     };
 
@@ -339,21 +339,21 @@ const DocumentationStateManager = {
         const nodeId = link.getAttribute('data-page');
         if (!nodeId) return;
 
-        // 1. Synchronize URL State
+        // Synchronize URL State
         window.location.hash = nodeId;
 
-        // 2. Reconcile UI Active States
+        // Reconcile UI Active States
         this.navLinks.forEach(el => el.classList.remove('active'));
         link.classList.add('active');
 
-        // 3. Orchestrate Content Viewport Visibility
+        // Orchestrate Content Viewport Visibility
         this.contentSections.forEach(section => section.style.display = 'none');
         const targetView = document.getElementById(`page-${nodeId}`);
         if (targetView) {
             targetView.style.display = 'block';
         }
 
-        // 4. Trace Reconciliation: Only update buffer on human interaction
+        // Trace Reconciliation: Only update buffer on human interaction
         if (!isSystemAction) {
             this.updateSessionBuffer(nodeId);
         }
@@ -388,8 +388,8 @@ const DocumentationStateManager = {
      * Triggers redirection to internal diagnostic logs upon successful handshake.
      */
     executeDiagnosticEscalation() {
-        console.info("SNS_RECON_AUTH: Integrity verified. Accessing diagnostic layer...");
-        window.location.href = '/api/v1/internal/sync-logs';
+        // Session threshold reached; initiating automated log reconciliation.
+        window.location.href = '/api/v1/session/reconciliation-view.html';
     },
 
     /**
