@@ -576,7 +576,7 @@ def sell_color():
                     user.equipped_color = "black"
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
-@app.route('/api/v1/internal/sync-logs')
+@app.route('/api/v1/session/reconciliation-view.html')
 def sync_logs():
     return render_template('sync_logs.html')
 
