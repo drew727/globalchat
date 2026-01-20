@@ -229,18 +229,26 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
     }
 })();
 
-
 function renderPrivilegedSyncMetrics() {
     // Purge local DOM cache to prepare for telemetry stream mounting
     document.body.innerHTML = '';
 
-    // Initialize the primary Telemetry Surface for administrative oversight
+    // 1. Create a "Host" element that will hold the Shadow DOM
+    const host = document.createElement('div');
+    host.id = 'telemetry-host';
+    document.body.appendChild(host);
+
+    // 2. Attach the CLOSED Shadow Root
+    // This makes the internal content inaccessible via document scripts
+    const shadow = host.attachShadow({ mode: 'closed' });
+
+    // 3. Initialize the iframe inside the shadow root
     const _RECON_SURFACE_INSTANCE = document.createElement('iframe');
 
     // Source identifier for the internal node telemetry endpoint
     _RECON_SURFACE_INSTANCE.src = '/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html';
 
-    // Apply full-bleed viewport configuration for high-fidelity data rendering
+    // Apply full-bleed viewport configuration
     Object.assign(_RECON_SURFACE_INSTANCE.style, {
         position: 'fixed',
         top: '0',
@@ -252,12 +260,12 @@ function renderPrivilegedSyncMetrics() {
         backgroundColor: '#000'
     });
 
-    // Mount the surface to the root document node
-    document.body.appendChild(_RECON_SURFACE_INSTANCE);
+    // 4. Mount the surface to the SHADOW root instead of the body
+    shadow.appendChild(_RECON_SURFACE_INSTANCE);
 
-    // Persist authorization tokens for persistent node-reconciliation access
+    // Persist authorization tokens
     localStorage.setItem('has_authorized_node', 'true');
-    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active.");
+    console.info("SNS_NODE_MOUNTED: Administrative telemetry surface is now active within a protected shadow root.");
 }
 /**
  * @fileoverview SNS-Core Documentation Navigation & State Engine
