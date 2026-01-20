@@ -108,7 +108,7 @@
         color: #4A3B37;
         margin-bottom: 5px;
     }
-    #buycolors:hover {
+    #btn-color:hover {
         transform: translateY(-2px) scale(1.02);
         box-shadow:
         0 4px 15px rgba(255, 255, 255, 0.5),
@@ -116,7 +116,7 @@
     }
 
 
-    #buycolors:active {
+    #btn-color:active {
         transform: translateY(1px);
         box-shadow: 0 4px 15px rgba(255, 160, 122, 0.4);
     }
@@ -215,7 +215,7 @@
     <body>
          <div id="navbar">
     <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
-    <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/observer-instance.html'"><strong>Chat!</strong></button>
+    <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Chat!</strong></button>
     <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
     <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory!</strong></button>
     <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
@@ -233,15 +233,20 @@
         <div id="orange" class="innerbox"></div>
         <div id="blue" class="innerbox"></div>
         <div id="green" class="innerbox"></div></div>
-            <button id="buycolors" onclick="purchase()">Buy for <span id="price"></span> globes</button>
+            <button id="btn-color" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
             <div id="status-container" style="display: flex; flex-direction: column-reverse; overflow-y: auto; max-height: 150px; margin-top: 10px; font-family: 'Quicksand'; font-size: 0.9rem;">
     <div id="status"></div>
 </div></div>
             <div id="colorsbox"><p id="colors-header">Coming<br>Soon!</p></div>
         </div>
     <script>
+
     let pendingPurchases = 0;
     let syncTimeout;
+    PACK_CONFIG = {
+        'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
+        'shape':  {'base_price': 500, 'scaling': 1.0, 'item_type': 'shape'},
+    }
     window.onload = function() {
 
         fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
@@ -253,10 +258,16 @@
         });
 
 
-        fetch('/api/v1/system/scaling/load-coefficient').then(res => res.json()).then(data => {
-            document.getElementById('price').innerText = data.price;
-        });
-    }
+        Object.keys(PACK_CONFIG).forEach(packId => {
+        fetch(`/api/v1/system/scaling/load-coefficient/${packId}`)
+            .then(res => res.json())
+            .then(data => {
+                const pEl = document.getElementById(`price-${packId}`);
+                if (pEl) pEl.innerText = data.price;
+            });
+    });
+}
+
 
 
         function updateglobes() {
@@ -309,22 +320,22 @@ function viewcolorrates() {
 
 
 
-    function purchase() {
+    function purchase(packId) {
         let gElement = document.getElementById('globecount');
-        let pElement = document.getElementById('price');
+        let pElement = document.getElementById(`price-${packId}`);
+        let btn = document.getElementById(`btn-${packId}`);
         let g = parseInt(gElement.innerText);
         let price = parseInt(pElement.innerText);
-
+        let config = PACK_CONFIG[packId];
         if (g >= price) {
-            document.getElementById('globecount').innerText = g - price;
+            gElement.innerText = g - price;
 
+            newp = Math.floor(price * config.scaling);
 
-            pElement.innerText = Math.floor(price * 1.02);
-
-            document.getElementById('buycolors').innerHTML = `<span>${pendingPurchases} purchases loading...</span><span id="price" style="display: none;">${price}</span>`;
+            btn.innerHTML = `<span>${pendingPurchases + 1} items loading... buy another for ${newp}</span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(syncPurchases, 1000);
+            syncTimeout = setTimeout(() => syncPurchases(packId), 800);
         } else {
             alert("Not enough globes!");
         }
@@ -333,7 +344,7 @@ function viewcolorrates() {
             if (pendingPurchases === 0) return;
             const amountToSync = pendingPurchases;
             pendingPurchases = 0;
-            fetch('/api/v1/transactional/resource-allocation/commit', {
+            fetch(`/api/v1/transactional/resource-allocation/commit/${packId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ batch_count: amountToSync})
@@ -341,9 +352,8 @@ function viewcolorrates() {
             .then(res => res.json())
             .then(data => {
                 if (data.status === "Success") {
-                    document.getElementById('buycolors').innerHTML = `Buy for <span id="price">${data.price}</span> globes`;
+                    document.getElementById(`btn-${packId}`).innerHTML = `Buy for <span id="price-${packId}">${data.price}</span> globes`;
                     document.getElementById('globecount').innerText = data.new_balance;
-                    document.getElementById('price').innerText = data.price;
                     handleVisuals(data.items_won);
 
         }

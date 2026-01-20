@@ -158,7 +158,11 @@ def toggle_panic():
     flag_modified(config, "value")
     db.session.commit()
     return f"Panic Mode: {'ENABLED' if new_state == 1 else 'DISABLED'}"
+PACK_CONFIG = {
+    'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
+    'shape':  {'base_price': 500, 'scaling': 1.0, 'item_type': 'shape'},
 
+}
 #IMPORTANT: ROUTE MAPPING:
 '''
 
@@ -372,22 +376,27 @@ def getiteminfo(id):
         "active": item.active
     }
 
-@app.route('/api/v1/system/scaling/load-coefficient')
-def get_price():
+@app.route('/api/v1/system/scaling/load-coefficient/<pack_id>')
+def get_price(pack_id):
+    config = PACK_CONFIG.get(pack_id)
+    if not config: return jsonify({"error": "Invalid pack"}), 400.
     user = Users.query.get(session.get('userid'))
-    if not user: return jsonify({"price": 150})
-
+    if not user: return jsonify({"price": config['base_price']})
     now = datetime.now(timezone.utc)
-
     if user.last_purchase_time is None or user.last_purchase_time.date() < now.date():
-        user.purchases_today = 0
-        user.last_purchase_time = now
-        db.session.commit()
-    return jsonify({"price": int(150 * (1.02 ** user.purchases_today))})
-@app.route('/api/v1/transactional/resource-allocation/commit', methods=["POST"])
-def purchase():
+        purchases = 0
+    else:
+        purchases = user.purchases_today
+    base = config['base_price']
+    rate = config['scaling']
+    return jsonify({"price": int(base * (rate ** purchases))})
+@app.route('/api/v1/transactional/resource-allocation/commit/<pack_id>', methods=["POST"])
+def purchase(pack_id):
     userid = session.get('userid')
     user = Users.query.get(userid)
+    if not user: return jsonify({"message": "User not found"}), 401
+    config = PACK_CONFIG.get(pack_id)
+    if not config: return jsonify({"message": "Invalid Pack"}), 400
     data = request.get_json(silent=True) or {}
     batch_count = int(data.get('batch_count', 1))
     items_won = []
@@ -400,7 +409,7 @@ def purchase():
         user.last_purchase_time = time
 
         results = db.session.query(Item.item_id, Item.name, Item.weight, Item.info)\
-           .filter(Item.active == True, Item.itemtype == 'color')\
+           .filter(Item.active == True, Item.itemtype == config['item_type'])\
            .order_by(Item.item_id).all()
 
         info = {r.item_id: {"name": r.name, "info": r.info} for r in results}
@@ -409,7 +418,7 @@ def purchase():
         weights = [r.weight for r in results]
 
         for _ in range(batch_count):
-            curr_price = int(150 * (1.02 ** user.purchases_today))
+            curr_price = int(config['base_price'] * (config['scaling'] ** user.purchases_today))
             if user.globes >= curr_price:
                 user.globes -= curr_price
                 user.purchases_today += 1
@@ -430,14 +439,14 @@ def purchase():
                 return jsonify({"status": "Error", "message": "Not enough globes!"}), 401
 
         db.session.commit()
-
+        next_price = int(config['base_price'] * (config['scaling'] ** user.purchases_today))
         return jsonify({
             "status": "Success",
             "new_balance": user.globes,
             "items_won": items_won,
             "won_item_name": items_won[-1]["name"] if items_won else None,
             "info": items_won[-1]["info"] if items_won else "",
-            "price": int(150 * (1.02 ** user.purchases_today))
+            "price": next_price
         })
 
 
