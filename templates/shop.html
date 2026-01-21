@@ -68,7 +68,9 @@
             padding: 2px 10px;
             cursor: pointer;
             margin-top: 0px;
-            width: 180px;
+            min-width: 180px;
+            width: auto;
+            height: auto;
             font-family: "Quicksand", sans-serif;
             font-weight: 700;
             font-size: 0.8rem;
@@ -167,30 +169,59 @@
     #red { background-color: #FF0000; }
     #orange { background-color: #FFA500; }
     #blue { background-color: #1DA6E0; }
-    #green { background-color: #1DE068; }
-       #navbar {
-                width: 200px;
-                display: flex;
-                flex-direction: column;
-                position: fixed;
-                top: 40px;
-                left: 20px;
-                gap: 10px;
-                padding: 0;
-            }
+    #green { background-color: #1DE068; }#navbar {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 40px;
+    left: 20px;
+    gap: 15px; /* Increased gap for a cleaner look */
+    padding: 15px;
+    /* Glassmorphism background to match the shop */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(255, 160, 122, 0.1);
+}
 
-    .btn {
-        width: 100%;
-        padding: 12px;
-        background-color: #9db1b3;
-        color: black;
-        font-size: 18px;
-        border-radius: 10px;
-        border: 4px solid gray;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        cursor: pointer;
-        box-sizing: border-box;
-    }
+.btn {
+    width: 100%;
+    padding: 12px;
+    /* Semi-transparent "Starship" blue-gray */
+    background: rgba(74, 59, 55, 0.1);
+    backdrop-filter: blur(5px);
+
+    /* Sleek typography */
+    color: #4A3B37;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    /* Remove the heavy gray border for a glowing one */
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    outline: 2px solid rgba(255, 255, 255, 0.1);
+
+    /* Soft space-themed shadow */
+    box-shadow: 0 4px 15px rgba(255, 160, 122, 0.2);
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect: "System Online" Glow */
+.btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateX(5px); /* Slides out slightly like a drawer */
+    border-color: #FF8C69; /* Matches your shop's accent color */
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 140, 105, 0.4);
+}
+
     #status-container {
         display: flex;
         flex-direction: column;
