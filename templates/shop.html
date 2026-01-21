@@ -365,7 +365,7 @@ function viewcolorrates() {
             let newp = Math.floor(price * config.scaling);
             pElement.innerText = newp
             btn.innerHTML = `buy for <span id="price-${packId}">${newp}</span> globes`;
-            document.getElementById('pending').innerHtml = `<span id='pending'>${pendingPurchases + 1} items loading... dont make any purchases for 2 seconds to finish.</span>`;
+            document.getElementById('pending').innerHTML = `${pendingPurchases + 1} items loading... dont make any purchases for 2 seconds to finish.`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(() => syncPurchases(packId), 800);
