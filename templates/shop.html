@@ -226,7 +226,7 @@
         display: flex;
         flex-direction: column;
         overflow-y: auto;
-        min-height: 160px;
+        height: 160px;
         margin-top: 10px;
         font-family: 'Quicksand';
         font-size: 0.9rem;
@@ -265,7 +265,7 @@
         <div id="blue" class="innerbox"></div>
         <div id="green" class="innerbox"></div></div>
             <button id="btn-color" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
-            <div id="status-container" style="display: flex; overflow-y: auto; max-height: 150px; margin-top: 10px; font-family: 'Quicksand'; font-size: 0.9rem;">
+            <div id="status-container">
     <div id="status"></div>
 </div></div>
             <div id="colorsbox"><p id="colors-header">Coming<br>Soon!</p></div>
@@ -416,7 +416,7 @@ function handleVisuals(items) {
         entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
 
 
-        list.prepend(entry);
+        list.appendChild(entry);
 
 
         container.scrollTop = container.scrollHeight;
