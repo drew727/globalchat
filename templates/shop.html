@@ -331,7 +331,7 @@ function viewcolorrates() {
             gElement.innerText = g - price;
 
             let newp = Math.floor(price * config.scaling);
-            pElemnt.innerText = newp
+            pElement.innerText = newp
             btn.innerHTML = `<span>${pendingPurchases + 1} items loading... buy another for <span id="price-${packId}">${newp}</span></span>`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
