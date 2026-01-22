@@ -292,10 +292,12 @@
             <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
             <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Cube.jpeg');"></div>
             <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Circle.jpeg');"></div>
-            <button id="btn-shape" class="buybtn" onclick="purchase('shape')">
-                Buy for <span id="price-shape">500</span> globes
-            </button>
+
         </div>
+        <button id="btn-shape" class="buybtn" onclick="purchase('shape')">
+            Buy for <span id="price-shape">500</span> globes
+        </button>
+
         <div class="previewbox">
             <p id="colors-header">More<br> Coming Soon!</p>
         </div>
@@ -310,7 +312,7 @@
 
     let pendingPurchases = 0;
     let syncTimeout;
-    PACK_CONFIG = {
+    const PACK_CONFIG = {
         'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
         'shape':  {'base_price': 500, 'scaling': 1.0, 'item_type': 'shape'},
     }
