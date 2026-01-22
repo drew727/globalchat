@@ -6,121 +6,131 @@
     <script src="/static/DragDropTouch.js"></script>
 
     <style>
-        body {
-    background: linear-gradient(135deg, #FFFBF5, #FFDCD2);
-    font-family: 'Quicksand', sans-serif;
-    margin: 0;
-    min-height: 100vh;
+        #inv-grid {
+            display: flex;
+            flex-direction: column;
+            flex-wrap: wrap;
+            align-content: flex-start;
+            height: 100vh;
+            max-height: 400px;
+            box-sizing: border-box;
+            overflow-y: hidden;
+            gap: 15px;
+            padding: 20px;
+            margin-left: 240px;
+
+
+        }
+        .item {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .swatch {
+            border: 2px solid rgba(0,0,0,0.6);
+            transition: transform 0.1s;
+            cursor: grab;
+            background-color: currentColor;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+            touch-action: none;
+            -webkit-user-drag: element;
+            -webkit-touch-callout: none;
+        }
+        .swatch:hover { transform: scale(1.1); }
+
+        .ct {
+        position: absolute;
+        background: white;
+        color: black;
+        font-size: 8px;
+        padding: 1px 4px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        pointer-events: none;
+        }
+        .rarity-ct { top: -5px; left: -5px; }
+        .amount-ct { bottom: -5px; right: -5px; }
+
+            #navbar {
+                width: 200px;
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 40px;
+                left: 20px;
+                gap: 10px;
+                padding: 0;
+            }
+
+    .btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #9db1b3;
+        color: black;
+        font-size: 18px;
+        border-radius: 10px;
+        border: 4px solid gray;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+    .swatch:active {
+        cursor: grabbing;
+        transform: scale(0.95);
+    }
+    .zone-container {
+        position: fixed;
+        right: 450px;
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        z-index: 1000;
+    }
+    @keyframes breathe {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
 }
 
-/* Modernized Grid */
-#inv-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-    gap: 20px;
-    padding: 40px;
-    margin-left: 240px;
-    margin-right: 350px; /* Leave space for zones */
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    min-height: 80vh;
-}
-
-/* Item Styling */
-.item {
-    position: relative;
-    width: 65px;
-    height: 65px;
-}
-
-.swatch {
-    width: 100% !important;
-    height: 100% !important;
-    border-radius: 15px !important;
-    border: 2px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    background-size: cover !important;
-    background-position: center !important;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.swatch:hover {
-    transform: scale(1.15) rotate(3deg);
-    z-index: 10;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* Modern Labels */
-.ct {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.9);
-    color: #4A3B37;
-    font-weight: bold;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 6px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    z-index: 5;
-}
-
-/* Navbar Consistency */
-#navbar {
-    width: 200px;
+    #dropzone, #sellzone {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: sans-serif;
+        font-weight: bold;
+        padding: 15px;
+        box-sizing: border-box;
+        transition: transform 0.2s;
+    }
+#globecount {
     position: fixed;
-    top: 40px;
-    left: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    top: 20px;
+    right: 20px;
 }
-
-.btn {
-    width: 100%;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 12px;
-    font-family: 'Quicksand', sans-serif;
-    font-weight: 700;
-    color: #4A3B37;
-    cursor: pointer;
-    transition: 0.3s;
+#globecount::before {
+    content: '/static/download-removebg-preview.png';
+    font-size: 1.2em;
 }
+    #dropzone {
+        border: 4px dashed black;
+        background: rgba(255, 255, 255, 0.2);
+    }
 
-.btn:hover {
-    background: white;
-    transform: translateX(5px);
-}
-
-/* Drop Zones */
-.zone-container {
-    position: fixed;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 220px;
-}
-
-#dropzone, #sellzone {
-    width: 100%;
-    height: 200px;
-    margin-bottom: 20px;
-    border-radius: 24px;
-    border: 3px dashed rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-    transition: 0.3s;
-}
-
-#dropzone { background: rgba(255, 255, 255, 0.3); }
-#sellzone { background: rgba(255, 68, 68, 0.1); border-color: rgba(255, 68, 68, 0.3); }
-    </style>
+    #sellzone {
+        border: 4px dashed #ff4444;
+        background: rgba(255, 68, 68, 0.1);
+    }
+        </style>
 </head>
 
 <body><div id="navbar">
@@ -279,19 +289,18 @@
                     content = 'AAAA';
                     style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
                 }
-               // Replace the return inside sortedItems.map in your get_inv function:
-
-return `
+                return `
     <div class="item">
         <div class="swatch"
              draggable="true"
              data-name="${item.name}"
-             style="${style};">
-             ${style.includes('url') ? '' : `<span style="pointer-events: none; font-size: 10px; color: rgba(255,255,255,0.8)">${content}</span>`}
+             style="${style}; width: 50px; height: 50px; border-radius: 12px; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
+             <span style="pointer-events: none;">${content}</span>
         </div>
         <div class="ct rarity-ct">T${item.rarity}</div>
-        <div class="ct amount-ct">x${item.count}</div>
-    </div>`;
+        <div class="ct amount-ct">${item.count}</div>
+    </div>`;}).join('');
+
             }
         });
     }
