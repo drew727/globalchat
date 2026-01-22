@@ -7,20 +7,16 @@
 
     <style>
         #inv-grid {
-            display: flex;
-            flex-direction: column;
-            flex-wrap: wrap;
-            align-content: flex-start;
-            height: 100vh;
-            max-height: 400px;
-            box-sizing: border-box;
-            overflow-y: hidden;
-            gap: 15px;
-            padding: 20px;
-            margin-left: 240px;
-
-
-        }
+    display: grid; /* Change from flex to grid */
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Auto-fitting squares */
+    gap: 15px;
+    padding: 20px;
+    margin-left: 240px;
+    margin-right: 400px; /* Make sure it doesn't overlap your zones */
+    height: auto; /* Allow it to grow down */
+    max-height: none;
+    overflow-y: auto; /* Scroll down if there are too many items */
+}
         .item {
             position: relative;
             width: 50px;
