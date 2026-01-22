@@ -61,7 +61,7 @@
             margin-bottom: 5px;
 
         }
-        #btn-color {
+        #buybtn {
 
             border: 1px solid rgba(255, 255, 255, 0.9);
             outline: 4px solid rgba(255, 255, 255, 0.2);
@@ -88,6 +88,7 @@
             transition: all 0.3s ease-in-out;
             position: relative;
     }
+
     #globes {
         position: fixed;
         top: 0px;
@@ -111,7 +112,7 @@
         color: #4A3B37;
         margin-bottom: 5px;
     }
-    #btn-color:hover {
+    #buybtn:hover {
         transform: translateY(-2px) scale(1.02);
         box-shadow:
         0 4px 15px rgba(255, 255, 255, 0.5),
@@ -119,7 +120,7 @@
     }
 
 
-    #btn-color:active {
+    #buybtn:active {
         transform: translateY(1px);
         box-shadow: 0 4px 15px rgba(255, 160, 122, 0.4);
     }
@@ -160,6 +161,8 @@
         width: 65px;
         margin: 0;
         height: 65px;
+        background-size: cover
+        background-position: center;
         border-radius: 15%;
         border: 2px solid rgba(255, 255, 255, 0.6);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -270,8 +273,8 @@
         <div id="orange" class="innerbox"></div>
         <div id="blue" class="innerbox"></div>
         <div id="green" class="innerbox"></div></div>
-            <button id="btn-color" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
-            <button id="btn-shape" onclick="purchase('shape')">Buy for <span id="price-shape"></span> globes</button>
+            <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
+            <button id="btn-shape" class="buybtn" onclick="purchase('shape')">Buy for <span id="price-shape"></span> globes</button>
             <div id="status-container">
     <div id="status"></div>
 </div></div>
@@ -421,7 +424,7 @@ function handleVisuals(items) {
 
         entry.style.padding = "5px";
         entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
-        document.getElementById('pending').innerHTML = `${items - (i-1)} items loading... refrain from purchasing for the next few seconds to finish.`;
+        document.getElementById('pending').innerHTML = `${items.length - i} items loading... refrain from purchasing for the next few seconds to finish.`;
 
         list.appendChild(entry);
 
