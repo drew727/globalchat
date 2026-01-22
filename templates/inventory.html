@@ -279,18 +279,19 @@
                     content = 'AAAA';
                     style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
                 }
-                return `
+               // Replace the return inside sortedItems.map in your get_inv function:
+
+return `
     <div class="item">
         <div class="swatch"
              draggable="true"
              data-name="${item.name}"
-             style="${style}; width: 50px; height: 50px; border-radius: 12px; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
-             <span style="pointer-events: none;">${content}</span>
+             style="${style};">
+             ${style.includes('url') ? '' : `<span style="pointer-events: none; font-size: 10px; color: rgba(255,255,255,0.8)">${content}</span>`}
         </div>
         <div class="ct rarity-ct">T${item.rarity}</div>
-        <div class="ct amount-ct">${item.count}</div>
-    </div>`;}).join('');
-
+        <div class="ct amount-ct">x${item.count}</div>
+    </div>`;
             }
         });
     }
