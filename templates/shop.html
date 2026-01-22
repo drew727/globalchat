@@ -253,7 +253,7 @@
         </style>
     </head>
     <body>
-         <div id="navbar">
+    <div id="navbar">
     <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
     <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Chat!</strong></button>
     <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
@@ -266,15 +266,35 @@
             <div id="globes">
             <p>Globes: <span id="globecount">loading...</span><img src="/static/download-removebg-preview.png" width='30px' height='30px'></p>
             </div>
+
             <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div id="colorsbox">
-                <p id="colors-header">Color Pack<button id="colorratesbutton" onclick="viewcolorrates()">View Rates</button></p>
-        <div id="red" class="innerbox"></div>
-        <div id="orange" class="innerbox"></div>
-        <div id="blue" class="innerbox"></div>
-        <div id="green" class="innerbox"></div></div>
-            <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
-            <button id="btn-shape" class="buybtn" onclick="purchase('shape')">Buy for <span id="price-shape"></span> globes</button>
+                <div id="colorsbox">
+                    <p id="colors-header">Color Pack
+                    <button id="colorratesbutton" onclick="viewcolorrates()">View Rates</button></p>
+                    <div id="red" class="innerbox"></div>
+                    <div id="orange" class="innerbox"></div>
+                    <div id="blue" class="innerbox"></div>
+                    <div id="green" class="innerbox"></div></div>
+                    <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <div id="shapesbox">
+                    <p id="colors-header">
+                        Shape Pack
+                        <button id="colorratesbutton" onclick="viewshaperates()">Rates</button>
+                    </p>
+
+                    <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Tesseract.webp');"></div>
+                    <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
+                    <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Cube.jpeg');"></div>
+                    <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Circle.jpeg');"></div>
+                    <button id="btn-shape" class="buybtn" onclick="purchase('shape')">
+                        Buy for <span id="price-shape">500</span> globes
+                    </button>
+                    </div>
+
+
+</div>
             <div id="status-container">
     <div id="status"></div>
 </div></div>
