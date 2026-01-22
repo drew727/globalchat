@@ -155,7 +155,8 @@
         cursor: pointer;
         margin-left: 5px;
         padding: 2px 6px;
-        width, height: 1.5em;
+        width: 1.5em;
+        height: 1.5em;
     }
     .innerbox {
         width: 65px;
@@ -295,13 +296,16 @@
                 Buy for <span id="price-shape">500</span> globes
             </button>
         </div>
+        <div class="previewbox">
+            <p id="colors-header">More<br> Coming Soon!</p>
+        </div>
+        <span class="buybtn" id="pending">0 items loading...</span>
+
     </div>
     <div id="status-container">
         <div id="status"></div>
     </div>
-    <div class="previewbox"><p id="colors-header">More<br> Coming Soon!</p></div>
-        <span id="pending">0 items loading...</span>
-    </div>
+
     <script>
 
     let pendingPurchases = 0;
