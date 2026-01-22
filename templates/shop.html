@@ -372,7 +372,7 @@ function viewcolorrates() {
             let newp = Math.floor(price * config.scaling);
             pElement.innerText = newp
             btn.innerHTML = `buy for <span id="price-${packId}">${newp}</span> globes`;
-            document.getElementById('pending').innerHTML = `${pendingPurchases + 1} items loading... dont make any purchases for 2 seconds to finish.`;
+            document.getElementById('pending').innerHTML = `${pendingPurchases + 1} items loading... refrain from purchasing for the next few seconds to finish.`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
             syncTimeout = setTimeout(() => syncPurchases(packId), 800);
@@ -421,7 +421,7 @@ function handleVisuals(items) {
 
         entry.style.padding = "5px";
         entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
-
+        document.getElementById('pending').innerHTML = `${items - (i-1)} items loading... refrain from purchasing for the next few seconds to finish.`;
 
         list.appendChild(entry);
 
