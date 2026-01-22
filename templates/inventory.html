@@ -117,10 +117,7 @@
     top: 20px;
     right: 20px;
 }
-#globecount::before {
-    content: '/static/download-removebg-preview.png';
-    font-size: 1.2em;
-}
+
     #dropzone {
         border: 4px dashed black;
         background: rgba(255, 255, 255, 0.2);
@@ -149,7 +146,7 @@
     <div id="sellzone">
         Drag Color Here <br> To SELL
     </div></div>
-    <div id="globecount"></div>
+    <img id="globecount" src="/static/download-removebg-preview.png"><div id="globecount"></div>
     <script>
     let dragging = false;
     let justEquipped = false;
@@ -243,6 +240,20 @@
             setTimeout(() => { justEquipped = false; }, 2000)
         }
     });
+    function equipItem(name, color) {
+        fetch('/sys/env/runtime/ui-configuration/set-preference', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_name: name })
+        });
+
+        const dropZone = document.getElementById("dropzone");
+        dropZone.style.background = color;
+        document.body.style.background = color;
+        dropZone.innerText = `Equipped: ${name}`;
+        justEquipped = true;
+        setTimeout(() => { justEquipped = false; }, 2000);
+    }
     function get_inv() {
 
         if (dragging || justEquipped) return;
@@ -294,6 +305,7 @@
         <div class="swatch"
              draggable="true"
              data-name="${item.name}"
+             onclick="equipItem('${item.name}', '${style}')"
              style="${style}; width: 50px; height: 50px; border-radius: 12px; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
              <span style="pointer-events: none;">${content}</span>
         </div>
