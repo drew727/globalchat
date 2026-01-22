@@ -278,9 +278,18 @@
             dz.style.color = "white";
             }
 
+
             const ctn = document.getElementById('inv-grid');
             if (ctn && data.items) {
-                const sortedItems = data.items.sort((a, b) => b.weight - a.weight);
+                const sortedItems = data.items.sort(data.items.sort((a, b) => {
+                    const ta = a.itemtype === 'color' ? 1 : 2;
+                    const tb = b.itemtype === 'color' ? 1 : 2;
+
+    if (ta !== tb) {
+        return ta - tb;
+    }
+    return b.weight - a.weight;
+}););
                     ctn.innerHTML = sortedItems.map(item =>
                 {
                 let content = "";
