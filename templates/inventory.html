@@ -299,7 +299,7 @@
                     ctn.innerHTML = sortedItems.map(item =>
                 {
                 let content = "";
-                let style = decodeURIComponent(item.info);
+                let style = item.info;
                 const isImage = style.includes("url(");
                 if (item.name === "Deep_Sea" || item.info.includes("breathe")) {
                     style = "color: #000080; background-color: #000080; font-weight: 800;";
