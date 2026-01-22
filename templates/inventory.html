@@ -7,16 +7,16 @@
 
     <style>
         #inv-grid {
-    display: grid; /* Change from flex to grid */
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Auto-fitting squares */
-    gap: 15px;
-    padding: 20px;
-    margin-left: 240px;
-    margin-right: 400px; /* Make sure it doesn't overlap your zones */
-    height: auto; /* Allow it to grow down */
-    max-height: none;
-    overflow-y: auto; /* Scroll down if there are too many items */
-}
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            margin-left: 240px;
+            margin-right: 400px;
+            height: auto;
+            max-height: none;
+            overflow-y: auto;
+        }
         .item {
             position: relative;
             width: 50px;
@@ -97,7 +97,7 @@
     #dropzone, #sellzone {
         width: 180px;
         height: 180px;
-        border-radius: 50%;
+        border-radius: 10%;
         display: flex;
         align-items: center;
         justify-content: center;
