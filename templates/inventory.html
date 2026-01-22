@@ -146,7 +146,9 @@
     <div id="sellzone">
         Drag Color Here <br> To SELL
     </div></div>
-    <img id="globecount" src="/static/download-removebg-preview.png"><div id="globecount"></div>
+    <img style="position: fixed;
+    top: 20px;
+    right: 25px;" src="/static/download-removebg-preview.png"><div id="globecount"></div>
     <script>
     let dragging = false;
     let justEquipped = false;
@@ -297,7 +299,7 @@
                     ctn.innerHTML = sortedItems.map(item =>
                 {
                 let content = "";
-                let style = item.info;
+                let style = decodeURIComponent(item.info);
                 if (item.name === "Deep_Sea" || item.info.includes("breathe")) {
                     style = "color: #000080; background-color: #000080; font-weight: 800;";
                     content = 'AAAA';
