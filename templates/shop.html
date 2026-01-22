@@ -285,32 +285,34 @@
             </p>
         </div>
 
-
-        <div class="previewbox">
-            <p class="pack-header">Color Pack
-                <button id="colorratesbutton" onclick="viewcolorrates()">View Rates</button>
-            </p>
-            <div id="red" class="innerbox"></div>
-            <div id="orange" class="innerbox"></div>
-            <div id="blue" class="innerbox"></div>
-            <div id="green" class="innerbox"></div>
+        <div class="package-container">
+            <div class="previewbox">
+                <p class="pack-header">Color Pack
+                    <button id="colorratesbutton" onclick="viewcolorrates()">View Rates</button>
+                </p>
+                <div id="red" class="innerbox"></div>
+                <div id="orange" class="innerbox"></div>
+                <div id="blue" class="innerbox"></div>
+                <div id="green" class="innerbox"></div>
+            </div>
+            <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
         </div>
-        <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
+        <div class="package-container">
+            <div class="previewbox">
+                <p class="pack-header">
+                    Shape Pack
+                    <button id="colorratesbutton" onclick="viewshaperates()">Rates</button>
+                </p>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Tesseract.webp');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Cube.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Circle.jpeg');"></div>
 
-        <div class="previewbox">
-            <p class="pack-header">
-                Shape Pack
-                <button id="colorratesbutton" onclick="viewshaperates()">Rates</button>
-            </p>
-            <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Tesseract.webp');"></div>
-            <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
-            <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Cube.jpeg');"></div>
-            <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Circle.jpeg');"></div>
-
-        </div>
+            </div>
         <button id="btn-shape" class="buybtn" onclick="purchase('shape')">
             Buy for <span id="price-shape">500</span> globes
         </button>
+        </div>
 
         <div class="previewbox">
             <p id="colors-header">More<br> Coming Soon!</p>
