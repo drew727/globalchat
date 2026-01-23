@@ -179,9 +179,11 @@ def toggle_panic():
     flag_modified(config, "value")
     db.session.commit()
     return f"Panic Mode: {'ENABLED' if new_state == 1 else 'DISABLED'}"
+
 PACK_CONFIG = {
     'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
     'shape':  {'base_price': 1000, 'scaling': 1.0, 'item_type': 'shape'},
+    'elements':  {'base_price': 900, 'scaling': 1.0, 'item_type': 'element'},
 
 }
 #IMPORTANT: ROUTE MAPPING:
