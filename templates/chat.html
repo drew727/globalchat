@@ -38,7 +38,6 @@ background-attachment: fixed;
     }
 
     p {
-        filter: blur(0.30px);
         margin: 0 0;
         padding: 4px 7px;
         border-left: 3px solid #46dde8;
@@ -109,6 +108,16 @@ background-attachment: fixed;
     font-size: 1.1em;
     letter-spacing: 1.5px;
     animation: rainbow-flash 3s linear infinite;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
+
+.announcement {
+
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    animation: announcementPulse 3s linear infinite;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
     paint-order: stroke fill;
 }
@@ -384,9 +393,9 @@ function updateMessages() {
                     imgS = msg.imageinfo
 
                 }
-
-
-
+                if (msg.colorinfo && msg.colorinfo.includes("announcementPulse")) {
+                    rainbow = "announcement";
+                }
                 chatbox.innerHTML += `
                 <div class="text-container">
                     <div class="img-box" style="${imgS}"></div><p class="${rainbow}" style="${style}">
