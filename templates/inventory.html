@@ -244,6 +244,7 @@
         dragging = false;
 
     });
+
     document.addEventListener('drop', (e) => {
 
         e.preventDefault();
@@ -251,6 +252,7 @@
 
         const dropZone = document.getElementById("dropzone");
         const sellZone = document.getElementById("sellzone");
+        const sellAllZone = document.getElementById("sellallzone");
         const imageZone = document.getElementById("imagezone");
         const isSellAllz = e.target.closest('#sellallzone') !== null;
         const isSellz = e.target.closest('#sellzone') !== null;
