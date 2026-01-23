@@ -299,13 +299,13 @@ background-attachment: fixed;
                 }
                 fetch('/api/v1/internal/transport/buffer/stream-push', {
                     method: 'POST',
-                    //username=${encodeURIComponent(username)}&
                     body: `message_text=${encodeURIComponent(message)}&room_id=0`,
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'}
                 }).then(() => {
                     document.getElementById('message_text').value = '';
                     isnewmessage = true
                     updateMessages();
+                    setTimeout(updateMessages, 200);
                 });
                 setTimeout(() => {
                     chatbox.scrollTo({
