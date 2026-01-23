@@ -323,8 +323,8 @@
                     <button class="rates-btn" onclick="viewitemrates('element')">View Rates</button>
                 </p>
                 <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Bismuth.jpeg');"></div>
-                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elememts/Carbon.jpeg');"></div>
-                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/objecy/public/Elements/Magnesium.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Carbon.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Magnesium.jpeg');"></div>
                 <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Uranium.jpeg');"></div>
 
             </div>
@@ -430,7 +430,7 @@ async function viewitemrates(packType) {
 
             let newp = Math.floor(price * config.scaling);
             pElement.innerText = newp
-            btn.innerHTML = `buy for <span id="price-${packId}">${newp}</span> globes`;
+            btn.innerHTML = `Buy for <span id="price-${packId}">${newp}</span> globes`;
             document.getElementById('pending').innerHTML = `${pendingPurchases + 1} items loading... refrain from purchasing for the next few seconds to finish.`;
             pendingPurchases++;
             clearTimeout(syncTimeout);
