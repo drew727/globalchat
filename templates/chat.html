@@ -144,15 +144,29 @@ background-attachment: fixed;
                 margin-bottom: 5px;
             }
             .img-box {
-                width: 32px;
-                height: 32px;
-                border-radius: 25%;
-                flex-shrink: 0;
-                background-size: cover;
-                background-position: center;
-                background-color: #1b3d54;
+                width: 40px;
+                height: 40px;
+                background-color: black;
                 border: 1px solid rgba(70, 221, 232, 0.3);
+                border-radius: 4px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                position: relative;
             }
+
+
+        .img-box::after {
+            content: "";
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-image: inherit;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
             #send {
                 background-color: #69C98C;
                 border-radius: 50px;
