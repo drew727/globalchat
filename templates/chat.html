@@ -232,6 +232,7 @@ background-attachment: fixed;
             if (window.location.protocol === 'http:') {
                 window.location.replace(window.location.href.replace('http:', 'https:'));
             }
+            const input = document.getElementById('message_text');
             let isFetching = false;
             let lastFetchTime = 0;
             function smartUpdate() {
@@ -260,7 +261,6 @@ background-attachment: fixed;
             });
 
             document.querySelector('emoji-picker').addEventListener('emoji-click', event => {
-                const input = document.getElementById('message_text');
                 input.value += event.detail.unicode;
                 input.focus();
             });
