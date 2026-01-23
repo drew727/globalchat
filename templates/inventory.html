@@ -145,7 +145,11 @@
     </div>
     <div id="sellzone">
         Drag Color Here <br> To SELL
-    </div></div>
+    </div>
+    <div id="imagezone" style="width: 180px; height: 180px; border: 4px dashed blue; border-radius: 10%; display: flex; align-items: center; justify-content: center; text-align: center; font-family: sans-serif; font-weight: bold; background: rgba(0, 0, 255, 0.1);">
+    Drag Image To Equip
+</div>
+</div>
     <img style="position: fixed;
     top: 20px;
     right: 25px;" src="/static/download-removebg-preview.png"><div id="globecount"></div>
@@ -183,12 +187,13 @@
             dragging = true;
             e.dataTransfer.setData("text/plain", e.target.dataset.name)
             const style = window.getComputedStyle(e.target);
-            let color = style.backgroundImage !== "none" ? style.backgroundImage : style.backgroundColor;
-            if (color === 'rgba(0, 0, 0, 0)' || color === 'transparent') {
-                color = style.color;
-            }
+            const isImage = style.backgroundImage !== "none";
+            let content = isImage ? style.backgroundImage : style.backgroundColor;
+            /*if (content === 'rgba(0, 0, 0, 0)' || content === 'transparent') {
+                content = style.color;
+            }*/
 
-           e.dataTransfer.setData("color", color);
+           e.dataTransfer.setData("visual", content);
 
        }
 
@@ -208,11 +213,16 @@
 
         const dropZone = document.getElementById("dropzone");
         const sellZone = document.getElementById("sellzone");
-        const isSell = e.target.closest('#sellzone') !== null;
-        const name = e.dataTransfer.getData("text/plain");
-        const color = e.dataTransfer.getData("color");
+        const imageZone = document.getElementById("imagezone");
+        const isSellz = e.target.closest('#sellzone') !== null;
+        const isDropz = e.target.closest('#dropzone') !== null;
+        const isImagez = e.target.closest('#imagezone') !== null;
 
-        if (isSell) {
+        const name = e.dataTransfer.getData("text/plain");
+        //const color = e.dataTransfer.getData("color");
+    //    const image = e.dataTransfer.getData("background-image");
+        const visual = e.dataTransfer.getData("visual");
+        if (isSellz) {
             fetch('/api/v1/assets/liquidation/deprovision-resource', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -223,23 +233,39 @@
             })
             setTimeout(() => { sellZone.innerHTML = "Drag Color Here <br> To SELL";}, 2000);
 
-        } else {
+        } else if (isDropz)
             fetch('/sys/env/runtime/ui-configuration/set-preference', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item_name: name })
             })
-            dropZone.style.background = color;
-            document.body.style.background = color;
-            dropZone.style.backgroundClip = "border-box";
-            dropZone.style.webkitBackgroundClip = "border-box";
+            //dropZone.style.background = color;
+        //    document.body.style.background = color;
+            dropZone.style.background = visual;
+            document.body.style.background = visual;
+      //      dropZone.style.backgroundClip = "border-box";
+    //        dropZone.style.webkitBackgroundClip = "border-box";
             dropZone.style.webkitTextStroke = "2px black";
             dropZone.style.paintOrder = "stroke fill";
             dropZone.style.color = "white";
             dropZone.innerText = `Equipped: ${name}`;
             dropZone.style.color = "#fff";
             justEquipped = true;
-            setTimeout(() => { justEquipped = false; }, 2000)
+            setTimeout(() => { justEquipped = false; }, 1000)
+        } else if  (isImagez) {
+            fetch('/sys/env/runtime/ui-configuration/set-image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            })
+            imageZone.style.background = "none";
+            imageZone.style.backgroundImage = visual;
+            imageZone.style.backgroundSize = "cover";
+            imageZone.style.backgroundPosition = "center";
+
+            imageZone.innerText = "";
+            justEquipped = true;
+            setTimeout(() => { justEquipped = false; }, 1000)
         }
     });
     function equipItem(name, color) {

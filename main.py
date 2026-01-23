@@ -51,6 +51,7 @@ class Users(db.Model):
     globes = db.Column(db.Integer, default=0)
     cbc = db.Column(db.BigInteger, default=0)
     equipped_color = db.Column(db.String(20), default="Black")
+    equipped_image = db.Column(db.String(200), default=None)
     purchases_today = db.Column(db.Integer, default=0)
     last_purchase_time = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     total_clicks = db.Column(db.Integer, default=0)
@@ -562,6 +563,17 @@ def equip_color():
         color = color.get('item_name')
         if color:
             user.equipped_color = color
+            db.session.commit()
+        return jsonify({"status": "Success"})
+@app.route('/sys/env/runtime/ui-configuration/set-image', methods=["POST"])
+def equip_image():
+    uid = session.get('userid')
+    user = Users.query.get(uid)
+    if user:
+        image = request.get_json()
+        image = image.get('item_name')
+        if image:
+            user.equipped_image = image
             db.session.commit()
         return jsonify({"status": "Success"})
 @app.route('/api/v1/assets/liquidation/deprovision-resource', methods=["POST"])
