@@ -36,6 +36,7 @@ background-attachment: fixed;
         height: 450px;
         overflow-y: auto;
     }
+
     p {
         filter: blur(0.30px)
         margin: 0 0;
@@ -48,6 +49,12 @@ background-attachment: fixed;
             color: #e0e0e0;
         word-wrap: break-word;
         -webkit-font-smoothing: antialiased;
+}
+@keyframes announcementPulse {
+    0% { transform: translateY(-50%) scaleX(0); opacity: 0; }
+    10% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+    90% { transform: translateY(-50%) scaleX(1); opacity: 1; }
+    100% { transform: translateY(-50%) scaleX(0); opacity: 0; }
 }
 @keyframes flow {
     from { background-position: 0% center; }
