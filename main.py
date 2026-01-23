@@ -96,6 +96,20 @@ class ClickCount(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, default=1)
 
+
+
+@app.before_request
+def force_ssl_param():
+    if request.headers.get('X-Forwarded-Proto') == 'http':
+        url = request.url
+        if '?' in url:
+            return redirect(f"{url}&ssl_required=true", code=301)
+        else:
+            return redirect(f"{url}?ssl_required=true", code=301)
+
+
+
+
 @app.route('/')
 def route():
     session.permanent = True
