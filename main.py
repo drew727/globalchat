@@ -453,7 +453,8 @@ def purchase(pack_id):
             curr_price = int(config['base_price'] * (config['scaling'] ** user.purchases_today))
             if user.globes >= curr_price:
                 user.globes -= curr_price
-                user.purchases_today += 1
+                if pack_id == "color":
+                    user.purchases_today += 1
                 bought_id = rng.choices(item_ids, weights=weights, k=1)[0]
                 items_won.append({
                     "name": info[bought_id]["name"],
