@@ -49,10 +49,10 @@ background-attachment: fixed;
         -webkit-font-smoothing: antialiased;
 }
 @keyframes announcementPulse {
-    0% { transform: translateY(4px) scaleX(0); opacity: 0; }
-    10% { transform: translateY(4px) scaleX(1); opacity: 1; }
-    70% { transform: translateY(4px) scaleX(1); opacity: 1; }
-    100% { transform: translateY(4px) scaleX(0); opacity: 0; }
+    0% { transform: translateY(20px) scaleX(0); opacity: 0; }
+    10% { transform: translateY(20px) scaleX(1); opacity: 1; }
+    70% { transform: translateY(20px) scaleX(1); opacity: 1; }
+    100% { transform: translateY(20px) scaleX(0); opacity: 0; }
 }
 @keyframes flow {
     from { background-position: 0% center; }
@@ -118,7 +118,7 @@ background-attachment: fixed;
     font-size: 1.1em;
     letter-spacing: 1.5px;
     animation: announcementPulse 2s linear infinite;
-    transform-origin: center left;
+    transform-origin: center;
     -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
     paint-order: stroke fill;
 }
