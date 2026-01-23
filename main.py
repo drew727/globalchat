@@ -23,7 +23,10 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_recycle": 300,
     "pool_size": 5,
     "max_overflow": 10,
-    "pool_timeout": 30
+    "pool_timeout": 30,
+    "connect_args": {
+        "sslmode": "require"
+    }
 }
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
