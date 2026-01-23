@@ -14,7 +14,7 @@
             padding: 20px;
             margin-left: 280px;
             margin-right: 300px;
-            margin-top: 15%;
+            margin-top: 5%;
             height: auto;
             max-height: none;
             overflow-y: auto;
@@ -338,19 +338,28 @@
                 let eqs = data.equipped_info;
                 if (eqs === "TRIGGER:rainbow;") {
                     eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
+                }
+                else if (eqs.includes("background")) {
+                const temp = document.createElement('div');
+                temp.style.cssText = eqs;
+                eqs = temp.style.background || temp.style.backgroundColor || eqs;
             }
 
-
             document.body.style.background = eqs;
+            document.body.style.backgroundSize = "cover";
             document.body.style.backgroundClip = "border-box";
             document.body.style.webkitBackgroundClip = "border-box";
 
-
-            dz.style.background = eqs;
-            dz.style.backgroundClip = "border-box";
+            dz.style.cssText = `
+                width: 160px; height: 160px; border-radius: 15px;
+                display: flex; align-items: center; justify-content: center;
+                text-align: center; font-weight: bold; padding: 10px;
+                box-sizing: border-box; transition: all 0.3s;
+                background: ${eqs};
+                -webkit-text-stroke: 2px black;
+                color: white;
+            `;
             dz.innerText = `Equipped: ${data.equipped_item}`;
-            dz.style.webkitTextStroke = "2px black";
-            dz.style.color = "white";
             }
 
 
