@@ -196,11 +196,7 @@
             const style = window.getComputedStyle(e.target);
             const isImage = style.backgroundImage !== "none";
             let content = isImage ? style.backgroundImage : style.backgroundColor;
-            /*if (content === 'rgba(0, 0, 0, 0)' || content === 'transparent') {
-                content = style.color;
-            }*/
-
-           e.dataTransfer.setData("visual", content);
+            e.dataTransfer.setData("visual", content);
 
        }
 
@@ -224,9 +220,10 @@
         const isSellz = e.target.closest('#sellzone') !== null;
         const isDropz = e.target.closest('#dropzone') !== null;
         const isImagez = e.target.closest('#imagezone') !== null;
-        const isImage = visual.includes("url(");
+
         const name = e.dataTransfer.getData("text/plain");
         const visual = e.dataTransfer.getData("visual");
+        const isImage = visual.includes("url(");
         if (isSellz) {
 
             fetch('/api/v1/assets/liquidation/deprovision-resource', {
