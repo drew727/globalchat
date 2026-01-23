@@ -20,9 +20,10 @@ banned = [129, 130, 131, 132, 105]
 app = Flask(__name__)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_pre_ping": True,
-    "pool_recycle": 280,
-    "pool_size": 1,
-    "max_overflow": 0
+    "pool_recycle": 300,
+    "pool_size": 5,
+    "max_overflow": 10,
+    "pool_timeout": 30
 }
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
