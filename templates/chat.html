@@ -232,6 +232,19 @@ background-attachment: fixed;
             if (window.location.protocol === 'http:') {
                 window.location.replace(window.location.href.replace('http:', 'https:'));
             }
+            let isFetching = false;
+            let lastFetchTime = 0;
+            function smartUpdate() {
+                const now = Date.now();
+                if (isFetching || (now - lastFetchTime < 2000)) return;
+
+                isFetching = true;
+                updateMessages();
+                lastFetchTime = now;
+                isFetching = false;
+            }
+            input.addEventListener('focus', smartUpdate);
+            input.addEventListener('input', smartUpdate);
             const etrigger = document.querySelector('#emoji-trigger');
             const epicker = document.querySelector('#picker');
 
@@ -298,7 +311,10 @@ background-attachment: fixed;
                     updateMessages();
                 });
                 setTimeout(() => {
-                    chatbox.scrollTop = chatbox.scrollHeight;
+                    chatbox.scrollTo({
+                        top: chatbox.scrollHeight,
+                        behavior: 'smooth'
+                        });
                 }, 40);
 
 
@@ -345,18 +361,16 @@ function updateMessages() {
         });
 }
 
-        function panicRedirect() {
+        (function activityLoop() {
+                if (!document.hidden) {
+                    smartUpdate();
+                }
 
-        }
-            (function loop() {
+                const jitter = Math.floor(Math.random() * 30000) + 15000;
+                setTimeout(activityLoop, jitter);
+            })();
 
-                const rand = Math.round(Math.random() * 15000) + 50000;
-                setTimeout(() => {
-                updateMessages();
-                panicRedirect
-                    loop();
-            }, rand);
-            }());
+
         </script>
     </body>
     </html>
