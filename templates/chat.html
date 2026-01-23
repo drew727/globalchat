@@ -137,6 +137,22 @@ background-attachment: fixed;
                 width: 400px;
                 height: 30px;
             }
+            .text-container {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 5px;
+            }
+            .img-box {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                flex-shrink: 0;
+                background-size: cover;
+                background-position: center;
+                background-color: #1b3d54;
+                border: 1px solid rgba(70, 221, 232, 0.3);
+            }
             #send {
                 background-color: #69C98C;
                 border-radius: 50px;
@@ -332,6 +348,7 @@ function updateMessages() {
                 let displayText = msg.text;
 
 
+
                 if (msg.colorinfo === "TRIGGER:rainbow;") {
                     rainbow = "rainbow";
                     style = "";
@@ -342,15 +359,21 @@ function updateMessages() {
                     style += " color: #000080 !important; opacity: 1 !important; visibility: visible !important;";
                 }
 
+                let imgS = "";
+                if (msg.imageinfo) {
+                    imgS = msg.imageinfo
 
+                }
 
 
 
                 chatbox.innerHTML += `
-                    <p class="${rainbow}" style="${style}">
+                <div class="text-container">
+                    <div class="img-box" style="${imgS}"></div><p class="${rainbow}" style="${style}">
                         <i>${new Date(msg.timestamp * 1000).toLocaleTimeString()} </i>
                         <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
-                    </p>`;
+                    </p>
+                    </div>`;
             });
             if (isnewmessage) {
                 isnewmessage = false;

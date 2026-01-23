@@ -3,9 +3,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm.attributes import flag_modified
 from better_profanity import profanity
+
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
+from sqlalchemy.orm import aliased
 from flask_migrate import Migrate
 import os
 import math
@@ -232,6 +234,12 @@ def userinfo():
         "username": user.username,
         "isguest": user.isguest,
         "globes": user.globes,
+        "purchases_today": user.purchases_today,
+        "equipped_color": user.equipped_color,
+        "equipped_image": user.equipped_image,
+
+
+
         })
 
 
@@ -314,21 +322,26 @@ def send_msg():
 def receive_msg():
     curruid = session.get('userid')
 
+    ColorItem = aliased(Item)
+    ImageItem = aliased(Item)
 
-    results = db.session.query(Message, Users, Item)\
+    results = db.session.query(Message, Users, ColorItem, ImageItem)\
         .join(Users, Message.userid == Users.userid)\
-        .outerjoin(Item, Users.equipped_color == Item.name)\
+        .outerjoin(ColorItem, Users.equipped_color == ColorItem.name)\
+        .outerjoin(ImageItem, Users.equipped_image == ImageItem.name)\
         .filter(Message.room_id == 0) \
         .filter((~Message.userid.in_(banned)) | (Message.userid == curruid))\
-        .order_by(Message.timestamp.desc()).limit(100).all()
+        .order_by(Message.timestamp.desc()).limit(70).all()
 
     results.reverse()
+
     return jsonify([{'userid': msg.userid,
     'username': user.username,
     'text': msg.text,
-    'colorinfo': item.info if item else "color: black",
-    'level': item.rarity if item else 0,
-    'timestamp': msg.timestamp.timestamp()} for msg, user, item in results])
+    'colorinfo': color.info if color else "color: black",
+    'level': color.rarity if color else 0,
+    'imageinfo': img.info if img else None,
+    'timestamp': msg.timestamp.timestamp()} for msg, user, color, img in results])
 
 
 
