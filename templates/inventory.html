@@ -231,6 +231,8 @@
                 sellZone.innerText = data.message;
                 get_inv();
             })
+            get_inv()
+            updateglobes()
             setTimeout(() => { sellZone.innerHTML = "Drag Color Here <br> To SELL";}, 2000);
 
         } else if (isDropz) {
@@ -252,6 +254,7 @@
             dropZone.style.color = "#fff";
             justEquipped = true;
             setTimeout(() => { justEquipped = false; }, 1000)
+
         } else if (isImagez) {
             fetch('/sys/env/runtime/ui-configuration/set-image', {
                 method: 'POST',
@@ -354,11 +357,6 @@
             }
         });
     }
-    setInterval(() => {
-    get_inv();
-    updateglobes();
-}, 1000);
-
     </script>
 </body>
 </html>
