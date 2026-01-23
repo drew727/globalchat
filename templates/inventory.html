@@ -390,12 +390,13 @@
                     content = 'AAAA';
                     style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
                 }
+                // add later onclick="equipItem('${item.name}', \`${style}\` )"
                 return `
     <div class="item">
         <div class="swatch"
              draggable="true"
              data-name="${item.name}"
-             onclick="equipItem('${item.name}', \`${style}\` )"
+
              style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
              <span style="pointer-events: none;">${content}</span>
         </div>
