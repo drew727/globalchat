@@ -224,7 +224,7 @@
         const isSellz = e.target.closest('#sellzone') !== null;
         const isDropz = e.target.closest('#dropzone') !== null;
         const isImagez = e.target.closest('#imagezone') !== null;
-
+        const isImage = visual.includes("url(");
         const name = e.dataTransfer.getData("text/plain");
         const visual = e.dataTransfer.getData("visual");
         if (isSellz) {
