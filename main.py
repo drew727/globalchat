@@ -99,7 +99,7 @@ class ClickCount(db.Model):
     count = db.Column(db.Integer, default=1)
 
 
-
+#NECESSARY
 @app.before_request
 def force_ssl_param():
     if request.headers.get('X-Forwarded-Proto') == 'http':
@@ -181,7 +181,7 @@ def toggle_panic():
     return f"Panic Mode: {'ENABLED' if new_state == 1 else 'DISABLED'}"
 PACK_CONFIG = {
     'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
-    'shape':  {'base_price': 500, 'scaling': 1.0, 'item_type': 'shape'},
+    'shape':  {'base_price': 1000, 'scaling': 1.0, 'item_type': 'shape'},
 
 }
 #IMPORTANT: ROUTE MAPPING:
@@ -642,6 +642,27 @@ def sell_color():
                     user.equipped_color = "black"
             db.session.commit()
         return jsonify({"status": "Success", "message": f"Sold {color} for {item.sell_price} globes"})
+@app.route('/api/v1/assets/liquidation/deprovision-maximization', methods=["POST"])
+def sell_all():
+    uid = session.get('userid')
+    user = Users.query.get(uid)
+
+    if user:
+        color = request.get_json()
+        color = color.get('item_name')
+        item = Item.query.filter_by(name=color).first()
+        inv_entry = Inventory.query.filter_by(userid=user.userid, item_id=item.item_id).first()
+
+        if color and inv_entry:
+            expected_price = (inv_entry.count-1) * item.sell_price
+            inv_entry.count = 1
+            user.globes += expected_price
+            db.session.commit()
+
+
+
+        return jsonify({"status": "Success", "message": f"Sold all {color} for {expected_price} globes"})
+
 @app.route('/api/v1/session/reconciliation-view.html')
 def sync_logs():
     return render_template('sync_logs.html')

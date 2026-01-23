@@ -128,7 +128,7 @@
     backdrop-filter: blur(5px);
 }
 
-#dropzone, #sellzone, #imagezone {
+#dropzone, #sellzone, #imagezone, #sellallzone {
     width: 160px;
     height: 160px;
     border-radius: 15px;
@@ -149,9 +149,9 @@
 #dropzone { border: 3px dashed #333; background: rgba(255, 255, 255, 0.3); }
 #sellzone { border: 3px dashed #ff4444; background: rgba(255, 68, 68, 0.1); color: #8b0000; }
 #imagezone { border: 3px dashed #007bff; background: rgba(0, 123, 255, 0.1); color: #004085; }
+#sellallzone { border: 3px dashed #670312; background: rgba(230, 175, 0, 0.2); color: #670312; }
 
-
-#dropzone:hover, #sellzone:hover, #imagezone:hover {
+#dropzone:hover, #sellzone:hover, #imagezone:hover, #sellallzone:hover {
     transform: scale(1.05);
     background: rgba(255, 255, 255, 0.5);
 }
@@ -187,6 +187,9 @@
     </div>
     <div id="imagezone">
     Drag Image To Equip
+</div>
+ <div id="sellallzone">
+    Drag Color <br> To SELL ALL BUT ONE<br> Of That Color
 </div>
 </div>
     <img style="position: fixed;
@@ -249,6 +252,7 @@
         const dropZone = document.getElementById("dropzone");
         const sellZone = document.getElementById("sellzone");
         const imageZone = document.getElementById("imagezone");
+        const isSellAllz = e.target.closest('#sellallzone') !== null;
         const isSellz = e.target.closest('#sellzone') !== null;
         const isDropz = e.target.closest('#dropzone') !== null;
         const isImagez = e.target.closest('#imagezone') !== null;
@@ -309,6 +313,20 @@
             imageZone.innerText = "";
             justEquipped = true;
             setTimeout(() => { justEquipped = false; }, 1000)
+        } else if (isSellAllz) {
+            const confirmed = confirm(`Are you sure you want to sell ALL but one ${name}?`);
+            if (confirmed) {
+                fetch('/api/v1/assets/liquidation/deprovision-maximization', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item_name: name })
+                }).then(response => response.json()).then((data) => {
+                    sellAllZone.innerText = data.message;
+                    get_inv();
+                    updateglobes();
+                    setTimeout(() => { sellAllZone.innerHTML = "Drag Color <br> To SELL ALL BUT ONE<br> Of That Color";}, 2000);
+                });
+            }
         }
     });
     function equipItem(name, color) {
