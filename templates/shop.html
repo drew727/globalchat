@@ -465,7 +465,7 @@ function handleVisuals(items) {
 
         entry.style.padding = "5px";
         entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
-        document.getElementById('pending').innerHTML = `${items.length - i} items loading... refrain from purchasing for the next few seconds to finish.`;
+        document.getElementById('pending').innerHTML = `${items.length - 1 - i} items loading... refrain from purchasing for the next few seconds to finish.`;
 
         list.appendChild(entry);
 
@@ -476,7 +476,7 @@ function handleVisuals(items) {
         if (i >= items.length) {
             clearInterval(loop);
         }
-    }, 200);
+    }, 180);
 }
 
 
