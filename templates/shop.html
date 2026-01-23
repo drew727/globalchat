@@ -304,7 +304,7 @@
             <div class="previewbox">
                 <p class="pack-header">
                     Shape Pack
-                    <button class="rates-btn" onclick="viewshaperates()">Rates</button>
+                    <button class="rates-btn" onclick="viewitemrates()">View Rates</button>
                 </p>
                 <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Tesseract.webp');"></div>
                 <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
@@ -367,44 +367,39 @@
                 });
 
             }
-function viewcolorrates() {
-    let rawData = [];
-    let count = 0;
-    const totalItems = 24;
+async function viewRates(packType) {
+    try {
 
-    for (let i = 1; i <= totalItems; i++) {
-        fetch(`/api/v1/metadata/schema/object-descriptor/${i}`)
-            .then(response => response.json())
-            .then(data => {
-                rawData.push(data);
-                count++;
+        const response = await fetch(`/api/v1/metadata/schema/pack-descriptors/${packType}`);
+        const items = await response.json();
 
-
-                if (count === totalItems) {
-
-                    const dynamicTotal = rawData.reduce((sum, item) => sum + item.weight, 0);
+        if (!items || items.length === 0) {
+            alert("No rate data available for this pack.");
+            return;
+        }
 
 
-                    let rateLines = rawData.map(item => {
-                        let p = (item.weight / dynamicTotal) * 100;
-                        return {
-                            percent: p,
-                            text: `${item.name}: ${p.toFixed(4)}%`
-                        };
-                    });
+        const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0), 0);
 
 
-                    const output = rateLines
-                        .sort((a, b) => b.percent - a.percent)
-                        .map(line => line.text)
-                        .join("\n");
+        const output = items
+            .map(item => {
+                const percent = ((item.weight / totalWeight) * 100);
+                return {
+                    percent: percent,
+                    text: `${item.name.replace('_', ' ')}: ${percent.toFixed(2)}%`
+                };
+            })
+            .sort((a, b) => b.percent - a.percent)
+            .map(line => line.text)
+            .join("\n");
 
-                    alert(`All Color Rates:\n` + output);
-                }
-            });
+        alert(`${packType.toUpperCase()} PACK RATES:\n\n${output}`);
+    } catch (error) {
+        console.error("Error fetching rates:", error);
+        alert("Failed to load rates. Please try again.");
     }
 }
-
 
 
 
@@ -483,7 +478,7 @@ function handleVisuals(items) {
         }
     }, 200);
 }
-        setInterval(updateglobes, 7500);
+
 
     </script>
     </body>

@@ -395,6 +395,19 @@ def getiteminfo(id):
         "active": item.active
     }
 
+@app.route('/api/v1/metadata/schema/pack-descriptors/<pack_type>')
+def getpackinfo(pack_type):
+    items = db.session.query(Item).filter_by(itemtype=pack_type).all()
+    return jsonify([{
+        "item_id": item.item_id,
+        "name": item.name,
+        "info": item.info,
+        "itemtype": item.itemtype,
+        "rarity": item.rarity,
+        "weight": item.weight,
+        "active": item.active} for item in items])
+
+
 @app.route('/api/v1/system/scaling/load-coefficient/<pack_id>')
 def get_price(pack_id):
     config = PACK_CONFIG.get(pack_id)
