@@ -321,7 +321,7 @@ function updateMessages() {
     fetch('/api/v1/internal/transport/buffer/stream-fetch')
         .then(response => response.json())
         .then(messages => {
-            lastFetchTime = Date.now();
+            let lastFetchTime = Date.now();
             const chatbox = document.getElementById('chatbox');
             chatbox.innerHTML = '';
 
