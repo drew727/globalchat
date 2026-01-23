@@ -275,6 +275,7 @@ background-attachment: fixed;
                         document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
                     }
                 });
+                let chatbox.scrolltop =  chatbox.scrollHeight;
                 updateMessages()
             }
 
@@ -320,6 +321,7 @@ function updateMessages() {
     fetch('/api/v1/internal/transport/buffer/stream-fetch')
         .then(response => response.json())
         .then(messages => {
+            lastFetchTime = Date.now();
             const chatbox = document.getElementById('chatbox');
             chatbox.innerHTML = '';
 
