@@ -624,9 +624,9 @@ const HealthTelemetryManager = {
 
         const tick = () => {
             if (this.remainingSeconds <= 0) {
+                this.remainingSeconds = 0;
                 this.addLog("Window threshold reached. Recalibrating...", "INFO");
-                // Recursively calling init is dangerous without stop(), but our new init handles it.
-                this.init();
+                this.timerId = setTimeout(() => this.init(), 2000);
                 return;
             }
 

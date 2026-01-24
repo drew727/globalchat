@@ -189,7 +189,7 @@ def isDowntime():
         if start_dt > now_ts:
             next_manual_ts = min(next_manual_ts, start_dt)
 
-    # 2. Automatic Maintenance logic
+
     block_size = 45 * 60
     block_start = (now_ts // block_size) * block_size
     random.seed(int(block_start))
@@ -202,28 +202,28 @@ def isDowntime():
     if down_start <= now_ts <= down_end:
         return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), int(down_end - down_start)
 
-    # 3. Idle logic (Time until the NEXT event)
+
     if now_ts > down_end:
-        # We are past this block's auto-maintenance, look at next block
+
         next_block_start = block_start + block_size
         random.seed(int(next_block_start))
         next_auto_start = next_block_start + random.randint(0, 40 * 60)
     else:
-        # Maintenance hasn't happened yet in this block
+
         next_auto_start = down_start
 
-    # The next event is whichever starts sooner
+
     next_event_ts = min(next_auto_start, next_manual_ts)
 
-    # Calculate duration correctly: Target - Now
+
     time_remaining = int(next_event_ts - now_ts)
 
-    # For the "Idle" gauge, we'll treat the total window as the time until the next event
+
     return False, None, time_remaining, time_remaining
 
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
-    isDown, reason, ts = isDowntime()
+    isDown, reason, ts, window = isDowntime()
     if isDown:
         return jsonify({
             "integrity_check": 1,
