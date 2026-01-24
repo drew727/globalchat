@@ -64,7 +64,7 @@
         .gauge-container { position: relative; width: 200px;height: 200px; }
         .gauge-svg { transform: rotate(-90deg); }
         .gauge-bg { fill: none; stroke: #ebf0f4; stroke-width: 12; }
-        .gauge-fill { fill: none; stroke: var(--success); stroke-width: 12; stroke-linecap: round; }
+        .gauge-fill { fill: none; stroke: var(--success); stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.3s ease; }
         .gauge-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
         .gauge-time {display: block; font-size: 28px; font-weight: 700; color: var(--text);}
         .gauge-status { font-size: 11px; color: #656d76; text-transform: uppercase; letter-spacing: 0.05em; }
@@ -619,7 +619,7 @@ const HealthTelemetryManager = {
         const statusLabel = document.querySelector('.gauge-status');
         const targetDisplay = document.getElementById('target-session-start');
 
-        if (targetDisplay && this.targetClockTime)) {
+        if (targetDisplay && this.targetClockTime) {
             targetDisplay.textContent = this.formatTimestamp(this.targetClockTime);
         }
 
