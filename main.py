@@ -772,7 +772,7 @@ def get_daily_wheel():
         return jsonify({
             "status": "Success",
             "prizes": session['current_info'],
-            "persisted": True,
+            "wheel_size": len(session['current_info']),
             "purchases_today": user.puchases_today,
             "purchases_yesterday": user.puchases_yesterday
         })
