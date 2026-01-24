@@ -175,7 +175,7 @@ def isDowntime():
     day = now.timetuple().tm_yday
     if day % 2 == 0:
         tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-        return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
+        return True, "COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
     next_manual_ts = float('inf')
     last_manual_end = 0
     for start, end in MANUAL_DOWNTIMES:
