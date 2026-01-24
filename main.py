@@ -164,12 +164,71 @@ def robots_txt():
         "Sitemap: https://systemnodesync.dpdns.org/sitemap.xml"
     )
     return Response(content, mimetype='text/plain')
+
+MANUAL_DOWNTIMES = [
+    ("02:30", "02:35"),
+    ("14:00", "14:15"),
+    ("20:00", "20:10"),
+]
+def isDowntime():
+    now = datetime.now(timezone.utc)
+    now_ts = now.timestamp()
+    day = now.timetuple().tm_yday
+    if day % 2 == 0:
+        tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts)
+
+    current_time = now.strftime("%H:%M")
+    for start, end in MANUAL_DOWNTIMES:
+        start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0)
+        end_dt = now.replace(hour=int(end[:2]), minute=int(end[3:]), second=0)
+        if start_dt <= current_time <= end_dt:
+            return True, "SCHEDULED_MAINTENANCE", int(end_dt.timestamp() - now_ts)
+
+
+
+    block_size = 45 * 60
+    block_start = (now_ts // block_size) * block_size
+    random.seed(int(block_start))
+    start_offset_sec = random.randint(0, 40 * 60)
+    duration_sec = random.randint(60, 120)
+
+    down_start = block_start + start_offset_sec
+    down_end = down_start + duration_sec
+    if down_start <= now_ts <= down_end:
+        return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts)
+    time_until_next = int(down_start - now_ts)
+    if time_until_next < 0:
+        time_until_next += block_size
+
+    return False, None, time_until_next
+
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
+    isDown, reason = isDowntime()
+    if isDown:
+        return jsonify({
+            "integrity_check": 1,
+            "reason": reason,
+            "notice": "Node synchronization suspended for routine maintenance checks."
+        })
     config = SystemConfig.query.filter_by(key='panic_switch').first()
     if config:
         return jsonify(config.value)
     return jsonify({"integrity_check": 0}), 404
+
+@app.route('/api/v1/system/reconciliation/telemetry-status')
+def get_downtimes():
+    is_down, reason, time_val = isDowntime()
+    return jsonify({
+        "status": "DEGRADED" if is_down else "OPTIMAL",
+        "reconciliation_active": is_down,
+        "mode": reason if is_down else "IDLE",
+        "time_remaining_seconds": time_val if is_down else 0,
+        "next_scheduled_sync_seconds": 0 if is_down else time_val,
+        "last_sync_completed": (datetime.now(timezone.utc) - timedelta(minutes=random.randint(5,15))).isoformat()
+    })
+
 @app.route('/api/v1/internal/admin/gatekeeper')
 def toggle_panic():
     config = SystemConfig.query.filter_by(key='panic_switch').first()
