@@ -274,15 +274,15 @@
             <h3>Manual Binary Installation</h3>
                 <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package. <strong>Note:</strong> Registry authentication is required for internal scoped packages.</p>
                 <pre># Initialize the managed orchestration agent
-                    npm config set @systemnodesync:registry https://npm.dpdns.org
-                    npm install @systemnodesync/agent-v2
-                    sns-agent --cluster-id nyc-01 --verify-registration</pre>
+    npm config set @systemnodesync:registry https://npm.dpdns.org
+    npm install @systemnodesync/agent-v2
+    sns-agent --cluster-id nyc-01 --verify-registration</pre>
             <h3>Post-Deployment Verification</h3>
                 <p>Once the agent is active, verify the cryptographic handshake by tailing the system logs. You should see a <code>Handshake: Verified</code> status within 500ms of startup.</p>
                 <pre>[INFO] SNS Agent v2.1.4 starting...
-                    [INFO] Loading local state from /var/lib/sns/cache.db
-                    [DEBUG] Attempting peer discovery via US-EAST-1 seed...
-                    [SUCCESS] Handshake: Verified (0x8f2a...d3e1)</pre>
+    [INFO] Loading local state from /var/lib/sns/cache.db
+    [DEBUG] Attempting peer discovery via US-EAST-1 seed...
+    [SUCCESS] Handshake: Verified (0x8f2a...d3e1)</pre>
         </section>
     </div>
 
