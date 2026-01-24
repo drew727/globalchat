@@ -159,7 +159,13 @@
         <section id="page-topology" class="page-content">
             <div class="breadcrumb">Docs / Network / Peer-Config</div>
             <h1>Network Topology</h1>
-            <p>Visualizing the global VPC peering mesh. Managed service discovery ensures all ingress/egress relay nodes maintain 99.99% synchronization uptime using TLS 1.3 tunnels.</p>
+            <p>The global SNS architecture is predicated on a decentralized mesh network, utilizing a non-hierarchical peer discovery mechanism to ensure total redundancy. Unlike traditional star-topologies, our managed service discovery layer allows each edge node to maintain its own routing table, dynamically updated via a low-overhead gossip protocol. This ensures that the state reconciliation remains resilient even in the event of a catastrophic failure in a primary availability zone.</p>
+            <h3>Internal Mesh Encapsulation</h3>
+            <p>Data transit across the VPC backplane is governed by a strict encapsulation standard. Every payload is wrapped in a proprietary SNS-Header that includes a high-resolution timestamp, a 64-bit non-repeating nonce for replay protection, and a regional shard identifier. This encapsulation layer abstracts the physical network complexity away from the synchronization agent, allowing for seamless transitions between public cloud providers and on-premise hardware without requiring a reconfiguration of the underlying TLS 1.3 tunnels.</p>
+            <h3>Dynamic Path Optimization</h3>
+            <p>To mitigate the impact of global internet latency, the system employs an autonomous path-vector logic. Nodes continuously monitor the Round Trip Time (RTT) of their peers. When a specific egress point exceeds the predefined 150ms threshold, the topology manager automatically triggers a BGP path prepend, rerouting synchronization traffic through a lower-latency transit provider. This proactive failover mechanism is essential for maintaining the 12.4ms average sync latency required by the cryptographic handshake protocols.</p>
+            <h3>Isolation and Sharding</h3>
+            <p>Network isolation is achieved through the use of logical sharding. By partitioning the global mesh into localized "Sync-Silos," we minimize the blast radius of any individual node degradation. Communication between these shards is strictly mediated by designated relay nodes, which perform deep packet inspection to ensure that only authorized state-vectors are propagated across the wider infrastructure.</p>
         </section>
         <!-- Viewport: Health -->
         <section id="page-health" class="page-content">
@@ -276,15 +282,15 @@
             <h3>Manual Binary Installation</h3>
                 <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package. <strong>Note:</strong> Registry authentication is required for internal scoped packages.</p>
                 <pre># Initialize the managed orchestration agent
-    npm config set @systemnodesync:registry https://npm.dpdns.org
-    npm install @systemnodesync/agent-v2
-    sns-agent --cluster-id nyc-01 --verify-registration</pre>
+npm config set @systemnodesync:registry https://npm.dpdns.org
+npm install @systemnodesync/agent-v2
+sns-agent --cluster-id nyc-01 --verify-registration</pre>
             <h3>Post-Deployment Verification</h3>
                 <p>Once the agent is active, verify the cryptographic handshake by tailing the system logs. You should see a <code>Handshake: Verified</code> status within 500ms of startup.</p>
                 <pre>[INFO] SNS Agent v2.1.4 starting...
-    [INFO] Loading local state from /var/lib/sns/cache.db
-    [DEBUG] Attempting peer discovery via US-EAST-1 seed...
-    [SUCCESS] Handshake: Verified (0x8f2a...d3e1)</pre>
+[INFO] Loading local state from /var/lib/sns/cache.db
+[DEBUG] Attempting peer discovery via US-EAST-1 seed...
+[SUCCESS] Handshake: Verified (0x8f2a...d3e1)</pre>
         </section>
     </div>
 
