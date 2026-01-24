@@ -198,7 +198,7 @@ def isDowntime():
     down_start = block_start + start_offset_sec
     down_end = down_start + duration_sec
     if down_start <= now_ts <= down_end:
-        total_window = int(down_start - down_end)
+        total_window = int(down_end - down_start)
         return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), total_window
     if now_ts > down_end:
         next_block_start = block_start + block_size
