@@ -761,13 +761,15 @@ def get_daily_wheel():
     now = datetime.now(timezone.utc)
     uid = session.get('userid')
     user = Users.query.get(uid)
+    if not user:
+        return
     if user:
         if user.last_purchase_time is None or user.last_purchase_time.date() < now.date():
             user.last_purchase_time = now
             session.pop('current_info', None)
-            user.purchases_yesterday = user.puchases_today
+            user.purchases_yesterday = user.purchases_today
             user.purchases_today = 0
-            db.commit()
+            db.session.commit()
     if 'current_info' in session:
         return jsonify({
             "status": "Success",
