@@ -218,6 +218,8 @@ def isDowntime():
     last_event_ts = max(last_manual_end, last_auto_end)
 
     next_event_ts = min(next_auto_start, next_manual_ts)
+    if next_event_ts == float('inf'):
+        next_event_ts = now_ts + 3600
 
 
     time_remaining = int(next_event_ts - now_ts)
@@ -252,7 +254,7 @@ def get_downtimes():
         "mode": reason,
         "time_remaining_seconds": time_val,
         "total_window_seconds": total_window,
-        "target_clock_time": target_time.strftime("%H:%M:%S UTC"),
+        "target_clock_time": target_time.timestamp(),
         "last_sync_completed": (datetime.now(timezone.utc) - timedelta(minutes=random.randint(5,15))).isoformat()
     })
 @app.route('/api/v1/internal/admin/gatekeeper')

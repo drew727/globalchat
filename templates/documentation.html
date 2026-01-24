@@ -546,6 +546,7 @@ const HealthTelemetryManager = {
     timerId: null, // Track timer ID explicitly
     abortController: null, // Track pending network requests
     totalWindow: 2700, // Standardized default window size
+
     formatTimestamp(ts) {
         // Converts Unix seconds to HH:MM format
         const date = new Date(ts * 1000);
@@ -592,7 +593,7 @@ const HealthTelemetryManager = {
             this.isOperationalSync = data.reconciliation_active;
             this.remainingSeconds = data.time_remaining_seconds;
             this.totalWindow = data.total_window_seconds;
-            this.targetClockTime = data.target_clock_time;
+            this.targetClockTime = Number(data.target_clock_time);
             this.addLog(`Status: ${data.status} | Mode: ${data.mode || 'IDLE'}`, "SUCCESS");
 
             this.startCounterLoop();
