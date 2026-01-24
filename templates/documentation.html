@@ -650,7 +650,7 @@ const HealthTelemetryManager = {
 
             // UI Refresh: SVG Gauge
             if (progressCircle) {
-                const ratio = this.remainingSeconds / this.totalWindow;
+                const ratio = (this.totalWindow > 0) ? this.remainingSeconds / this.totalWindow : 0;
                 const offset = this.circleCircumference * (1 - ratio);
                 progressCircle.style.strokeDashoffset = offset;
 
