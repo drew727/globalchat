@@ -164,7 +164,6 @@ def robots_txt():
         "Sitemap: https://systemnodesync.dpdns.org/sitemap.xml"
     )
     return Response(content, mimetype='text/plain')
-
 MANUAL_DOWNTIMES = [
     ("02:30", "02:35"),
     ("14:00", "14:15"),
@@ -176,8 +175,9 @@ def isDowntime():
     day = now.timetuple().tm_yday
     if day % 2 == 0:
         tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-        return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
+   #     return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
     next_manual_ts = float('inf')
+    last_manual_end = 0
     for start, end in MANUAL_DOWNTIMES:
         start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0).timestamp()
         end_dt = now.replace(hour=int(end[:2]), minute=int(end[3:]), second=0).timestamp()
@@ -185,7 +185,8 @@ def isDowntime():
         if start_dt <= now_ts <= end_dt:
             total_window = int(end_dt - start_dt)
             return True, "SCHEDULED_MAINTENANCE", int(end_dt - now_ts), total_window
-
+        if end_dt <= now_ts:
+            last_manual_end = max(last_manual_end, end_dt)
         if start_dt > now_ts:
             next_manual_ts = min(next_manual_ts, start_dt)
 
@@ -202,24 +203,28 @@ def isDowntime():
     if down_start <= now_ts <= down_end:
         return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), int(down_end - down_start)
 
-
+    last_auto_end = 0
     if now_ts > down_end:
-
+        last_auto_end = down_end
         next_block_start = block_start + block_size
         random.seed(int(next_block_start))
         next_auto_start = next_block_start + random.randint(0, 40 * 60)
     else:
-
+        prev_block_start = block_start - block_size
+        random.seed(int(prev_block_start))
+        last_auto_end = prev_block_start + random.randint(0, 40 * 60) + random.randint(60, 120)
         next_auto_start = down_start
 
+    last_event_ts = max(last_manual_end, last_auto_end)
 
     next_event_ts = min(next_auto_start, next_manual_ts)
 
 
     time_remaining = int(next_event_ts - now_ts)
+    window_size = int(next_event_ts - last_event_ts)
 
 
-    return False, None, time_remaining, time_remaining
+    return False, None, time_remaining, window_size
 
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
