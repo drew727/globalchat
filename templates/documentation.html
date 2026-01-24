@@ -610,27 +610,14 @@ const HealthTelemetryManager = {
         const progressCircle = document.getElementById('gauge-progress');
         const statusLabel = document.querySelector('.gauge-status');
 
-        if (statusLabel) {
-            statusLabel.textContent = this.isOperationalSync ? "Maintenance Active" : "Next Sync Window";
-        }
+
 
         if (progressCircle) {
-            progressCircle.style.stroke = this.isOperationalSync ? "#cf222e" : "var(--success)";
+            progressCircle.style.stroke = this.isOperationalSync ? "#cf222e" : "#1a7f37
         }
 
         if (statusLabel) {
-            statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
-        }
-        if (this.isOperationalSync) {
-            // STATE: TRUE (Maintenance is currently running)
-            statusLabel.textContent = "Maintenance Active";
-            statusLabel.style.color = "#cf222e"; // Red
-            progressCircle.style.stroke = "#cf222e";
-        } else {
-            // STATE: FALSE (Waiting for next maintenance)
-            statusLabel.textContent = "Next Sync Window";
-            statusLabel.style.color = "#656d76"; // Gray
-            progressCircle.style.stroke = "#1a7f37"; // Green
+            statusLabel.textContent = this.isOperationalSync ? "Maintenance Active" : "Scheduled Window";
         }
 
         const tick = () => {
