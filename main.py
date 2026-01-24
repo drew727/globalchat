@@ -177,39 +177,49 @@ def isDowntime():
     #temporary disable for testing if day % 2 == 0:
     #    tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
      #   return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
-
-    next_manual = float('inf')
+    next_manual_ts = float('inf')
     for start, end in MANUAL_DOWNTIMES:
-        start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0)
-        end_dt = now.replace(hour=int(end[:2]), minute=int(end[3:]), second=0)
-        if start_dt <= now <= end_dt:
-            total_window = int(end_dt.timestamp() - start_dt.timestamp())
-            return True, "SCHEDULED_MAINTENANCE", int(end_dt.timestamp() - now_ts), total_window
-        if start_dt > now:
-            next_manual = min(next_manual, start_dt.timestamp())
+        start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0).timestamp()
+        end_dt = now.replace(hour=int(end[:2]), minute=int(end[3:]), second=0).timestamp()
 
+        if start_dt <= now_ts <= end_dt:
+            total_window = int(end_dt - start_dt)
+            return True, "SCHEDULED_MAINTENANCE", int(end_dt - now_ts), total_window
 
+        if start_dt > now_ts:
+            next_manual_ts = min(next_manual_ts, start_dt)
+
+    # 2. Automatic Maintenance logic
     block_size = 45 * 60
     block_start = (now_ts // block_size) * block_size
     random.seed(int(block_start))
-    start_offset_sec = random.randint(0, 40 * 60)
-    duration_sec = random.randint(60, 120)
+    start_offset = random.randint(0, 40 * 60)
+    duration = random.randint(60, 120)
 
-    down_start = block_start + start_offset_sec
-    down_end = down_start + duration_sec
+    down_start = block_start + start_offset
+    down_end = down_start + duration
+
     if down_start <= now_ts <= down_end:
-        total_window = int(down_end - down_start)
-        return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), total_window
+        return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), int(down_end - down_start)
+
+    # 3. Idle logic (Time until the NEXT event)
     if now_ts > down_end:
+        # We are past this block's auto-maintenance, look at next block
         next_block_start = block_start + block_size
         random.seed(int(next_block_start))
-        next_start_offset = random.randint(0, 40 * 60)
-        time_until = int((next_block_start + next_start_offset) - now_ts)
+        next_auto_start = next_block_start + random.randint(0, 40 * 60)
     else:
-        time_until = int(down_start - now_ts)
-    next_event_ts = min(time_until, next_manual)
-    time_until = int(next_event_ts - now_ts)
-    return False, None, time_until, time_until
+        # Maintenance hasn't happened yet in this block
+        next_auto_start = down_start
+
+    # The next event is whichever starts sooner
+    next_event_ts = min(next_auto_start, next_manual_ts)
+
+    # Calculate duration correctly: Target - Now
+    time_remaining = int(next_event_ts - now_ts)
+
+    # For the "Idle" gauge, we'll treat the total window as the time until the next event
+    return False, None, time_remaining, time_remaining
 
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():

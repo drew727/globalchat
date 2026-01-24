@@ -585,12 +585,12 @@ const HealthTelemetryManager = {
             this.isOperationalSync = data.reconciliation_active;
             this.remainingSeconds = data.time_remaining_seconds;
             this.totalWindow = data.total_window_seconds;
-            this.addLog(`Status: ${data.status} | Mode: ${data.mode}`, "SUCCESS");
+            this.addLog(`Status: ${data.status} | Mode: ${data.mode || 'IDLE'}`, "SUCCESS");
 
             this.startCounterLoop();
 
         } catch (error) {
-            // If the error is an AbortError, the user navigated away. DO NOT restart loop.
+
             if (error.name === 'AbortError') {
                 console.debug("Telemetry request aborted by navigation.");
                 return;
