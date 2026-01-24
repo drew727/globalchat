@@ -339,7 +339,8 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         // Validating 'integrity_check' status.
         // Cast to String to ensure consistent comparison across data types.
         if (systemState && String(systemState.integrity_check) === '1') {
-            console.error("SNS_INTEGRITY_ALERT: Remote administrative suspension active. Executing fail-safe redirection.");
+            //Integrity handshake unsuccessful. Redirecting to health status endpoint
+            window.location.replace("/#health")
             return;
         }
 
