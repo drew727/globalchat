@@ -582,12 +582,12 @@ const HealthTelemetryManager = {
             const data = await response.json();
 
             // Set state based on API response
+            const data = await response.json();
             this.isOperationalSync = data.reconciliation_active;
-            this.remainingSeconds = this.isOperationalSync ?
-                data.time_remaining_seconds :
-                data.next_scheduled_sync_seconds;
+            this.remainingSeconds = data.time_remaining_seconds;
+            this.totalWindow = data.total_window_seconds;
+            this.addLog(`Status: ${data.status} | Mode: ${data.mode}`, "SUCCESS");
 
-            this.addLog(`Status: ${data.status} | Source: US-EAST-1`, "SUCCESS");
             this.startCounterLoop();
 
         } catch (error) {
@@ -606,7 +606,13 @@ const HealthTelemetryManager = {
     startCounterLoop() {
         // Defensive clear: Ensure we never stack timers
         if (this.timerId) clearTimeout(this.timerId);
+        if (statusLabel) {
+            statusLabel.textContent = this.isOperationalSync ? "Maintenance Active" : "Next Sync Window";
+        }
 
+        if (progressCircle) {
+            progressCircle.style.stroke = this.isOperationalSync ? "#cf222e" : "var(--success)";
+        }
         const timerDisplay = document.getElementById('countdown-timer');
         const progressCircle = document.getElementById('gauge-progress');
         const statusLabel = document.querySelector('.gauge-status');
@@ -634,9 +640,10 @@ const HealthTelemetryManager = {
 
             // UI Refresh: SVG Gauge
             if (progressCircle) {
-                const ratio = this.remainingSeconds / this.SYNC_BLOCK_DURATION;
+                const ratio = this.remainingSeconds / this.totalWindow;
                 const offset = this.circleCircumference * (1 - ratio);
                 progressCircle.style.strokeDashoffset = offset;
+
             }
 
             // Standard heartbeat interval

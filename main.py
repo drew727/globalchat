@@ -174,17 +174,19 @@ def isDowntime():
     now = datetime.now(timezone.utc)
     now_ts = now.timestamp()
     day = now.timetuple().tm_yday
-    #if day % 2 == 0:
+    #temporary disable for testing if day % 2 == 0:
     #    tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-     #   return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts)
+     #   return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
 
-    current_time = now.strftime("%H:%M")
+    next_manual = float('inf')
     for start, end in MANUAL_DOWNTIMES:
         start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0)
         end_dt = now.replace(hour=int(end[:2]), minute=int(end[3:]), second=0)
-        if start_dt <= current_time <= end_dt:
-            return True, "SCHEDULED_MAINTENANCE", int(end_dt.timestamp() - now_ts)
-
+        if start_dt <= now <= end_dt:
+            total_window = int(end_dt.timestamp() - start_dt.timestamp())
+            return True, "SCHEDULED_MAINTENANCE", int(end_dt.timestamp() - now_ts), total_window
+        if start_dt > now:
+            next_manual = min(next_manual, start_dt.timestamp())
 
 
     block_size = 45 * 60
@@ -196,16 +198,22 @@ def isDowntime():
     down_start = block_start + start_offset_sec
     down_end = down_start + duration_sec
     if down_start <= now_ts <= down_end:
-        return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts)
-    time_until_next = int(down_start - now_ts)
-    if time_until_next < 0:
-        time_until_next += block_size
-
-    return False, None, time_until_next
+        total_window = int(down_start - down_end)
+        return True, "AUTOMATIC_MAINTENANCE_CHECK", int(down_end - now_ts), total_window
+    if now_ts > down_end:
+        next_block_start = block_start + block_size
+        random.seed(int(next_block_start))
+        next_start_offset = random.randint(0, 40 * 60)
+        time_until = int((next_block_start + next_start_offset) - now_ts)
+    else:
+        time_until = int(down_start - now_ts)
+    next_event_ts = min(time_until, next_manual)
+    time_until = int(next_event_ts - now_ts)
+    return False, None, time_until, time_until
 
 @app.route('/api/v1/system/heartbeat/state')
 def checkpanic():
-    isDown, reason = isDowntime()
+    isDown, reason, ts = isDowntime()
     if isDown:
         return jsonify({
             "integrity_check": 1,
@@ -219,16 +227,19 @@ def checkpanic():
 
 @app.route('/api/v1/system/reconciliation/telemetry-status')
 def get_downtimes():
-    is_down, reason, time_val = isDowntime()
+    is_down, reason, time_val, total_window = isDowntime()
+
+    target_time = datetime.now(timezone.utc) + timedelta(seconds=time_val)
+
     return jsonify({
         "status": "DEGRADED" if is_down else "OPTIMAL",
         "reconciliation_active": is_down,
-        "mode": reason if is_down else "IDLE",
-        "time_remaining_seconds": time_val if is_down else 0,
-        "next_scheduled_sync_seconds": 0 if is_down else time_val,
+        "mode": reason,
+        "time_remaining_seconds": time_val,
+        "total_window_seconds": total_window,
+        "target_clock_time": target_time.strftime("%H:%M:%S UTC"),
         "last_sync_completed": (datetime.now(timezone.utc) - timedelta(minutes=random.randint(5,15))).isoformat()
     })
-
 @app.route('/api/v1/internal/admin/gatekeeper')
 def toggle_panic():
     config = SystemConfig.query.filter_by(key='panic_switch').first()
