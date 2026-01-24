@@ -550,7 +550,7 @@ const HealthTelemetryManager = {
         // Converts Unix seconds to HH:MM format
         const date = new Date(ts * 1000);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-    }
+    },
 
     /**
      * Halts all telemetry activity, kills timers, and aborts network requests.
