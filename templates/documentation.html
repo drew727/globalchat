@@ -618,7 +618,7 @@ const HealthTelemetryManager = {
         const targetDisplay = document.getElementById('target-session-start');
 
         if (targetDisplay) {
-            targetDisplay.textContent = this.formatTargetTime(this.targetClockTime);
+            targetDisplay.textContent = this.formatTimestamp(this.targetClockTime);
         }
 
         if (progressCircle) {
