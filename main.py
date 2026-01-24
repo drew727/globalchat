@@ -773,8 +773,8 @@ def get_daily_wheel():
             "status": "Success",
             "prizes": session['current_info'],
             "wheel_size": len(session['current_info']),
-            "purchases_today": user.puchases_today,
-            "purchases_yesterday": user.puchases_yesterday
+            "purchases_today": user.purchases_today,
+            "purchases_yesterday": user.purchases_yesterday
         })
     k = 0.5
     base = 100 #minimum shop value
@@ -813,7 +813,9 @@ def get_daily_wheel():
     return jsonify({
             "status": "Success",
             "prizes": final_prizes,
-            "wheel_size": len(final_prizes)
+            "wheel_size": len(final_prizes),
+            "purchases_today": user.purchases_today,
+            "purchases_yesterday": user.purchases_yesterday
     })
 @app.route('/api/v1/assets/content/condense-assets')
 def spin_wheel():
