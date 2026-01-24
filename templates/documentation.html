@@ -221,33 +221,45 @@
                 <code>403_STATE_MISMATCH</code>
             event.</p>
             <div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th>Variable</th>
-                <th>Description</th>
-                <th>Default</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><code>SNS_RECON_MODE</code></td>
-                <td>Defines the state distribution strategy.</td>
-                <td><code>eventual</code></td>
-            </tr>
-            <tr>
-                <td><code>MAX_PEER_CONNS</code></td>
-                <td>Cap for simultaneous VPC tunnel handshakes.</td>
-                <td><code>1024</code></td>
-            </tr>
-            <tr>
-                <td><code>LOG_VERBOSITY</code></td>
-                <td>Diagnostic output level (0-5).</td>
-                <td><code>1</code></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Variable</th>
+                            <th>Description</th>
+                            <th>Default</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>SNS_RECON_MODE</code></td>
+                            <td>Defines the state distribution strategy.</td>
+                            <td><code>eventual</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>MAX_PEER_CONNS</code></td>
+                            <td>Cap for simultaneous VPC tunnel handshakes.</td>
+                            <td><code>1024</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>LOG_VERBOSITY</code></td>
+                            <td>Diagnostic output level (0-5).</td>
+                            <td><code>1</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3>Containerized Orchestration (Docker)</h3>
+                <p>For high-availability environments, we recommend deploying the SNS agent within a sandboxed container. This prevents kernel-level resource contention during intensive state reconciliation windows.</p>
+            <pre>
+            services:
+              sns-node:
+                image: systemnodesync/agent:v2.1.4
+                restart: always
+                environment:
+                  - NODE_ID=${HOSTNAME}
+                networks:
+                  - sns-mesh-internal
+            </pre>
             <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package.</p>
             <pre># Initialize the managed orchestration agent
                 npm install @systemnodesync/agent-v2
