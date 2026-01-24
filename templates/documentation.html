@@ -257,16 +257,20 @@
             </div>
             <h3>Containerized Orchestration (Docker)</h3>
                 <p>For high-availability environments, we recommend deploying the SNS agent within a sandboxed container. This prevents kernel-level resource contention during intensive state reconciliation windows.</p>
-            <pre>
+                <pre>
             services:
               sns-node:
                 image: systemnodesync/agent:v2.1.4
                 restart: always
                 environment:
                   - NODE_ID=${HOSTNAME}
+                  - RECON_WINDOW_SHARD=true
                 networks:
                   - sns-mesh-internal
-            </pre>
+                healthcheck:
+                  test: ["CMD", "sns-agent", "health"]
+                  interval: 45s
+                </pre>
             <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package.</p>
             <pre># Initialize the managed orchestration agent
                 npm install @systemnodesync/agent-v2
