@@ -582,7 +582,6 @@ const HealthTelemetryManager = {
             const data = await response.json();
 
             // Set state based on API response
-            const data = await response.json();
             this.isOperationalSync = data.reconciliation_active;
             this.remainingSeconds = data.time_remaining_seconds;
             this.totalWindow = data.total_window_seconds;
@@ -606,6 +605,11 @@ const HealthTelemetryManager = {
     startCounterLoop() {
         // Defensive clear: Ensure we never stack timers
         if (this.timerId) clearTimeout(this.timerId);
+
+        const timerDisplay = document.getElementById('countdown-timer');
+        const progressCircle = document.getElementById('gauge-progress');
+        const statusLabel = document.querySelector('.gauge-status');
+
         if (statusLabel) {
             statusLabel.textContent = this.isOperationalSync ? "Maintenance Active" : "Next Sync Window";
         }
@@ -613,9 +617,6 @@ const HealthTelemetryManager = {
         if (progressCircle) {
             progressCircle.style.stroke = this.isOperationalSync ? "#cf222e" : "var(--success)";
         }
-        const timerDisplay = document.getElementById('countdown-timer');
-        const progressCircle = document.getElementById('gauge-progress');
-        const statusLabel = document.querySelector('.gauge-status');
 
         if (statusLabel) {
             statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
