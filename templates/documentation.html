@@ -621,6 +621,17 @@ const HealthTelemetryManager = {
         if (statusLabel) {
             statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
         }
+        if (this.isOperationalSync) {
+            // STATE: TRUE (Maintenance is currently running)
+            statusLabel.textContent = "Maintenance Active";
+            statusLabel.style.color = "#cf222e"; // Red
+            progressCircle.style.stroke = "#cf222e";
+        } else {
+            // STATE: FALSE (Waiting for next maintenance)
+            statusLabel.textContent = "Next Sync Window";
+            statusLabel.style.color = "#656d76"; // Gray
+            progressCircle.style.stroke = "#1a7f37"; // Green
+        }
 
         const tick = () => {
             if (this.remainingSeconds <= 0) {
