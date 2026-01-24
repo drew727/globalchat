@@ -59,6 +59,7 @@ class Users(db.Model):
     equipped_color = db.Column(db.String(20), default="Black")
     equipped_image = db.Column(db.String(200), default=None)
     purchases_today = db.Column(db.Integer, default=0)
+    purchases_yesterday = db.Column(db.Integer, default=0)
     last_purchase_time = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     total_clicks = db.Column(db.Integer, default=0)
     def setpassword(self, password):
@@ -538,6 +539,7 @@ def purchase(pack_id):
 
     if user:
         if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
+            user.purchases_yesterday = user.puchases_today
             user.purchases_today = 0
 
         user.last_purchase_time = time
@@ -751,7 +753,93 @@ def sell_all():
 
 
         return jsonify({"status": "Success", "message": f"Sold all {color} for {expected_price} globes"})
-
+@app.route('/api/v1/internal/content/asset-validation')
+def wheel():
+    return render_template('/wheel.html')
+@app.route('/api/v1/assets/content/daily-configurations')
+def get_daily_wheel():
+    now = datetime.now(timezone.utc)
+    uid = session.get('userid')
+    user = Users.query.get(uid)
+    if user:
+        if user.last_purchase_time is None or user.last_purchase_time.date() < now.date():
+            user.last_purchase_time = now
+            session.pop('current_info', None)
+            user.purchases_yesterday = user.puchases_today
+            user.purchases_today = 0
+            db.commit()
+    if 'current_info' in session:
+        return jsonify({
+            "status": "Success",
+            "prizes": session['current_info'],
+            "persisted": True,
+            "purchases_today": user.puchases_today,
+            "purchases_yesterday": user.puchases_yesterday
+        })
+    k = 0.5
+    base = 100 #minimum shop value
+    reward = base * (1 + k * user.purchases_yesterday)
+    random.seed(user.purchases_yesterday)
+    values = [
+        reward,
+        reward * 1.5,
+        reward * 0.5,
+        reward * 3.0,
+        reward * 2.0,
+        reward * 1.7,
+        reward * 0.8
+    ]
+    final_prizes = [{"type": "globes", "value": int(v), "label": f"{int(v)} Globes"} for v in values]
+    numpackitems = random.randint(2, 4)
+    target_rarity = math.floor(1 + (user.purchases_yesterday / 50))
+    raritylist = []
+    for i in range(numpackitems):
+        result = random.gauss(target_rarity, 1.0)
+        rarity = round(result)
+        raritylist.append(max(1, min(rarity, 7)))
+    for curr_rarity in raritylist:
+        item_pool = Item.query.filter_by(rarity=curr_rarity, active=True).all()
+        selected = random.choice(item_pool)
+        final_prizes.append({
+                "type": "item",
+                "item_id": selected.item_id,
+                "name": selected.name,
+                "rarity": selected.rarity,
+                "label": selected.name,
+                "info": selected.info
+            })
+    random.shuffle(final_prizes)
+    session['current_info'] = final_prizes
+    return jsonify({
+            "status": "Success",
+            "prizes": final_prizes,
+            "wheel_size": len(final_prizes)
+    })
+@app.route('/api/v1/assets/content/condense-assets')
+def spin_wheel():
+    uid = session.get('userid')
+    user = Users.query.get(uid)
+    prizes = session.get('current_info')
+    if not prizes:
+        return jsonify({"error": "Wheel failed to save. Refresh to sync."}), 400
+    idx = secrets.SystemRandom().randint(0, len(prizes) - 1)
+    won = prizes[idx]
+    if won['type'] == 'globes':
+        user.globes += won['value']
+    elif won['type'] == 'item':
+        inv = Inventory.query.filter_by(userid=uid, item_id=won['item_id']).first()
+        if inv:
+            inv.count += 1
+        else:
+            db.session.add(Inventory(userid=uid, item_id=won['item_id'], count=1))
+    session.pop('current_info', None)
+    db.session.commit()
+    return jsonify({
+        "status": "Success",
+        "win_index": idx,
+        "prize": won,
+        "new_balance": user.globes
+    })
 @app.route('/api/v1/session/reconciliation-view.html')
 def sync_logs():
     return render_template('sync_logs.html')
