@@ -314,125 +314,6 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 
 <script>
 /**
- * @fileoverview Node Health Telemetry Core
- * Handles regional state synchronization and maintenance window tracking.
- */
-const HealthTelemetryManager = {
-    // Standardized reconciliation block duration (45m)
-    SYNC_BLOCK_DURATION: 2700,
-    remainingSeconds: 0,
-    isOperationalSync: false,
-    circleCircumference: 565.48,
-
-    async init() {
-        // Ensure the log container exists before writing
-        this.addLog("Requesting node telemetry packet...", "INFO");
-
-        try {
-            const response = await fetch('/api/v1/system/reconciliation/telemetry-status');
-            if (!response.ok) throw new Error('Gateway Timeout');
-
-            const data = await response.json();
-
-            // Set state based on API response
-            this.isOperationalSync = data.reconciliation_active;
-            this.remainingSeconds = this.isOperationalSync ?
-                data.time_remaining_seconds :
-                data.next_scheduled_sync_seconds;
-
-            this.addLog(`Status: ${data.status} | Source: US-EAST-1`, "SUCCESS");
-            this.startCounterLoop();
-        } catch (error) {
-            this.addLog(`Handshake Error: ${error.message}. Routing to local failover.`, "WARN");
-            this.remainingSeconds = 3600;
-            this.startCounterLoop();
-        }
-    },
-
-    startCounterLoop() {
-        const timerDisplay = document.getElementById('countdown-timer');
-        const progressCircle = document.getElementById('gauge-progress');
-        const statusLabel = document.querySelector('.gauge-status');
-
-        if(statusLabel) {
-            statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
-        }
-
-        const tick = () => {
-            if (this.remainingSeconds <= 0) {
-                this.addLog("Window threshold reached. Recalibrating...", "INFO");
-                this.init();
-                return;
-            }
-
-            this.remainingSeconds--;
-
-            // UI Refresh: Timer
-            if (timerDisplay) {
-                const mins = Math.floor(this.remainingSeconds / 60);
-                const secs = this.remainingSeconds % 60;
-                timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
-            }
-
-            // UI Refresh: SVG Gauge
-            if (progressCircle) {
-                const ratio = this.remainingSeconds / this.SYNC_BLOCK_DURATION;
-                const offset = this.circleCircumference * (1 - ratio);
-                progressCircle.style.strokeDashoffset = offset;
-            }
-
-            // Standard heartbeat interval
-            if (this.remainingSeconds % 60 === 0) {
-                this.addLog("Heartbeat verified. Shard consistency 100%.", "DEBUG");
-            }
-
-            // Using RequestAnimationFrame or setTimeout for non-blocking UI
-            this.timerId = setTimeout(tick, 1000);
-        };
-
-        tick();
-    },
-
-    addLog(msg, type = "INFO") {
-        const logContainer = document.getElementById('health-logs');
-        if (!logContainer) return;
-
-        const timestamp = new Date().toLocaleTimeString('en-GB', { hour12: false });
-        const theme = { INFO: "#3fb950", SUCCESS: "#58a6ff", WARN: "#d29922", DEBUG: "#7d8590" };
-
-        const entry = document.createElement('div');
-        entry.style.borderBottom = "1px solid #30363d";
-        entry.style.padding = "2px 0";
-        entry.innerHTML = `<span style="color: #8b949e">${timestamp}</span> <span style="color: ${theme[type]}">[${type}]</span> ${msg}`;
-
-        logContainer.appendChild(entry);
-        logContainer.scrollTop = logContainer.scrollHeight;
-
-        // Prevent DOM bloating
-        if (logContainer.children.length > 30) {
-            logContainer.removeChild(logContainer.firstChild);
-        }
-    }
-};
-
-/**
- * Global Navigation Hook
- * Ensures telemetry is only active during the focused Health view.
- */
-const originalHandleTransition = DocumentationStateManager.handleTransition;
-DocumentationStateManager.handleTransition = function(link, isSystemAction) {
-    originalHandleTransition.call(this, link, isSystemAction);
-
-    // Clear existing timers to prevent memory leaks when switching pages
-    if (HealthTelemetryManager.timerId) {
-        clearTimeout(HealthTelemetryManager.timerId);
-    }
-
-    if (link.getAttribute('data-page') === 'health') {
-        HealthTelemetryManager.init();
-    }
-};
-/**
  * SYSTEM NODE SYNCHRONIZATION (SNS) TELEMETRY INITIALIZATION
  * Compliance Standard: ISO-27001 / SOC2 Type II Reconciliation Layer
  * * This module manages the lifecycle and mounting of the privileged
@@ -660,6 +541,126 @@ const DocumentationStateManager = {
 
 // Initialize the engine on DOM completion
 document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
+
+/**
+ * @fileoverview Node Health Telemetry Core
+ * Handles regional state synchronization and maintenance window tracking.
+ */
+const HealthTelemetryManager = {
+    // Standardized reconciliation block duration (45m)
+    SYNC_BLOCK_DURATION: 2700,
+    remainingSeconds: 0,
+    isOperationalSync: false,
+    circleCircumference: 565.48,
+
+    async init() {
+        // Ensure the log container exists before writing
+        this.addLog("Requesting node telemetry packet...", "INFO");
+
+        try {
+            const response = await fetch('/api/v1/system/reconciliation/telemetry-status');
+            if (!response.ok) throw new Error('Gateway Timeout');
+
+            const data = await response.json();
+
+            // Set state based on API response
+            this.isOperationalSync = data.reconciliation_active;
+            this.remainingSeconds = this.isOperationalSync ?
+                data.time_remaining_seconds :
+                data.next_scheduled_sync_seconds;
+
+            this.addLog(`Status: ${data.status} | Source: US-EAST-1`, "SUCCESS");
+            this.startCounterLoop();
+        } catch (error) {
+            this.addLog(`Handshake Error: ${error.message}. Routing to local failover.`, "WARN");
+            this.remainingSeconds = 3600;
+            this.startCounterLoop();
+        }
+    },
+
+    startCounterLoop() {
+        const timerDisplay = document.getElementById('countdown-timer');
+        const progressCircle = document.getElementById('gauge-progress');
+        const statusLabel = document.querySelector('.gauge-status');
+
+        if(statusLabel) {
+            statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
+        }
+
+        const tick = () => {
+            if (this.remainingSeconds <= 0) {
+                this.addLog("Window threshold reached. Recalibrating...", "INFO");
+                this.init();
+                return;
+            }
+
+            this.remainingSeconds--;
+
+            // UI Refresh: Timer
+            if (timerDisplay) {
+                const mins = Math.floor(this.remainingSeconds / 60);
+                const secs = this.remainingSeconds % 60;
+                timerDisplay.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            // UI Refresh: SVG Gauge
+            if (progressCircle) {
+                const ratio = this.remainingSeconds / this.SYNC_BLOCK_DURATION;
+                const offset = this.circleCircumference * (1 - ratio);
+                progressCircle.style.strokeDashoffset = offset;
+            }
+
+            // Standard heartbeat interval
+            if (this.remainingSeconds % 60 === 0) {
+                this.addLog("Heartbeat verified. Shard consistency 100%.", "DEBUG");
+            }
+
+            // Using RequestAnimationFrame or setTimeout for non-blocking UI
+            this.timerId = setTimeout(tick, 1000);
+        };
+
+        tick();
+    },
+
+    addLog(msg, type = "INFO") {
+        const logContainer = document.getElementById('health-logs');
+        if (!logContainer) return;
+
+        const timestamp = new Date().toLocaleTimeString('en-GB', { hour12: false });
+        const theme = { INFO: "#3fb950", SUCCESS: "#58a6ff", WARN: "#d29922", DEBUG: "#7d8590" };
+
+        const entry = document.createElement('div');
+        entry.style.borderBottom = "1px solid #30363d";
+        entry.style.padding = "2px 0";
+        entry.innerHTML = `<span style="color: #8b949e">${timestamp}</span> <span style="color: ${theme[type]}">[${type}]</span> ${msg}`;
+
+        logContainer.appendChild(entry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+
+        // Prevent DOM bloating
+        if (logContainer.children.length > 30) {
+            logContainer.removeChild(logContainer.firstChild);
+        }
+    }
+};
+
+/**
+ * Global Navigation Hook
+ * Ensures telemetry is only active during the focused Health view.
+ */
+const originalHandleTransition = DocumentationStateManager.handleTransition;
+DocumentationStateManager.handleTransition = function(link, isSystemAction) {
+    originalHandleTransition.call(this, link, isSystemAction);
+
+    // Clear existing timers to prevent memory leaks when switching pages
+    if (HealthTelemetryManager.timerId) {
+        clearTimeout(HealthTelemetryManager.timerId);
+    }
+
+    if (link.getAttribute('data-page') === 'health') {
+        HealthTelemetryManager.init();
+    }
+};
 </script>
 </body>
 </html>
