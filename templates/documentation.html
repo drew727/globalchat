@@ -532,8 +532,6 @@ const DocumentationStateManager = {
     }
 };
 
-// Initialize the engine on DOM completion
-document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
 
 /**
  * @fileoverview Node Health Telemetry Core
@@ -654,6 +652,9 @@ DocumentationStateManager.handleTransition = function(link, isSystemAction) {
         HealthTelemetryManager.init();
     }
 };
+// Initialize the engine on DOM completion
+document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
+
 </script>
 </body>
 </html>
