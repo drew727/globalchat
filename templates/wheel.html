@@ -10,15 +10,15 @@
             height: 500px;
             border-radius: 50%;
             border: 2px solid black;
-            position: relative
+            position: relative;
             overflow: hidden;
-            transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            transform: 4s cubic-bezier(0.15, 0, 0.15, 1);
         }
-        #slice {
+        .slice {
             position: absolute
-            width: 100%
-            height: 100%
-            transform-origin: 50% 50%
+            width: 100%;
+            height: 100%;
+            transform-origin: 50% 50%;
             clip-path: polygon(100% 50%, 50% 0%, 100% 0%, 100% 100%);
         }
         </style>
@@ -54,7 +54,7 @@
                 wheel.innerHTML = ""
                 prizes = data.prizes
                 prizes.forEach((prize, index) => {
-                    wheel.innerHTML += `<div style="transform: rotate(${index * (360 / prizes.length)}deg); color: hsl(${index * (360 / prizes.length)}, 70%, 60%)"><p>TEmporary placeholder</p></div>`
+                    wheel.innerHTML += `<div class="slice" style="transform: rotate(${index * (360 / prizes.length)}deg); background-color: hsl(${index * (360 / prizes.length)}, 70%, 60%)"><p>${prize.label}</p></div>`
 
                 });
 
