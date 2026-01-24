@@ -216,6 +216,13 @@
         <section id="page-deployment" class="page-content">
             <div class="breadcrumb">Docs / Guides / Provisioning</div>
             <h1>Node Deployment Guide</h1>
+            <p>This guide covers the initialization and lifecycle management of the SNS synchronization agent. Ensure your hardware meets the minimum <code>AES-NI</code> instruction set requirements for cryptographic offloading.</p>
+            <h3>Prerequisites</h3>
+            <ul>
+                <li><strong>Runtime:</strong> Node.js v18.x or higher (LTS recommended)</li>
+                <li><strong>Memory:</strong> 2GB RAM minimum for state caching</li>
+                <li><strong>Network:</strong> Outbound access to port 443 (TLS) and 8443 (Gossip)</li>
+            </ul>
             <h3>Environment Configuration</h3>
             <p>Before initializing the node, ensure the local environment exported strings match the cluster's YAML definition. Unauthorized node-key mismatches will trigger a
                 <code>403_STATE_MISMATCH</code>
