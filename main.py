@@ -82,7 +82,7 @@ class SystemConfig(db.Model):
 
 class Inventory(db.Model):
     __table_args__ = (db.UniqueConstraint('userid', 'item_id', name='_user_item_uc'),)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db. Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'))
     item_id = db.Column(db.Integer, db.ForeignKey('itemtable.item_id'), nullable=False)
     count = db.Column(db.Integer, default=0)
@@ -174,9 +174,9 @@ def isDowntime():
     now = datetime.now(timezone.utc)
     now_ts = now.timestamp()
     day = now.timetuple().tm_yday
-    #temporary disable for testing if day % 2 == 0:
-    #    tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
-     #   return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
+    if day % 2 == 0:
+        tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        return True, "24h_COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
     next_manual_ts = float('inf')
     for start, end in MANUAL_DOWNTIMES:
         start_dt = now.replace(hour=int(start[:2]), minute=int(start[3:]), second=0).timestamp()
