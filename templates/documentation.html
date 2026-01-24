@@ -215,11 +215,39 @@
         <!-- Viewport: Deployment -->
         <section id="page-deployment" class="page-content">
             <div class="breadcrumb">Docs / Guides / Provisioning</div>
+            <h1>Node Deployment Guide</h1>
             <h3>Environment Configuration</h3>
             <p>Before initializing the node, ensure the local environment exported strings match the cluster's YAML definition. Unauthorized node-key mismatches will trigger a
                 <code>403_STATE_MISMATCH</code>
             event.</p>
-            <h1>Node Deployment Guide</h1>
+            <div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Variable</th>
+                <th>Description</th>
+                <th>Default</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>SNS_RECON_MODE</code></td>
+                <td>Defines the state distribution strategy.</td>
+                <td><code>eventual</code></td>
+            </tr>
+            <tr>
+                <td><code>MAX_PEER_CONNS</code></td>
+                <td>Cap for simultaneous VPC tunnel handshakes.</td>
+                <td><code>1024</code></td>
+            </tr>
+            <tr>
+                <td><code>LOG_VERBOSITY</code></td>
+                <td>Diagnostic output level (0-5).</td>
+                <td><code>1</code></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
             <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package.</p>
             <pre># Initialize the managed orchestration agent
                 npm install @systemnodesync/agent-v2
