@@ -47,7 +47,7 @@
     <script>
     const prizes = [];
     function getWheel() {
-        wheel = document.getElementById('wheel')
+        const wheel = document.getElementById('wheel');
         fetch('/api/v1/assets/content/daily-configurations')
             .then(response => response.json())
             .then(data => {
@@ -60,6 +60,7 @@
 
             });
     }
+    getWheel();
 
     </script>
     </body>
