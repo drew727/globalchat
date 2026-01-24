@@ -545,7 +545,7 @@ const HealthTelemetryManager = {
     circleCircumference: 565.48,
     timerId: null, // Track timer ID explicitly
     abortController: null, // Track pending network requests
-
+    totalWindow: 2700, // Standardized default window size
     formatTimestamp(ts) {
         // Converts Unix seconds to HH:MM format
         const date = new Date(ts * 1000);
