@@ -21,6 +21,8 @@
             transform-origin: 50% 50%;
         }
         #navbar {
+            width: 200px;
+            height: 300px;
             display: flex;
             flex-direction: column;
             position: fixed;
@@ -28,6 +30,9 @@
             left: 20px;
             border: 2px solid black;
             border-radius: 10px;
+        }
+        p {
+            z-index: 100;
         }
         </style>
 
@@ -49,6 +54,7 @@
     </div>
     <p>Purchases Today: <span id="purchases-today">0</span></p>
     <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+    <button id="spinwheel" onclick="spinWheel()">Spin Wheel!</button>
     <div id="wheel">
 
     </div>
@@ -78,6 +84,10 @@
 
             });
     }
+    function spinWheel() {
+        const wheel = document.getElementById('wheel')
+    }
+
     getWheel();
 
     </script>
