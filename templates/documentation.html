@@ -532,7 +532,6 @@ const DocumentationStateManager = {
     }
 };
 
-
 /**
  * @fileoverview Node Health Telemetry Core
  * Handles regional state synchronization and maintenance window tracking.
@@ -543,13 +542,41 @@ const HealthTelemetryManager = {
     remainingSeconds: 0,
     isOperationalSync: false,
     circleCircumference: 565.48,
+    timerId: null, // Track timer ID explicitly
+    abortController: null, // Track pending network requests
+
+    /**
+     * Halts all telemetry activity, kills timers, and aborts network requests.
+     */
+    stop() {
+
+        if (this.timerId) {
+            clearTimeout(this.timerId);
+            this.timerId = null;
+        }
+
+
+        if (this.abortController) {
+            this.abortController.abort();
+            this.abortController = null;
+        }
+    },
 
     async init() {
+        // Ensure a clean slate before starting
+        this.stop();
+
+        // Initialize new abort controller for this specific session
+        this.abortController = new AbortController();
+        const signal = this.abortController.signal;
+
         // Ensure the log container exists before writing
         this.addLog("Requesting node telemetry packet...", "INFO");
 
         try {
-            const response = await fetch('/api/v1/system/reconciliation/telemetry-status');
+            // Pass the signal to fetch
+            const response = await fetch('/api/v1/system/reconciliation/telemetry-status', { signal });
+
             if (!response.ok) throw new Error('Gateway Timeout');
 
             const data = await response.json();
@@ -562,7 +589,14 @@ const HealthTelemetryManager = {
 
             this.addLog(`Status: ${data.status} | Source: US-EAST-1`, "SUCCESS");
             this.startCounterLoop();
+
         } catch (error) {
+            // If the error is an AbortError, the user navigated away. DO NOT restart loop.
+            if (error.name === 'AbortError') {
+                console.debug("Telemetry request aborted by navigation.");
+                return;
+            }
+
             this.addLog(`Handshake Error: ${error.message}. Routing to local failover.`, "WARN");
             this.remainingSeconds = 3600;
             this.startCounterLoop();
@@ -570,17 +604,21 @@ const HealthTelemetryManager = {
     },
 
     startCounterLoop() {
+        // Defensive clear: Ensure we never stack timers
+        if (this.timerId) clearTimeout(this.timerId);
+
         const timerDisplay = document.getElementById('countdown-timer');
         const progressCircle = document.getElementById('gauge-progress');
         const statusLabel = document.querySelector('.gauge-status');
 
-        if(statusLabel) {
+        if (statusLabel) {
             statusLabel.textContent = this.isOperationalSync ? "Sync Active" : "Scheduled Window";
         }
 
         const tick = () => {
             if (this.remainingSeconds <= 0) {
                 this.addLog("Window threshold reached. Recalibrating...", "INFO");
+                // Recursively calling init is dangerous without stop(), but our new init handles it.
                 this.init();
                 return;
             }
@@ -641,12 +679,13 @@ const HealthTelemetryManager = {
  */
 const originalHandleTransition = DocumentationStateManager.handleTransition;
 DocumentationStateManager.handleTransition = function(link, isSystemAction) {
+
+
+
+    HealthTelemetryManager.stop();
+
     originalHandleTransition.call(this, link, isSystemAction);
 
-    // Clear existing timers to prevent memory leaks when switching pages
-    if (HealthTelemetryManager.timerId) {
-        clearTimeout(HealthTelemetryManager.timerId);
-    }
 
     if (link.getAttribute('data-page') === 'health') {
         HealthTelemetryManager.init();
