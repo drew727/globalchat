@@ -182,36 +182,35 @@
         <section id="page-health" class="page-content">
             <div class="breadcrumb">Docs / System / Telemetry</div>
             <h1>System Health & Node Telemetry</h1>
-            <p>Real-time status of the SNS cluster nodes and state reconciliation layers.</p>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Component</th>
-                            <th>Status</th>
-                            <th>Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>State Reconciliation</td>
-                            <td><span id="recon-status">Checking...</span></td>
-                            <td id="recon-timer">Awaiting handshake...</td>
-                        </tr>
-                        <tr>
-                            <td>Global Mesh Ingress</td>
-                            <td><span class="status-dot" style="background: #1a7f37;"></span> Optimal</td>
-                            <td>99.98% Uptime</td>
-                        </tr>
-                        <tr>
-                            <td>Shard Integrity</td>
-                            <td><span class="status-dot" style="background: #1a7f37;"></span> Verified</td>
-                            <td>Checksum: 0x8F...3E</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <p>Real-time telemetry for the active node cluster. The "Maintenance Window" indicates the time remaining until the next automated state reconciliation and cache-flush event.</p>
+
+            <div class="health-monitor">
+                <div class="gauge-container">
+                    <svg class="gauge-svg" width="200" height="200">
+                        <circle class="gauge-bg" cx="100" cy="100" r="90"></circle>
+                        <circle id="gauge-progress" class="gauge-fill" cx="100" cy="100" r="90" stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
+                    </svg>
+                    <div class="gauge-label">
+                        <span id="countdown-timer" class="gauge-time">--:--</span>
+                        <span class="gauge-status">Active Session</span>
+                    </div>
+                </div>
+
+                <div class="health-meta">
+                    <div class="stat-card" style="border:none; padding:0;">
+                        <div class="stat-label">Shard Integrity</div>
+                        <div class="stat-value" style="font-size: 16px;">Verified (0x8F...3E)</div>
+                    </div>
+                    <div class="stat-card" style="border:none; padding:0;">
+                        <div class="stat-label">Buffer Saturation</div>
+                        <div class="stat-value" style="font-size: 16px;">0.04%</div>
+                    </div>
+                </div>
             </div>
 
+            <h3>Administrative Event Logs</h3>
+            <pre id="health-logs"></pre>
+        </section>
             <h3 style="margin-top: 30px; font-size: 14px; color: #656d76;">System Events</h3>
             <pre id="health-logs" style="font-size: 11px; background: #0d1117; color: #c9d1d9; border: none;">
                 [INFO] Initializing telemetry sweep...
