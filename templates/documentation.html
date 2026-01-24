@@ -57,6 +57,7 @@
         .stat-card { border: 1px solid var(--border); border-radius: 6px; padding: 16px; background: #fff; }
         .stat-label { font-size: 11px; color: #656d76; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
         .stat-value { font-size: 20px; font-weight: 600; color: var(--text); }
+        .node-hash { font-family: ui-monospace, monospace; color: #656d76; font-size: 12px; }
 
         /* System Health Visuals */
         .health-monitor { display: flex; flex-direction: column; align-items: center; padding: 40px; background: #fff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 32px; }
@@ -69,6 +70,7 @@
         .gauge-status { font-size: 11px; color: #656d76; text-transform: uppercase; letter-spacing: 0.05em; }
         .health-meta { margin-top: 24px; display: flex; gap: 40px; width: 100%; justify-content: center; border-top: 1px solid var(--border); padding-top: 20px; }
         #health-logs { height: 180px; overflow-y: auto; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 12px; background: #0d1117; color: #c9d1d9; padding: 16px; border-radius: 6px; line-height: 1.5; }
+
         /* Table Styling */
         .table-container { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-top: 24px; }
         table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -128,21 +130,21 @@
                         <tr>
                             <td>nyc-sns-edge-01</td>
                             <td>US-EAST-1</td>
-                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x8f2a...d3e1</td>
+                            <td class="node-hash">0x8f2a...d3e1</td>
                             <td>12.04ms</td>
                             <td><span class="status-dot online"></span>Active</td>
                         </tr>
                         <tr>
                             <td>lon-sns-edge-04</td>
                             <td>EU-WEST-2</td>
-                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x11b4...c9a2</td>
+                            <td class="node-hash">0x11b4...c9a2</td>
                             <td>44.12ms</td>
                             <td><span class="status-dot online"></span>Active</td>
                         </tr>
                         <tr>
                             <td>tok-sns-edge-09</td>
                             <td>AP-NORTHEAST-1</td>
-                            <td style="font-family: monospace; font-size: 0.8rem; color: #666;">0x7c4e...f2b0</td>
+                            <td class="node-hash">0x7c4e...f2b0</td>
                             <td>108.45ms</td>
                             <td><span class="status-dot online"></span>Active</td>
                         </tr>
@@ -617,7 +619,7 @@ const HealthTelemetryManager = {
         const statusLabel = document.querySelector('.gauge-status');
         const targetDisplay = document.getElementById('target-session-start');
 
-        if (targetDisplay) {
+        if (targetDisplay && this.targetClockTime)) {
             targetDisplay.textContent = this.formatTimestamp(this.targetClockTime);
         }
 
