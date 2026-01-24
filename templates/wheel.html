@@ -19,7 +19,7 @@
             width: 100%;
             height: 100%;
             transform-origin: 50% 50%;
-            clip-path: polygon(50% 50%, 50% 0%, 100% 0%, 100% 20%);
+
         }
         </style>
 
@@ -46,16 +46,24 @@
     </div>
 
     <script>
+    function sliceclip(count) {
+        const ang = 360/count;
+        const rad = (ang/2) * (Math.Pi /180);
+        const x = 50 + math.tan(rad) * 50;
+        return `polygon(50% 50%, 50% 0%, ${x}%, 0%)`
+    }
     let prizes = [];
     function getWheel() {
         const wheel = document.getElementById('wheel');
         fetch('/api/v1/assets/content/daily-configurations')
             .then(response => response.json())
             .then(data => {
+                const clip = sliceclip(prizes.length)
+
                 wheel.innerHTML = ""
                 prizes = data.prizes
                 prizes.forEach((prize, index) => {
-                    wheel.innerHTML += `<div class="slice" style="transform: rotate(${index * (360 / prizes.length)}deg); background-color: hsl(${index * (360 / prizes.length)}, 70%, 60%)"><p>${prize.label}</p></div>`
+                    wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${index * (360 / prizes.length)}deg); background-color: hsl(${index * (360 / prizes.length)}, 70%, 60%)"><p>${prize.label}</p></div>`
 
                 });
 
