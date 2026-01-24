@@ -215,11 +215,15 @@
         <!-- Viewport: Deployment -->
         <section id="page-deployment" class="page-content">
             <div class="breadcrumb">Docs / Guides / Provisioning</div>
+            <h3>Environment Configuration</h3>
+            <p>Before initializing the node, ensure the local environment exported strings match the cluster's YAML definition. Unauthorized node-key mismatches will trigger a
+                <code>403_STATE_MISMATCH</code>
+            event.</p>
             <h1>Node Deployment Guide</h1>
             <p>Deploy the SNS synchronization agent using the standardized Node.js distribution package.</p>
             <pre># Initialize the managed orchestration agent
-npm install @systemnodesync/agent-v2
-sns-agent --cluster-id nyc-01 --verify-registration</pre>
+                npm install @systemnodesync/agent-v2
+                sns-agent --cluster-id nyc-01 --verify-registration</pre>
         </section>
     </div>
 
