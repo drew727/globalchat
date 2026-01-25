@@ -260,14 +260,16 @@ background-attachment: fixed;
 
 
         <input type="text" autocomplete="off" id="message_text" placeholder="Your message"><button type="button" id='send' onclick='sendmessage()'>Send</button></form>
-    <div id="navbar">
-    <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register!</strong></button>
-    <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Chat!</strong></button>
-    <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
-    <button class='btn' onclick="window.location.href = '/sys/local-storage/mount-points/registry'"><strong>Inventory!</strong></button>
-    <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
-    </div><p style="text-align: center; font-size: 24px; text-decoration: underline;"><strong>News</strong></p>
-        <p style="text-align: center; font-size: 18px;"><strong> WE'RE BACK!!!!!!!!!!!!!!!!!!!!!</strong></p>
+
+    <nav id="navbar">
+        <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click</strong></button>
+        <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory</strong></button>
+        <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/internal/content/asset-validation'"><strong>Wheel</strong></button>
+    </nav><p style="text-align: center; font-size: 24px; text-decoration: underline;"><strong>News</strong></p>
+        <p style="text-align: center; font-size: 18px;"><strong>More Security </strong></p>
         <div style="color: #ff8000; text-align: center; font-size: 18px;">
         <strong></strong>
         <ul style="list-style-position: inside; padding: 0; font-weight: bold;">
