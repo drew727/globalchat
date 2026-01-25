@@ -101,18 +101,19 @@
         transition: 0.2s;
     }
     #spinwheel:hover { background: #d62828; transform: scale(1.05); }
-
 #navbar {
     display: flex;
     flex-direction: column;
-    width: 180px;
-    padding: 15px;
-    background: white;
+    width: 160px;
+    padding: 10px;
+    background: #252a33;
     position: fixed;
-    top: 50px;
+    top: 20px;
     left: 20px;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #3d4450;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
 }
 .stats-box {
     flex: 0 0 200px;
@@ -147,16 +148,26 @@
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 .btn {
-        margin: 5px 0;
-        padding: 10px;
-        border: 1px solid #eee;
-        border-radius: 8px;
-        background: white;
-        cursor: pointer;
-        transition: 0.2s;
+    margin: 4px 0;
+    padding: 12px;
+    border: 1px solid #3d4450;
+    border-radius: 8px;
+    background: #1a1d23;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
     }
-    .btn:hover { background: #f8f9fa; border-color: #ccc; }
-        </style>
+
+    .btn:hover {
+        background: #e63946;
+        color: white;
+        border-color: #ff4d5a;
+        transform: translateX(5px);
+        box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
+    }
+    </style>
 
 
     </head>
