@@ -781,7 +781,7 @@ def get_daily_wheel():
     k = 0.5
     base = 100 #minimum shop value
     reward = base * (1 + k * user.purchases_yesterday)
-    random.seed(user.purchases_yesterday)
+    random.seed()
     values = [
         reward,
         reward * 1.5,
