@@ -30,17 +30,17 @@
     }
     .slice p {
         position: absolute;
-        top: 20px;
+        top: 15px;
         left: 50%;
-        transform: translateX(-50%) rotate(90deg);
-        transform-origin: top center;
+        transform: translateX(-50%);
         margin: 0;
         color: white;
         font-weight: bold;
         text-shadow: 1px 1px 2px black;
-        width: 200px;
-        text-align: left;
-        white-space: nowrap;
+        width: 100px;
+        text-align: center;
+        white-space: normal;
+        z-index: 100;
     }
         #navbar {
             width: 200px;
@@ -103,9 +103,9 @@
 
 
                     wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${rotation}deg); background-color: hsl(${rotation}, 70%, 60%)">
-                    <p>
-                    ${prize.label}
-                    </p></div>`
+                    <p style="transform: translateX(-50%) rotate(90deg); transform-origin: top center;">
+                ${prize.label}
+            </p></div>`
 
                 });
 
