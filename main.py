@@ -552,7 +552,7 @@ def purchase(pack_id):
            .filter(Item.active == True, Item.itemtype == config['item_type'])\
            .order_by(Item.item_id).all()
 
-        info = {r.item_id: {"name": r.name, "info": r.info} for r in results}
+        info = {r.item_id: {"name": r.name, "info": r.info, "rarity": r.rarity} for r in results}
         rng = secrets.SystemRandom()
         item_ids = [r.item_id for r in results]
         weights = [r.weight for r in results]
@@ -563,11 +563,14 @@ def purchase(pack_id):
                 user.globes -= curr_price
                 if pack_id == "color":
                     user.purchases_today += 1
+
                 bought_id = rng.choices(item_ids, weights=weights, k=1)[0]
                 items_won.append({
                     "name": info[bought_id]["name"],
                     "info": info[bought_id]["info"]
                 })
+                if info[bought_id]["rarity"] >= 7:
+                    db.session.add(Message(userid=1, text=f"{user.username} has rolled a tier 7+ item", room_id=0))
 
                 in_inv = Inventory.query.filter_by(userid=userid, item_id=bought_id).first()
                 if in_inv:
