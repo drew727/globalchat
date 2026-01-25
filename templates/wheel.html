@@ -71,7 +71,7 @@
     }
     .slice p {
         position: absolute;
-        top: 60px;
+        top: 80px;
         left: 50%;
         transform: translateX(-50%);
         margin: 0;
@@ -98,14 +98,18 @@
         transition: 0.2s;
     }
     #spinwheel:hover { background: #d62828; transform: scale(1.05); }
+
 #navbar {
-    background: #252a33;
-    border: 1px solid #3d4450;
-}
-.btn {
-    background: #2d333e;
-    color: white;
-    border: 1px solid #4d5563;
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    padding: 15px;
+    background: white;
+    position: fixed;
+    top: 50px;
+    left: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 .stats-box, .instructions {
     background: #252a33;
@@ -131,7 +135,15 @@
         font-size: 0.85em;
         color: #b0b8c3;
         margin: 8px 0; }
-
+    .btn {
+        margin: 5px 0;
+        padding: 10px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        transition: 0.2s;
+    }
     .btn:hover { background: #f8f9fa; border-color: #ccc; }
         </style>
 
@@ -146,20 +158,22 @@
         <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
     </nav>
     <div id="main-content">
-        <div class="stats-box">
-            <div id="globes">
-                Globes: <span id="globecount">loading...</span>
+        <div id="dashboard"></div>
+            <div class="stats-box">
+                <div id="globes">
+                    Globes: <span id="globecount">loading...</span>
+                </div>
+                <p>Purchases Today: <span id="purchases-today">0</span></p>
+                <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
             </div>
-            <p>Purchases Today: <span id="purchases-today">0</span></p>
-            <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+            <div class="instructions">
+                <h3>How it works</h3>
+                <p>Click the <strong>Spin Wheel</strong> to spin daily wheel</p>
+                <p>One spin is available per day. Prizes are based on color pack purchases from the previous day.</p>
+                <p>Once the wheel stops, your reward will be automatically added to your inventory.</p>
         </div>
+
     <button id="spinwheel" onclick="spinWheel()">Spin Wheel!</button>
-    <div class="instructions">
-            <h3>How it works</h3>
-            <p>Click the <strong>Spin Wheel</strong> to spin daily wheel</p>
-            <p>One spin is available per day. Prizes are based on color pack purchases from the previous day.</p>
-            <p>Once the wheel stops, your reward will be automatically added to your inventory.</p>
-        </div>
     <div id="wheel">
 
     </div>
