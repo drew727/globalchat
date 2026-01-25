@@ -16,7 +16,7 @@
             border: 5px solid #333;
             position: relative;
             overflow: hidden;
-            margin 50px auto;
+            margin: 50px auto;
             transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
         }
         .slice {
@@ -68,7 +68,7 @@
         </p>
     </div>
     <p>Purchases Today: <span id="purchases-today">0</span></p>
-    <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+    <p>Purchases Yesterday: <span id="purchases-yesterday">rwtgeb0</span></p>
     <button id="spinwheel" onclick="spinWheel()">Spin Wheel!</button>
     <div id="wheel">
 
@@ -79,7 +79,7 @@
         const ang = 360/count;
         const rad = (ang/2) * (Math.PI /180);
         const x = 50 + Math.tan(rad) * 50;
-        return `polygon(50% 50%, 50% 0%, ${x}% 0%)`
+        return `polygon(50% 50%, 50% 0%, ${x}% 0%)`;
     }
     let prizes = [];
     function getWheel() {
