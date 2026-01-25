@@ -761,7 +761,7 @@ def get_daily_wheel():
     now = datetime.now(timezone.utc)
     uid = session.get('userid')
     user = Users.query.get(uid)
-    return jsonify({"status": "user not found"}), 404
+    if not user: return jsonify({"status": "user not found"}), 404
     if user:
         if user.last_purchase_time is None or user.last_purchase_time.date() < now.date():
             user.last_purchase_time = now
