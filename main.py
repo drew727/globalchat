@@ -542,7 +542,7 @@ def purchase(pack_id):
 
     if user:
         if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
-            user.purchases_yesterday = user.puchases_today
+            user.purchases_yesterday = user.purchases_today
             user.purchases_today = 0
             user.spins_today = 1
 
