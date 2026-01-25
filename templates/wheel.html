@@ -76,8 +76,9 @@
 
     <script>
     function sliceclip(count) {
-        const ang = 360/count;
-        return `polygon(50% 50%, 50% 0%, 100% 0%, 100% ${ang}%)`;
+        const ang = 360 / count;
+        const x = 50 + (50 * Math.tan((ang * Math.PI) / 180));
+        return `polygon(50% 50%, 50% 0%, ${x}% 0%)`;
     }
     let prizes = [];
     function getWheel() {
