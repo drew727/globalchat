@@ -548,10 +548,9 @@ def purchase(pack_id):
 
         user.last_purchase_time = time
 
-        results = db.session.query(Item.item_id, Item.name, Item.weight, Item.info)\
+        results = db.session.query(Item.item_id, Item.name, Item.weight, Item.info, Item.rarity)\
            .filter(Item.active == True, Item.itemtype == config['item_type'])\
            .order_by(Item.item_id).all()
-
         info = {r.item_id: {"name": r.name, "info": r.info, "rarity": r.rarity} for r in results}
         rng = secrets.SystemRandom()
         item_ids = [r.item_id for r in results]
