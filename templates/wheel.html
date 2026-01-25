@@ -133,15 +133,21 @@
         <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory!</strong></button>
         <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
     </nav>
-    <div id="globes">
-        <p>Globes:
-            <span id="globecount">loading...</span>
-            <img src="/static/download-removebg-preview.png" width='30px' height='30px'>
-        </p>
-    </div>
-    <p>Purchases Today: <span id="purchases-today">0</span></p>
-    <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+    <div id="main-content">
+        <div class="stats-box">
+            <div id="globes">
+                Globes: <span id="globecount">loading...</span>
+            </div>
+            <p>Purchases Today: <span id="purchases-today">0</span></p>
+            <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+        </div>
     <button id="spinwheel" onclick="spinWheel()">Spin Wheel!</button>
+    <div class="instructions">
+            <h3>How it works</h3>
+            <p>Click the <strong>Spin Wheel</strong> to spin daily wheel</p>
+            <p>One spin is available per day. Prizes are based on color pack purchases from the previous day.</p>
+            <p>Once the wheel stops, your reward will be automatically added to your inventory.</p>
+        </div>
     <div id="wheel">
 
     </div>
