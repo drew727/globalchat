@@ -205,7 +205,7 @@
     </div>
 
     <script>
-    window.onload() = function() {
+    window.onload = function() {
         fetch('/api/v2/user-profile/cache/sync-manifest')
             .then(response => response.json())
             .then(user => {
