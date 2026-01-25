@@ -224,6 +224,9 @@
                 .then(response => response.json())
                 .then(user => {
                     document.getElementById('globecount').innerText = user.globes;
+                    document.getElementById('purchases-yesterday').innerText = user.purchases_yesterday;
+                    document.getElementById('purchases-today').innerText = user.purchases_today;
+
                 });
 
             }

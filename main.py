@@ -325,6 +325,7 @@ def userinfo():
         "isguest": user.isguest,
         "globes": user.globes,
         "purchases_today": user.purchases_today,
+        "purchases_yesterday": user.purchases_yesterday,
         "equipped_color": user.equipped_color,
         "equipped_image": user.equipped_image,
 
