@@ -792,7 +792,7 @@ def get_daily_wheel():
         reward * 0.8
     ]
     final_prizes = [{"type": "globes", "value": int(v), "label": f"{int(v)} Globes"} for v in values]
-    numpackitems = random.randint(2, 4)
+    numpackitems = random.randint(3, 6)
     target_rarity = math.floor(1 + (user.purchases_yesterday / 50))
     raritylist = []
     for i in range(numpackitems):
