@@ -90,10 +90,11 @@
         fetch('/api/v1/assets/content/daily-configurations')
             .then(response => response.json())
             .then(data => {
-                const angle = 360 / prizes.length;
-                const protation = index * sliceAngle;
-                const middleOfSlice = sliceAngle / 2;
                 prizes = data.prizes
+                const angle = 360 / prizes.length;
+                const rotation = index * angle;
+                const middleOfSlice = angle / 2;
+
                 const clip = sliceclip(prizes.length)
 
                 wheel.innerHTML = ""
