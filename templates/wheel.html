@@ -263,9 +263,50 @@
 
             });
     }
+    currentRotation = 0
     function spinWheel() {
-        const wheel = document.getElementById('wheel')
-    }
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinwheel');
+
+
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = "0.5";
+
+        fetch('/api/v1/assets/content/condense-assets')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    spinBtn.disabled = false;
+                    spinBtn.style.opacity = "1";
+                    return;
+                }
+
+                const prizeCount = prizes.length;
+                const sliceAngle = 360 / prizeCount;
+
+
+
+
+                const extraDegrees = 360 - (data.win_index * sliceAngle);
+                currentRotation += 1800 + extraDegrees;
+
+                wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+
+                setTimeout(() => {
+                    alert(`You won: ${data.prize.label}!`);
+                    updateglobes();
+                    spinBtn.disabled = false;
+                    spinBtn.style.opacity = "1";
+                }, 4000);
+            })
+            .catch(err => {
+                console.error("Spin failed:", err);
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = "1";
+            });
+        }
 
 
     </script>
