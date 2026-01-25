@@ -60,6 +60,7 @@ class Users(db.Model):
     equipped_image = db.Column(db.String(200), default=None)
     purchases_today = db.Column(db.Integer, default=0)
     purchases_yesterday = db.Column(db.Integer, default=0)
+    spins_today = db.Column(db.Integer, default=1)
     last_purchase_time = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     total_clicks = db.Column(db.Integer, default=0)
     def setpassword(self, password):
@@ -328,6 +329,7 @@ def userinfo():
         "purchases_yesterday": user.purchases_yesterday,
         "equipped_color": user.equipped_color,
         "equipped_image": user.equipped_image,
+        "spins_today": user.spins_today
 
 
 
@@ -542,6 +544,7 @@ def purchase(pack_id):
         if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
             user.purchases_yesterday = user.puchases_today
             user.purchases_today = 0
+            user.spins_today = 1
 
         user.last_purchase_time = time
 
@@ -769,6 +772,7 @@ def get_daily_wheel():
             session.pop('current_info', None)
             user.purchases_yesterday = user.purchases_today
             user.purchases_today = 0
+            user.spins_today = 1
             db.session.commit()
     if 'current_info' in session:
         return jsonify({
@@ -824,8 +828,13 @@ def spin_wheel():
     uid = session.get('userid')
     user = Users.query.get(uid)
     prizes = session.get('current_info')
+    if not user:
+        return jsonify({"error": "User not found."}), 400
+    if user.spins_today < 1:
+        return jsonify({"error": "Already spun wheel today."}), 400
     if not prizes:
         return jsonify({"error": "Wheel failed to save. Refresh to sync."}), 400
+
     idx = secrets.SystemRandom().randint(0, len(prizes) - 1)
     won = prizes[idx]
     if won['type'] == 'globes':
@@ -836,13 +845,15 @@ def spin_wheel():
             inv.count += 1
         else:
             db.session.add(Inventory(userid=uid, item_id=won['item_id'], count=1))
+    user.spins_today -= 1
     session.pop('current_info', None)
     db.session.commit()
     return jsonify({
         "status": "Success",
         "win_index": idx,
         "prize": won,
-        "new_balance": user.globes
+        "new_balance": user.globes,
+        "spins_today": user.spins_today
     })
 @app.route('/api/v1/session/reconciliation-view.html')
 def sync_logs():

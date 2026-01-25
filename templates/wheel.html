@@ -189,13 +189,14 @@
                 <div id="globes">
                     Globes: <span id="globecount">loading...</span>
                 </div>
+                <p>Spins Today: <span id="spins-today">0</span></p>
                 <p>Color Purchases Today: <span id="purchases-today">0</span></p>
                 <p>Color Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
             </div>
             <div class="instructions">
                 <h3>How it works</h3>
                 <p>Click the <strong>Spin Wheel</strong> to spin daily wheel</p>
-                <p>One spin is available per day. Prizes are based on color pack purchases from the previous day.</p>
+                <p>Prizes are based on color pack purchases from the previous day.</p>
                 <p>Once the wheel stops, your reward will be automatically added to your inventory.</p>
         </div>
     </div>
@@ -226,6 +227,7 @@
                     document.getElementById('globecount').innerText = user.globes;
                     document.getElementById('purchases-yesterday').innerText = user.purchases_yesterday;
                     document.getElementById('purchases-today').innerText = user.purchases_today;
+                    document.getElementById('spins-today').innerText = user.spins_today;
 
                 });
 
