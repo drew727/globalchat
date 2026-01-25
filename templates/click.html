@@ -144,6 +144,8 @@
     <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click!</strong></button>
     <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory!</strong></button>
     <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop!</strong></button>
+    <button class='btn' onclick="window.location.href='/api/v1/internal/content/asset-validation'"><strong>Wheel</strong></button>
+
     </div>
         <div id="globes"><p>Globes: </p></div>
 
@@ -297,7 +299,7 @@
                     document.getElementById('progress').style.width = percent + '%';
                 });
             }
-            setInterval(frame, 5000 + Math.floor(Math.random() * 5000) + 1);
+            setInterval(frame, 2000 + Math.floor(Math.random() * 5000) + 1);
 
         </script>
     </body>

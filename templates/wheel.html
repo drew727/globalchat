@@ -189,8 +189,8 @@
                 <div id="globes">
                     Globes: <span id="globecount">loading...</span>
                 </div>
-                <p>Purchases Today: <span id="purchases-today">0</span></p>
-                <p>Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+                <p>Color Purchases Today: <span id="purchases-today">0</span></p>
+                <p>Color Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
             </div>
             <div class="instructions">
                 <h3>How it works</h3>
@@ -205,6 +205,29 @@
     </div>
 
     <script>
+    window.onload() = function() {
+        fetch('/api/v2/user-profile/cache/sync-manifest')
+            .then(response => response.json())
+            .then(user => {
+                if (user.isguest === false) {
+                    document.getElementById('register').innerText = user.username;
+                    document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                }
+            });
+
+        updateglobes();
+        getWheel();
+
+    }
+    function updateglobes() {
+            fetch('/api/v2/user-profile/cache/sync-manifest')
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('globecount').innerText = user.globes;
+                });
+
+            }
+
     function sliceclip(count) {
         const ang = 360 / count;
         const rad = (ang / 2) * (Math.PI / 180);
@@ -241,7 +264,6 @@
         const wheel = document.getElementById('wheel')
     }
 
-    getWheel();
 
     </script>
     </body>
