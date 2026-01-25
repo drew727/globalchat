@@ -197,7 +197,7 @@ def isDowntime():
     block_start = (now_ts // block_size) * block_size
     random.seed(int(block_start))
     start_offset = random.randint(0, 40 * 60)
-    duration = random.randint(60, 120)
+    duration = random.randint(60, 420)
 
     down_start = block_start + start_offset
     down_end = down_start + duration
