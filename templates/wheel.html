@@ -73,6 +73,7 @@
         fetch('/api/v1/assets/content/daily-configurations')
             .then(response => response.json())
             .then(data => {
+                document.getElementById('globecount').innerHTML = data.status;
                 prizes = data.prizes
                 const clip = sliceclip(prizes.length)
 
