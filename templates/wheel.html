@@ -29,10 +29,13 @@
         }
         #dashboard {
             display: flex;
-            gap: 20px;
-            width: 100%;
+            flex-direction: row;
             justify-content: center;
-            margin-bottom: 30px;
+            align-items: stretch;
+            gap: 15px;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
         }
         #wheel {
             width: 600px;
@@ -111,22 +114,23 @@
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-.stats-box, .instructions {
+.stats-box {
+    flex: 0 0 200px;
     background: #252a33;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     border: 1px solid #3d4450;
-    margin: 0;
+    text-align: left;
 }
-    .stats-box {
-        flex: 1;
-        max-width: 250px;
-    }
-    .instructions {
-        flex: 2;
-        text-align: left;
-    }
+
+.instructions {
+    flex: 1;
+    background: #252a33;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #3d4450;
+    text-align: left;
+}
         .instructions h3 {
             margin-top: 0;
             color: #ff4d5a;
