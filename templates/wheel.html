@@ -91,15 +91,16 @@
             .then(response => response.json())
             .then(data => {
                 prizes = data.prizes
-                const angle = 360 / prizes.length;
-                const rotation = index * angle;
-                const middleOfSlice = angle / 2;
-
-                const clip = sliceclip(prizes.length)
-
                 wheel.innerHTML = ""
 
                 prizes.forEach((prize, index) => {
+                    const angle = 360 / prizes.length;
+                    const rotation = index * angle;
+                    const middleOfSlice = angle / 2;
+
+                    const clip = sliceclip(prizes.length)
+
+
                     wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${rotation}deg); background-color: hsl(${rotation}, 70%, 60%)">
                     <p style="transform: translateX(-50%) rotate(${middleOfSlice}deg) rotate(90deg);">
                     ${prize.label}
