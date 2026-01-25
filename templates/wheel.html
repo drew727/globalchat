@@ -90,14 +90,19 @@
         fetch('/api/v1/assets/content/daily-configurations')
             .then(response => response.json())
             .then(data => {
-
+                const angle = 360 / prizes.length;
+                const protation = index * sliceAngle;
+                const middleOfSlice = sliceAngle / 2;
                 prizes = data.prizes
                 const clip = sliceclip(prizes.length)
 
                 wheel.innerHTML = ""
 
                 prizes.forEach((prize, index) => {
-                    wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${index * (360 / prizes.length)}deg); background-color: hsl(${index * (360 / prizes.length)}, 70%, 60%)"><p>${prize.label}</p></div>`
+                    wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${rotation}deg); background-color: hsl(${rotation}, 70%, 60%)">
+                    <p style="transform: translateX(-50%) rotate(${middleOfSlice}deg) rotate(90deg);">
+                    ${prize.label}
+                    </p></div>`
 
                 });
 
