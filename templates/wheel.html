@@ -5,13 +5,18 @@
         <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
 
         <style>
+        #globes p, body > p {
+            position: absolute;
+            z-index: 10;
+        }
         #wheel {
             width: 500px;
             height: 500px;
             border-radius: 50%;
-            border: 2px solid black;
+            border: 5px solid #333;
             position: relative;
             overflow: hidden;
+            margin 50px auto;
             transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
         }
         .slice {
@@ -19,6 +24,19 @@
             width: 100%;
             height: 100%;
             transform-origin: 50% 50%;
+        }
+        .slice p {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            color: white;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            z-index: 1;
+            width: 100px;
+            text-align: center;
         }
         #navbar {
             width: 200px;
@@ -30,10 +48,6 @@
             left: 20px;
             border: 2px solid black;
             border-radius: 10px;
-        }
-        p {
-            position: absolute;
-            z-index: 9999;
         }
         </style>
 
