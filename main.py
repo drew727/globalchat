@@ -778,8 +778,8 @@ def get_daily_wheel():
             "purchases_today": user.purchases_today,
             "purchases_yesterday": user.purchases_yesterday
         })
-    k = 0.5
-    base = 100 #minimum shop value
+    k = 0.9
+    base = 150 #minimum shop value
     reward = base * (1 + k * user.purchases_yesterday)
     random.seed()
     values = [
@@ -796,7 +796,7 @@ def get_daily_wheel():
     target_rarity = math.floor(1 + (user.purchases_yesterday / 50))
     raritylist = []
     for i in range(numpackitems):
-        result = random.gauss(target_rarity, 1.0)
+        result = random.gauss(target_rarity, 0.75)
         rarity = round(result)
         raritylist.append(max(1, min(rarity, 7)))
     for curr_rarity in raritylist:
