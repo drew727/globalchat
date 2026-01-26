@@ -868,7 +868,7 @@ def leaderboard(nodetype):
         ).join(Message, Users.userid == Message.userid) \
          .outerjoin(Item, Users.equipped_color == Item.name) \
          .filter(func.date(Message.timestamp) == today) \
-         .group_by(Users.userid, Item.info) \
+         .group_by(Users.userid, Users.username, Item.info)\
          .order_by(func.count(Message.id).desc()) \
          .limit(10) \
          .all()
