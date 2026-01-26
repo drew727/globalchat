@@ -878,8 +878,10 @@ def leaderboard(nodetype):
          .order_by(Users.cbc.desc()).limit(10).all()
     elif nodetype == 'purchases_today':
         msg_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
-         .outerjoin(Item, Users.equipped_color == Item.name) \
-         .order_by(Users.purchases_today.desc()).limit(10).all()
+            .outerjoin(Item, Users.equipped_color == Item.name) \
+            .filter(func.date(Users.last_purchase_time) == today) \
+            .order_by(Users.purchases_today.desc()) \
+            .limit(10).all()
     clean_output = [list(user) for user in msg_users]
     return jsonify({"status": "Success", "output": clean_output})
 @app.route('/api/v1/session/nodes/internal/node-performance-metrics')
