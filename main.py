@@ -857,9 +857,10 @@ def spin_wheel():
         "new_balance": user.globes,
         "spins_today": user.spins_today
     })
-@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')
+@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')
 def leaderboard(nodetype):
     today = datetime.now(timezone.utc).date()
+    msg_users = []
     if nodetype == 'messages':
         msg_users = db.session.query(
             Users.username,
@@ -870,19 +871,17 @@ def leaderboard(nodetype):
          .filter(func.date(Message.timestamp) == today) \
          .group_by(Users.userid, Users.username, Item.info)\
          .order_by(func.count(Message.id).desc()) \
-         .limit(10) \
-         .all()
-        return jsonify({"status": "Success", "output": msg_users})
-    if nodetype == 'click_contribution':
-        cbc_users = db.session.query(Users.username, Item.info, Users.cbc) \
+         .limit(10).all()
+    elif nodetype == 'click_contribution':
+        msg_users = db.session.query(Users.username, Item.info, Users.cbc) \
          .outerjoin(Item, Users.equipped_color == Item.name) \
          .order_by(Users.cbc.desc()).limit(10).all()
-        return jsonify({"status": "Success", "output": cbc_users})
-    if nodetype == 'purchases_today':
-        pur_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
+    elif nodetype == 'purchases_today':
+        msg_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
          .outerjoin(Item, Users.equipped_color == Item.name) \
          .order_by(Users.purchases_today.desc()).limit(10).all()
-        return jsonify({"status": "Success", "output": pur_users})
+    clean_output = [list(user) for user in msg_users]
+    return jsonify({"status": "Success", "output": clean_output})
 @app.route('/api/v1/session/nodes/internal/node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')
