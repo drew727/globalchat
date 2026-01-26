@@ -136,7 +136,7 @@ def sitemap():
 
     pages = []
 
-    hash_routes = ["overview", "topology", "api", "deployment"]
+    hash_routes = ["overview", "topology", "health", "api", "deployment"]
 
 
     base_url = "https://systemnodesync.dpdns.org"
