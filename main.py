@@ -802,7 +802,7 @@ def get_daily_wheel():
     target_rarity = math.floor(1 + (user.purchases_yesterday / 50))
     raritylist = []
     for i in range(numpackitems):
-        result = random.gauss(target_rarity, 0.75)
+        result = random.gauss(target_rarity, 0.85)
         rarity = round(result)
         raritylist.append(max(1, min(rarity, 7)))
     for curr_rarity in raritylist:
