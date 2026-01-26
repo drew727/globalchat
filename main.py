@@ -857,7 +857,7 @@ def spin_wheel():
         "new_balance": user.globes,
         "spins_today": user.spins_today
     })
-@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')
+@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')
 def leaderboard(nodetype):
     today = datetime.now(timezone.utc).date()
     msg_users = []
