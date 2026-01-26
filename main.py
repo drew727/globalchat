@@ -874,18 +874,15 @@ def leaderboard(nodetype):
          .all()
         return jsonify({"status": "Success", "output": msg_users})
     if nodetype == 'click_contribution':
-        cbc_users = db.session.query(Users.username, Users.equipped_color, Users.cbc)\
-         .order_by(Users.cbc.desc()) \
-         .limit(10) \
-         .all()
+        cbc_users = db.session.query(Users.username, Item.info, Users.cbc) \
+         .outerjoin(Item, Users.equipped_color == Item.name) \
+         .order_by(Users.cbc.desc()).limit(10).all()
         return jsonify({"status": "Success", "output": cbc_users})
     if nodetype == 'purchases_today':
-        pur_users = db.session.query(Users.username, Users.equipped_color, Users.purchases_today)\
-         .order_by(Users.purchases_today.desc()) \
-         .limit(10) \
-         .all()
-        return jsonify({"status": "Success", "output": pur_users})
-@app.route('/api/v1/session/nodes/internal/node-performance-metrics')
+        pur_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
+         .outerjoin(Item, Users.equipped_color == Item.name) \
+         .order_by(Users.purchases_today.desc()).limit(10).all()
+        return jsonify({"status": "Success", "output": pur_users})@app.route('/api/v1/session/nodes/internal/node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')
 

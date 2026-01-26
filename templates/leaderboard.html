@@ -32,7 +32,13 @@
                 const title = document.getElementById('title')
                 const column = document.getElementById('count')
                 title.innerText = type.replace('_', ' ').toUpperCase();
-                column.innerText = type === 'message' ? 'Messages Today' : (type === 'cbc' ? 'Clicks Before Next Miltestone' : 'Purchases Today');
+                if (type === 'messages') {
+                    column.innerText = 'Messages Today';
+                } else if (type === 'click_contribution') {
+                    column.innerText = 'Clicks Contributed Between Milestones';
+                } else {
+                    column.innerText = 'Purchases Today';
+                }
                 tbody.innerHTML = '';
                 data.output.forEach((user, index) => {
                 const row = `
@@ -42,7 +48,7 @@
                     <td>${user[2].toLocaleString()}</td>
                 </tr>
             `;
-           tableBody.innerHTML += row;
+           tbody.innerHTML += row;
     });
 }
 
