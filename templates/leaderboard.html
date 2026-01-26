@@ -155,7 +155,7 @@
                 data.output.forEach((user, index) => {
                     const countVal = (user[2] !== undefined && user[2] !== null) ? user[2].toLocaleString() : 0;
                     let colorStyle = user[1] ? user[1] : "color: white";
-                    let classStyle;
+                    let classStyle = '';
                     if (colorStyle == 'TRIGGER:rainbow;') {
                         colorStyle = '';
                         classStyle = 'rainbow';
@@ -164,7 +164,7 @@
                     const row = `
                     <tr>
                         <td style="color: #444;">#${index + 1}</td>
-                        <td style="${colorStyle}"><strong class="${classStyle}>${user[0]}</strong></td>
+                        <td style="${colorStyle}"><strong class="${classStyle}">${user[0]}</strong></td>
                         <td style="color: #fff;">${countVal}</td>
                     </tr>
                 `;
