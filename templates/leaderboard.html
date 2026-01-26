@@ -14,6 +14,40 @@
             font-family: 'Segoe UI', sans-serif;
         }
 
+@keyframes rainbow-flash {
+    0%, 100% {
+        color: #ff00ea;
+        text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
+        transform: scale(1.0);
+    }
+    15% {
+        color: #ff0000;
+        text-shadow: 0 0 4px #ff0000, 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+    35% {
+        color: #ffcc00;
+        text-shadow: 0 0 4px #ffcc00, 0 0 10px rgba(255, 204, 0, 0.7);
+
+    }
+    50% {
+        color: #ffff00;
+        text-shadow: 0 0 4px #ffff00, 0 0 12px rgba(255, 255, 0, 0.8);
+        transform: scale(1.02);
+    }
+    65% {
+        color: #00ff00;
+        text-shadow: 0 0 4px #00ff00, 0 0 8px rgba(0, 255, 0, 0.6);
+    }
+    85% {
+        color: #088F8F;
+        text-shadow: 0 0 4px #088F8F, 0 0 8px rgba(8, 143, 143, 0.6);
+    }
+    95% {
+        color: #6a0dad;
+        text-shadow: 0 0 4px #6a0dad, 0 0 8px rgba(106, 13, 173, 0.6);
+    }
+}
+
         #leaderboard {
             width: 100%;
             min-height: 100vh;
@@ -64,13 +98,24 @@
             border-bottom: 1px solid #111;
         }
 
+.rainbow {
+
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    animation: rainbow-flash 3s linear infinite;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
+
+
 
         .user-name {
             color: white;
         }
         </style>
     </head>
-    <body>
+    <body
         <div id="leaderboard">
             <div id="controls">
                 <button onclick="updatelb('messages')">Top Messages</button>
@@ -110,6 +155,11 @@
                 data.output.forEach((user, index) => {
                     const countVal = (user[2] !== undefined && user[2] !== null) ? user[2].toLocaleString() : 0;
                     const colorStyle = user[1] ? user[1] : "color: white";
+                    const classStyle;
+                    if (colorStyle == 'TRIGGER:rainbow;') {
+                        colorStyle = '';
+                        classStyle = 'rainbow';
+                    }
 
                     const row = `
                     <tr>
