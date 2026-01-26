@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <div id="leaderboard">
+            <div id="controls">
+                <button onclick="updatelb('messages')">Top Messages</button>
+                <button onclick="updatelb('click_contribution')">Top Clicks</button>
+                <button onclick="updatelb('purchases_today')">Top Buyers</button>
+            </div>
+            <h2 id="title">
+                Leaderboard
+            </h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th id="count">Count</th>
+                    </tr>
+                </thead>
+                <tbody id="data"></tbody>
+            </table>
+        </div>
+        <script>
+            async function updatelb(type) {
+                const resp = await fetch(`/api/v2/session/nodes/data-cluster-pools/${type}`);
+                const data = await resp.json()
+                const tbody = document.getElementById('data')
+                const title = document.getElementById('title')
+                const column = document.getElementById('count')
+                title.innerText = type.replace('_', ' ').toUpperCase();
+                column.innerText = type === 'message' ? 'Messages Today' : (type === 'cbc' ? 'Clicks Before Next Miltestone' : 'Purchases Today');
+                tbody.innerHTML = '';
+                data.output.forEach((user, index) => {
+                const row = `
+                    <tr style="${user[1] || 'color: white'}">
+                    <td>#${index + 1}</td>
+                    <td><strong>${user[0]}</strong></td>
+                    <td>${user[2].toLocaleString()}</td>
+                </tr>
+            `;
+           tableBody.innerHTML += row;
+    });
+}
+
+            }
+        </script>
+    </body>
+</html>

@@ -175,7 +175,7 @@ def isDowntime():
     now = datetime.now(timezone.utc)
     now_ts = now.timestamp()
     day = now.timetuple().tm_yday
-    if day % 2 == 0:
+    if day % 2 == 1:
         tomorrow = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
         return True, "COOLDOWN", int(tomorrow.timestamp() - now_ts), 86400
     next_manual_ts = float('inf')
@@ -569,7 +569,7 @@ def purchase(pack_id):
                     "info": info[bought_id]["info"]
                 })
                 if info[bought_id]["rarity"] >= 7:
-                    db.session.add(Message(userid=1, text=f"{user.username} has rolled a tier 7+ item", room_id=0))
+                    db.session.add(Message(userid=1, text=f"{user.username} has rolled a tier {info[bought_id]["rarity"]}  item", room_id=0))
 
                 in_inv = Inventory.query.filter_by(userid=userid, item_id=bought_id).first()
                 if in_inv:
@@ -857,7 +857,39 @@ def spin_wheel():
         "new_balance": user.globes,
         "spins_today": user.spins_today
     })
-@app.route('/api/v1/session/reconciliation-view.html')
+@app.route('api/v2/session/nodes/data-cluster-pools/<nodetype>')
+def leaderboard(nodetype):
+    today = datetime.now(timezone.utc).date()
+    if nodetype == 'messages':
+        msg_users = db.session.query(
+            Users.username,
+            Item.info,
+            func.count(Message.id).label('message_count')
+        ).join(Message, Users.userid == Message.userid) \
+         .outerjoin(Item, Users.equipped_color == Item.name) \
+         .filter(func.date(Message.timestamp) == today) \
+         .group_by(Users.userid, Item.info) \
+         .order_by(func.count(Message.id).desc()) \
+         .limit(10) \
+         .all()
+        return jsonify({"status": "Success", "output": msg_users})
+    if nodetype == 'click_contribution':
+        cbc_users = db.session.query(Users.username, Users.equipped_color, Users.cbc)\
+         .order_by(Users.cbc.desc()) \
+         .limit(10) \
+         .all()
+        return jsonify({"status": "Success", "output": cbc_users})
+    if nodetype == 'purchases_today':
+        pur_users = db.session.query(Users.username, Users.equipped_color, Users.purchases_today)\
+         .order_by(Users.purchases_today.desc()) \
+         .limit(10) \
+         .all()
+        return jsonify({"status": "Success", "output": pur_users})
+@app.route('api/v2/session/nodes/internal-node-performance-metrics')
+def leaderboard_page():
+    return render_template('/leaderboard.html')
+
+
 def sync_logs():
     return render_template('sync_logs.html')
 
