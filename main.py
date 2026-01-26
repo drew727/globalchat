@@ -885,7 +885,7 @@ def leaderboard(nodetype):
          .limit(10) \
          .all()
         return jsonify({"status": "Success", "output": pur_users})
-@app.route('api/v2/session/nodes/internal-node-performance-metrics')
+@app.route('/api/v2/session/nodes/internal-node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')
 
