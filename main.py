@@ -857,7 +857,7 @@ def spin_wheel():
         "new_balance": user.globes,
         "spins_today": user.spins_today
     })
-@app.route('api/v2/session/nodes/data-cluster-pools/<nodetype>')
+@app.route('/api/v2/session/nodes/data-cluster-pools/<nodetype>')
 def leaderboard(nodetype):
     today = datetime.now(timezone.utc).date()
     if nodetype == 'messages':
@@ -885,7 +885,7 @@ def leaderboard(nodetype):
          .limit(10) \
          .all()
         return jsonify({"status": "Success", "output": pur_users})
-@app.route('/api/v2/session/nodes/internal-node-performance-metrics')
+@app.route('/api/v1/session/nodes/internal/node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')
 
