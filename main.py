@@ -882,7 +882,8 @@ def leaderboard(nodetype):
         pur_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
          .outerjoin(Item, Users.equipped_color == Item.name) \
          .order_by(Users.purchases_today.desc()).limit(10).all()
-        return jsonify({"status": "Success", "output": pur_users})@app.route('/api/v1/session/nodes/internal/node-performance-metrics')
+        return jsonify({"status": "Success", "output": pur_users})
+@app.route('/api/v1/session/nodes/internal/node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')
 
