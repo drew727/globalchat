@@ -41,16 +41,17 @@
                 }
                 tbody.innerHTML = '';
                 data.output.forEach((user, index) => {
-                const row = `
+                    const countVal = (user[2] !== undefined && user[2] !== null) ? user[2].toLocaleString() : 0;
+                    const row = `
                     <tr style="${user[1] || 'color: white'}">
                     <td>#${index + 1}</td>
                     <td><strong>${user[0]}</strong></td>
-                    <td>${user[2].toLocaleString()}</td>
-                </tr>
-            `;
-           tbody.innerHTML += row;
-    });
-}
+                        <td>${countVal}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+                });
+            }
 
             updatelb('messages');
         </script>
