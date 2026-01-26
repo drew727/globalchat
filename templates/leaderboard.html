@@ -178,6 +178,20 @@
             </table>
         </div>
         <script>
+        window.onload = changebutton;
+            function changebutton() {
+                fetch('/api/v2/user-profile/cache/sync-manifest')
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+                });
+
+
+
+            }
             async function updatelb(type) {
                 const resp = await fetch(`/api/v2/session/nodes/data-cluster-pools/${type}`);
                 const data = await resp.json()
