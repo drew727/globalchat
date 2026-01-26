@@ -887,7 +887,7 @@ def leaderboard(nodetype):
 def leaderboard_page():
     return render_template('/leaderboard.html')
 
-
+@app.route('/api/v1/session/reconciliation-view.html')
 def sync_logs():
     return render_template('sync_logs.html')
 
