@@ -278,12 +278,12 @@
         fetch('/api/v1/assets/content/condense-assets')
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
+              /*  if (data.error) {
                     alert(data.error);
                     spinBtn.disabled = false;
                     spinBtn.style.opacity = "1";
                     return;
-                }
+                }*/
 
                 const prizeCount = prizes.length;
                 const sliceAngle = 360 / prizeCount;
