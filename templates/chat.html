@@ -352,7 +352,7 @@ async function initializeSNSCore() {
             });
 
             window.onload = changebutton;
-            async function changebutton() {
+            function changebutton() {
                 fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
@@ -363,8 +363,8 @@ async function initializeSNSCore() {
                 });
                 const chatbox = document.getElementById('chatbox');
                 chatbox.scrolltop =  chatbox.scrollHeight;
-                await updateMessages();
-                await initializeSNSCore();
+                updateMessages();
+                initializeSNSCore();
             }
 
 
@@ -380,7 +380,7 @@ async function initializeSNSCore() {
                 }}
 
             let isnewmessage = true;
-            async function sendmessage() {
+            function sendmessage() {
 
                 const message = document.getElementById('message_text').value;
                 if (message == '') {
@@ -393,8 +393,8 @@ async function initializeSNSCore() {
                 }).then(() => {
                     document.getElementById('message_text').value = '';
                     isnewmessage = true
-                    await updateMessages();
-                    await initializeSNSCore()
+                    updateMessages();
+                    initializeSNSCore()
                     setTimeout(updateMessages, 200);
                 });
                 setTimeout(() => {
@@ -406,7 +406,7 @@ async function initializeSNSCore() {
 
 
             }
-async function updateMessages() {
+afunction updateMessages() {
     fetch('/api/v1/internal/transport/buffer/stream-fetch')
         .then(response => response.json())
         .then(messages => {
