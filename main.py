@@ -168,7 +168,6 @@ def robots_txt():
     return Response(content, mimetype='text/plain')
 MANUAL_DOWNTIMES = [
     ("02:30", "02:35"),
-    ("14:00", "14:15"),
     ("20:00", "20:10"),
 ]
 def isDowntime():
