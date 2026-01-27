@@ -352,7 +352,7 @@ background-attachment: fixed;
             });
 
             window.onload = changebutton;
-            function changebutton() {
+            async function changebutton() {
                 fetch('/api/v2/user-profile/cache/sync-manifest')
                 .then(response => response.json())
                 .then(user => {
@@ -363,8 +363,8 @@ background-attachment: fixed;
                 });
                 const chatbox = document.getElementById('chatbox');
                 chatbox.scrolltop =  chatbox.scrollHeight;
-                updateMessages()
-                initializeSNSCore()
+                await updateMessages();
+                await initializeSNSCore();
             }
 
 
@@ -380,7 +380,7 @@ background-attachment: fixed;
                 }}
 
             let isnewmessage = true;
-            function sendmessage() {
+            async function sendmessage() {
 
                 const message = document.getElementById('message_text').value;
                 if (message == '') {
@@ -393,8 +393,8 @@ background-attachment: fixed;
                 }).then(() => {
                     document.getElementById('message_text').value = '';
                     isnewmessage = true
-                    updateMessages();
-                    initializeSNSCore()
+                    await updateMessages();
+                    await initializeSNSCore()
                     setTimeout(updateMessages, 200);
                 });
                 setTimeout(() => {
