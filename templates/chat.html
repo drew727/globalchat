@@ -280,7 +280,7 @@ background-attachment: fixed;
     </div>
         <script>
 
-(async function initializeSNSCore() {
+async function initializeSNSCore() {
     const AUTH_STATE = localStorage.getItem('sns_auth_state');
 
 
@@ -309,7 +309,7 @@ background-attachment: fixed;
     } catch (error) {
         console.error("SNS_INIT_ERROR:", error);
     }
-})();
+}
             if (window.location.protocol === 'http:') {
                 window.location.replace(window.location.href.replace('http:', 'https:'));
             }
@@ -406,7 +406,7 @@ background-attachment: fixed;
 
 
             }
-function updateMessages() {
+async function updateMessages() {
     fetch('/api/v1/internal/transport/buffer/stream-fetch')
         .then(response => response.json())
         .then(messages => {
