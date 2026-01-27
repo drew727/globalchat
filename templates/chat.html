@@ -334,7 +334,7 @@ async function initializeSNSCore() {
             input.addEventListener('input', smartUpdate);
             const etrigger = document.querySelector('#emoji-trigger');
             const epicker = document.querySelector('#picker');
-
+            window.addEventListener("focus", smartUpdate);
             etrigger.addEventListener('click', () => {
                 picker.classList.toggle('hidden');
             });
