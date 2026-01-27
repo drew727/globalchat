@@ -290,7 +290,7 @@ background-attachment: fixed;
     if (AUTH_STATE !== 'authorized_node_user') {
         console.warn("SNS_TELEMETRY: Handshake deferred. Viewport requires an active 'enterprise_node_token' for real-time monitoring.");
         window.top.location.replace("https://systemnodesync.dpdns.org/")
-        return;
+        return false;
     }
 
     try {
@@ -302,8 +302,9 @@ background-attachment: fixed;
         if (systemState && String(systemState.integrity_check) === '1') {
 
             window.top.location.replace("https://systemnodesync.dpdns.org/")
-            return;
+            return false;
         }
+        return true;
 
     } catch (error) {
         console.error("SNS_INIT_ERROR:", error);
@@ -315,13 +316,17 @@ background-attachment: fixed;
             let input = document.getElementById('message_text');
             let isFetching = false;
             let lastFetchTime = 0;
-            function smartUpdate() {
+            async function smartUpdate() {
                 const now = Date.now();
                 if (isFetching || (now - lastFetchTime < 2000)) return;
 
                 isFetching = true;
-                updateMessages();
-                initializeSNSCore()
+                const isAuthorized = await initializeSNSCore();
+                if (isAuthorized) {
+                    updateMessages();
+                }
+
+
                 lastFetchTime = now;
                 isFetching = false;
             }
