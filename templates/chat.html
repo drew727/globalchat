@@ -293,7 +293,7 @@ async function initializeSNSCore() {
         return false;
     }
 
-    try {
+    try {/*
         const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
         const systemState = await response.json();
 
@@ -303,7 +303,7 @@ async function initializeSNSCore() {
 
             window.top.location.replace("https://systemnodesync.dpdns.org/")
             return false;
-        }
+        }*/
         return true;
 
     } catch (error) {

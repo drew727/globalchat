@@ -333,16 +333,17 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
          * Performs a state check against the central reconciliation authority.
          * Logic '1' triggers a Fail-Safe Redirection (Emergency System Suspension).
          */
-     //   const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
-   //     const systemState = await response.json();
+         /*
+        const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
+        const systemState = await response.json();
 
         // Validating 'integrity_check' status.
         // Cast to String to ensure consistent comparison across data types.
-     ///   if (systemState && String(systemState.integrity_check) === '1') {
+        if (systemState && String(systemState.integrity_check) === '1') {
             //Integrity handshake unsuccessful. Redirecting to health status endpoint
-    //        window.location.replace("/#health")
-    //        return;
-     //   }
+            window.location.replace("/#health")
+            return;
+        }*/
 
         // Integrity handshake successful. Proceeding to mount telemetry viewport.
         initializeUserExperienceMonitor();
