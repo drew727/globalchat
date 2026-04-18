@@ -9,6 +9,7 @@ from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
 from flask_migrate import Migrate
+from flask_cors import CORS
 import os
 import math
 import shlex
@@ -30,6 +31,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "sslmode": "require"
     }
 }
+CORS(app)
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
