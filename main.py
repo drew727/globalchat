@@ -135,8 +135,22 @@ def route():
         db.session.commit()
         return render_template("/documentation.html")
 
+@app.route('/api/v1/auth/headless-init', methods=['GET', 'POST'])
+def headless_init():
+    session.permanent = True
+    if not session.get('userid'):
+        newuser = Users(username=f"temp {datetime.now(timezone.utc).timestamp()}", password=None, isguest=True)
+        db.session.add(newuser)
+        db.session.commit()
+        session['userid'] = newuser.userid
+        newuser.username = f"Guest_{newuser.userid}"
+        db.session.commit()
+        status = "authentication_successful"
+    else:
+         status = "already_authenticated"
 
-
+    response = make_response(jsonify({"status": status, "userid": session.get('userid')}))
+    return response
 
 @app.route('/sitemap.xml', methods=['GET'])
 def sitemap():
