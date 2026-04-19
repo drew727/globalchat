@@ -22,6 +22,7 @@ banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+
     "pool_pre_ping": True,
     "pool_recycle": 300,
     "pool_size": 5,
@@ -31,7 +32,11 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         "sslmode": "require"
     }
 }
-CORS(app)
+app.config.update(
+    SESSION_COOKIE_SAMESITE='None',
+    SESSION_COOKIE_SECURE=True
+)
+CORS(app, supports_credentials=True, origins=["*"])
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
