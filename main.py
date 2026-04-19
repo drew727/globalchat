@@ -36,7 +36,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
     SESSION_COOKIE_SECURE=True
 )
-CORS(app, supports_credentials=True, origins=["*"])
+CORS(app, supports_credentials=True, origins=["null", "https://dpdns.org"])
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
@@ -348,7 +348,11 @@ def routeclick():
 @app.route('/api/v1/internal/transport/buffer/stream-push', methods=['POST'])
 def send_msg():
     uid = session.get('userid')
+    if not uid:
+        return jsonify({"error": "Unauthorized"}), 401
     user = Users.query.get(uid)
+    if not user:
+        return jsonify({"error": "User not found"}), 401
     message_text = request.form.get('message_text')
     room_id = request.form.get('room_id', 0, type=int)
     if user.ismuted:
