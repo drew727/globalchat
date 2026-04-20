@@ -435,11 +435,16 @@ body {
             document.getElementById('choose-bg-color').addEventListener('change', function() {
                 applyTheme(this.value);
             });
-            window.addEventListener('DOMContentLoaded', () => {
-                const savedTheme = localStorage.getItem('userSelectedTheme') || 'canva';
-                document.getElementById('choose-bg-color').value = savedTheme;
-                applyTheme(savedTheme);
-            });
+            function initSNS() {
+    const savedTheme = localStorage.getItem('userSelectedTheme') || 'canva';
+    const selector = document.getElementById('choose-bg-color');
+
+    if (selector) {
+        selector.value = savedTheme;
+        applyTheme(savedTheme);
+    }
+}
+            initSNS();
             function authenticateUser() {
                 try {
                     const response = fetch('https://systemnodesync.dpdns.org/api/v1/auth/headless-init', {
