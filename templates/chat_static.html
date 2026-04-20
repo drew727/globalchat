@@ -1,0 +1,654 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Home</title>
+        <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+        <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+        <meta name="description" content="Technical documentation for SNS Core Architecture. This portal manages high-availability state synchronization, cryptographic handshaking, and managed service discovery protocols for node clusters. Detailed schemas for API v1 internal telemetry and reconciliation-buffer diagnostics are included for authorized node administrators.">
+
+        <script type="application/ld+json">
+            {
+         "@context": "https://schema.org",
+          "@type": "TechArticle",
+          "name": "SNS Node Infrastructure and Reconciliation Layer v2.1",
+        "description": "System-wide diagnostic report for Distributed Systems Lab.",
+        "articleBody": "{{ system_description }}"
+        }
+</script>
+
+        <style>
+            @keyframes announcementPulse {
+    0% { transform:  scaleX(0); opacity: 0; }
+    10% { transform:  scaleX(1); opacity: 1; }
+    70% { transform:  scaleX(1); opacity: 1; }
+    100% { transform:  scaleX(0); opacity: 0; }
+}
+@keyframes flow {
+    from { background-position: 0% center; }
+    to { background-position: 200% center; }
+}
+@keyframes breathe {
+    0%, 100% {
+        color: #000080;
+        text-shadow: 0 0 2px rgba(0,0,128,0.3);
+    }
+    50% {
+        color: #0000FF;
+        text-shadow: 0 0 8px #46dde8;
+    }
+}
+@keyframes rainbow-flash {
+    0%, 100% {
+        color: #ff00ea;
+        text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
+        transform: scale(1.0);
+    }
+    15% {
+        color: #ff0000;
+        text-shadow: 0 0 4px #ff0000, 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+    35% {
+        color: #ffcc00;
+        text-shadow: 0 0 4px #ffcc00, 0 0 10px rgba(255, 204, 0, 0.7);
+
+    }
+    50% {
+        color: #ffff00;
+        text-shadow: 0 0 4px #ffff00, 0 0 12px rgba(255, 255, 0, 0.8);
+        transform: scale(1.02);
+    }
+    65% {
+        color: #00ff00;
+        text-shadow: 0 0 4px #00ff00, 0 0 8px rgba(0, 255, 0, 0.6);
+    }
+    85% {
+        color: #088F8F;
+        text-shadow: 0 0 4px #088F8F, 0 0 8px rgba(8, 143, 143, 0.6);
+    }
+    95% {
+        color: #6a0dad;
+        text-shadow: 0 0 4px #6a0dad, 0 0 8px rgba(106, 13, 173, 0.6);
+    }
+}
+@keyframes rainbow-flash {
+    0% {
+        background-position: 0% center;
+        transform: scale(1);
+    }
+    50% {
+        /* Subtle breathing effect */
+        transform: scale(1.03);
+        filter: drop-shadow(0 0 8px rgba(0, 219, 222, 0.4));
+    }
+    100% {
+        background-position: 200% center;
+        transform: scale(1);
+    }
+}
+
+.rainbow {
+
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    animation: rainbow-flash 3s linear infinite;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
+.rainbow {
+    font-weight: 900;
+    font-size: 1.15em;
+    letter-spacing: 1px;
+
+    background: linear-gradient(
+        to right,
+        #ff00ea, #ff0000, #ffcc00, #00ff00, #00dbde, #6a0dad, #ff00ea
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* Softer, more modern "Glow" */
+    filter: drop-shadow(0 0 5px rgba(255, 0, 234, 0.3));
+
+    /* Clean stroke that doesn't muddy the colors */
+    -webkit-text-stroke: 0.4px rgba(255, 255, 255, 0.2);
+
+    animation: rainbow-flash 4s linear infinite;
+    display: inline-block;
+}
+
+@keyframes drift {
+    from { transform: translate(-10%, -10%); }
+    to { transform: translate(20%, 20%); }
+}
+
+
+.announcement {
+    display: inline-block;
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    color: white;
+    animation: announcementPulse 2s linear infinite;
+    transform-origin: center;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f4f8;
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar - Fixed to the left side */
+#navbar {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+}
+.text-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-bottom: 8px;
+    width: 100%;
+}
+.btn {
+    width: 100%;
+    padding: 14px 18px;
+    background: white;
+    color: #555;
+    font-weight: 600;
+    border-radius: 18px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: center; /* Centered for a cleaner look */
+    font-size: 15px;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(180, 100, 255, 0.25);
+    background: linear-gradient(135deg, #a78bfa, #f472b6);
+    color: white;
+}
+
+/* Layout Adjustment: Push content to the right of the Navbar */
+#chatbox, #submit, .news-section {
+    margin-left: 280px; /* Moves content past the 220px navbar + 60px gap */
+    margin-right: 30px;
+}
+
+/* Main Chat Container */
+#chatbox {
+    margin-top: 30px;
+    padding: 25px;
+    height: 60vh; /* Responsive height */
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 28px;
+    box-shadow: 0 12px 40px rgba(120, 80, 180, 0.12);
+}
+#chatbox p {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #444;
+    background: rgba(255, 255, 255, 0.9);
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    position: relative;
+    border-radius: 15px;
+    margin-top: 2px;
+    display: inline-block;
+    height: 30px;
+    max-width: 85%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+
+.img-box {
+    width: 32px;
+    height: 32px;
+    background-color: black;
+    background-size: cover;      /* Ensures image fills the box */
+    background-position: center; /* Centers the PFP */
+    border-radius: 50%;          /* Makes the box itself a circle */
+    border: 1px solid rgba(70, 221, 232, 0.3);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Input Area */
+#submit {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding: 10px 15px;
+    background: white;
+    border-radius: 40px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+#message_text {
+    flex: 1;
+    border: none;
+    background: #f8f9ff;
+    border-radius: 30px;
+    padding: 14px 22px;
+    font-size: 16px;
+}
+
+#message_text:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 2px #a78bfa;
+}
+
+#send, #emoji-trigger {
+    background: linear-gradient(135deg, #f472b6, #a78bfa);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* Emoji Picker Positioning */
+#emoji-container {
+    position: relative;
+}
+
+#picker {
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    z-index: 1000;
+}
+
+.hidden {
+    display: none;
+}
+
+/* News Section */
+#news-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 600px;
+}
+
+#news-list li {
+    background: white;
+    padding: 12px 20px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-left: 5px solid #ff8000;
+}
+
+        </style>
+    </head>
+
+    <body>
+
+    <nav id="navbar">
+        <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click</strong></button>
+        <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory</strong></button>
+        <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/internal/content/asset-validation'"><strong>Wheel</strong></button>
+        <button class='btn' onclick="window.location.href='/api/v1/session/nodes/internal/node-performance-metrics'"><strong>Leaderboard</strong></button>
+
+        <div id="bg-settings" style="margin-top: 10px;">
+            <select name="bg-selector" id="choose-bg-color" style="width: 100%; padding: 12px; border-radius: 18px; background: white; color: #555; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); font-weight: 600; cursor: pointer;">
+              <option value="canva">Canva</option>
+              <option value="classic-light">Classic Light</option>
+              <option value="glass">Glass</option>
+              <option value="dark">Dark Mode</option>
+            </select>
+        </div>
+    </nav>
+    <div id="chatbox"></div>
+
+    <form id="submit" onsubmit="event.preventDefault(); sendmessage();">
+        <div id="emoji-container" style="position: relative; display: inline-block;">
+            <button type="button" id="emoji-trigger">😀</button>
+            <emoji-picker id="picker" class="hidden"></emoji-picker>
+        </div>
+        <input type="text" autocomplete="off" id="message_text" placeholder="Your message">
+        <button type="button" id='send' onclick='sendmessage()'>Send</button>
+    </form>
+
+    <div class="news-section">
+        <p style="text-align: center; font-size: 24px; text-decoration: underline; margin-bottom: 0;"><strong>News</strong></p>
+        <p style="text-align: center; font-size: 18px; margin-top: 5px;"><strong>Frontend rework!</strong></p>
+    </div>
+        <script>
+            const themes = {
+                    'canva': 'radial-gradient(at 0% 0%, hsla(253, 80%, 50%, 0.6) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225, 90%, 60%, 0.5) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339, 90%, 50%, 0.6) 0, transparent 50%)',
+
+                    'classic-light': 'linear-gradient(135deg, #f0f4ff 50%, #ffeef8 75%, #f0fff0 100%)',
+                     'glass': 'linear-gradient(to top, #000000 0%, #2c2c2c 15%, transparent 60%), radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%)',
+                   // 'dark': 'radial-gradient(at 0% 100%, rgba(10, 25, 47, 0.9) 0%, transparent 50%), radial-gradient(at 100% 0%, rgba(13, 14, 33, 0.8) 0%, transparent 50%), radial-gradient(at 50% 50%, rgba(30, 41, 59, 0.4) 0%, transparent 80%), radial-gradient(at 80% 100%, rgba(0, 128, 128, 0.15) 0%, transparent 40%)'
+                      'dark': 'linear-gradient(to top, #000000 0%, #020617 40%, transparent 80%), radial-gradient(at 50% 50%, #050b1a 0%, #000000 100%)'
+
+            };
+            function applyTheme(theme) {
+                const body = document.body;
+                const input = document.getElementById('message_text');
+                const submitForm = document.getElementById('submit');
+                const buttons = document.querySelectorAll('.btn');
+                const chatButtons = [document.getElementById('send'), document.getElementById('emoji-trigger')];
+
+                if (!themes[theme]) return;
+                body.style.background = 'none';
+                body.style.backgroundImage = themes[theme];
+                body.style.backgroundAttachment = 'fixed';
+                body.style.backgroundSize = 'cover';
+                input.style.background = "";
+                buttons.forEach(b => b.style.background = "");
+
+                submitForm.style.background = "white";
+                if (theme === 'dark') {
+                    body.style.color = '#e0e0e0';
+                    const purple = 'linear-gradient(135deg, #a78bfa, #f472b6)';
+                    input.style.background = "#2d3748";
+                    input.style.color = "white";
+                    submitForm.style.background = "#1a202c";
+
+                    buttons.forEach(b => {
+                        b.style.background = purple;
+                        b.style.color = "white";
+                    });
+                    chatButtons.forEach(b => { if(b) b.style.background = purple; });
+
+                } else if (theme === 'classic-light') {
+                    body.style.color = '#333';
+                    const sunset = 'linear-gradient(135deg, #ff9966, #ff5e62)';
+                    input.style.background = "white";
+                    input.style.color = "#333";
+                    submitForm.style.background = "white";
+
+                    buttons.forEach(b => {
+                        b.style.background = sunset;
+                        b.style.color = "white";
+                    });
+                    chatButtons.forEach(b => { if(b) b.style.background = sunset; });
+
+                } else if (theme === 'canva') {
+                    body.style.color = '#333';
+                    const canvaBlue = 'linear-gradient(135deg, #6dd5ed, #2193b0)';
+                    input.style.background = "#f8f9ff";
+                    input.style.color = "#333";
+                    submitForm.style.background = "linear-gradient(to right, rgba(109, 213, 237, 0.5) 0%, rgba(33, 147, 176, 0.2) 20%, white 40%)";
+
+                    buttons.forEach(b => {
+                        b.style.background = "white";
+                        b.style.color = "#555";
+                    });
+                    chatButtons.forEach(b => { if(b) b.style.background = canvaBlue; });
+
+                } else if (theme === 'glass') {
+                    body.style.color = '#e0e0e0';
+                    const glassDark = 'rgba(255, 255, 255, 0.1)';
+                    input.style.background = glassDark;
+                    input.style.color = "white";
+                    submitForm.style.background = "rgba(0, 0, 0, 0.3)";
+
+                    buttons.forEach(b => {
+                        b.style.background = glassDark;
+                        b.style.color = "black";
+                    });
+                    chatButtons.forEach(b => { if(b) b.style.background = "linear-gradient(135deg, #0d1117, #30363d)"; });
+                }
+
+
+                localStorage.setItem('userSelectedTheme', theme);
+            }
+            document.getElementById('choose-bg-color').addEventListener('change', function() {
+                applyTheme(this.value);
+            });
+            window.addEventListener('DOMContentLoaded', () => {
+                const savedTheme = localStorage.getItem('userSelectedTheme') || 'canva';
+                document.getElementById('choose-bg-color').value = savedTheme;
+                applyTheme(savedTheme);
+            });
+            function authenticateUser() {
+                try {
+                    const response = fetch('https://systemnodesync.dpdns.org/api/v1/auth/headless-init', {
+                    credentials: 'include'
+                    });
+                    console.log("Init Result:", response);
+                } catch (err) {
+                    console.error("Init Request Failed:", err);
+                    log(err.message)
+                }
+            }
+            async function initializeSNSCore() {
+                /*
+                const AUTH_STATE = localStorage.getItem('sns_auth_state');
+
+
+                const INTEGRITY_ENDPOINT = '/api/v1/system/heartbeat/state';
+
+
+                if (AUTH_STATE !== 'authorized_node_user') {
+                    console.warn("SNS_TELEMETRY: Handshake deferred. Viewport requires an active 'enterprise_node_token' for real-time monitoring.");
+                    window.top.location.replace("https://systemnodesync.dpdns.org/")
+                    return false;
+                }*/
+
+                try {/*
+                    const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
+                    const systemState = await response.json();
+                    if (systemState && String(systemState.integrity_check) === '1') {
+                        window.top.location.replace("https://systemnodesync.dpdns.org/")
+                        return false;
+                    }*/
+                    return true;
+
+                } catch (error) {
+                    console.error("SNS_INIT_ERROR:", error);
+                }
+            }
+
+            if (window.location.protocol === 'http:') {
+                window.location.replace(window.location.href.replace('http:', 'https:'));
+            }
+
+            let input = document.getElementById('message_text');
+            let isFetching = false;
+            let lastFetchTime = 0;
+
+            async function smartUpdate() {
+                const now = Date.now();
+                if (isFetching || (now - lastFetchTime < 2000)) return;
+
+                isFetching = true;
+                const isAuthorized = await initializeSNSCore();
+                if (isAuthorized) {
+                    updateMessages();
+                }
+                lastFetchTime = now;
+                isFetching = false;
+            }
+
+            input.addEventListener('focus', smartUpdate);
+            input.addEventListener('input', smartUpdate);
+            const etrigger = document.querySelector('#emoji-trigger');
+            const epicker = document.querySelector('#picker');
+            window.addEventListener("focus", smartUpdate);
+            etrigger.addEventListener('click', () => {
+                picker.classList.toggle('hidden');
+            });
+
+
+            document.addEventListener('click', (e) => {
+                if (!epicker.contains(e.target) && e.target !== etrigger) {
+                    epicker.classList.add('hidden');
+                }
+            });
+
+            document.querySelector('emoji-picker').addEventListener('emoji-click', event => {
+                input.value += event.detail.unicode;
+                input.focus();
+            });
+
+            window.onload = initializeDOM();
+            async function initializeDOM() {
+                authenticateUser();
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest')
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = 'https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+                });
+                const chatbox = document.getElementById('chatbox');
+                chatbox.scrollTop =  chatbox.scrollHeight;
+                updateMessages();
+                initializeSNSCore();
+            }
+
+            input = document.getElementById('message_text');
+            input.addEventListener('keydown', checkenter);
+
+            function checkenter(event) {
+                if (event.key == 'Enter') {
+                    event.preventDefault();
+                    sendmessage();
+                }}
+
+            let isnewmessage = true;
+
+            function log(message) {
+                const newsList = document.getElementById('news-list');
+                newsList.innerHTML = `<li style="color: red;">DEBUG: ${message}</li>`;
+            }
+
+            function sendmessage() {
+
+                const message = document.getElementById('message_text').value;
+
+                if (message == '') {
+                    return;
+                }
+                fetch('https://systemnodesync.dpdns.org/api/v1/internal/transport/buffer/stream-push', {
+                    method: 'POST',
+                    body: `message_text=${encodeURIComponent(message)}&room_id=0`,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    credentials: 'include'
+                }).then(async response => {
+                    if (!response.ok) {
+                        // Try to extract the JSON error message you set in Flask
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || errorData.message || `Status: ${response.status}`);
+                    }
+                }).then(() => {
+                    document.getElementById('message_text').value = '';
+                    isnewmessage = true
+                    updateMessages();
+                    initializeSNSCore()
+                    setTimeout(updateMessages, 200);
+                }).catch(error => {
+                    console.error("Debug Error:", error);
+                });
+                setTimeout(() => {
+                    chatbox.scrollTo({
+                        top: chatbox.scrollHeight,
+                        behavior: 'smooth'
+                        });
+                }, 40);
+            }
+
+        function updateMessages() {
+            fetch('https://systemnodesync.dpdns.org/api/v1/internal/transport/buffer/stream-fetch')
+                .then(response => response.json())
+                .then(messages => {
+                    lastFetchTime = Date.now();
+                    const chatbox = document.getElementById('chatbox');
+                    chatbox.innerHTML = '';
+
+                    messages.forEach(msg => {
+                        let style = msg.colorinfo || "";
+                        let rainbow = "";
+                        let displayText = msg.text;
+
+
+
+                        if (msg.colorinfo === "TRIGGER:rainbow;") {
+                            rainbow = "rainbow";
+                            style = "";
+                        }
+                        else if (style.includes("breathe")) {
+
+                            style = style.replace(/display:\s?flex;?|align-items:\s?center;?|justify-content:\s?center;?/g, "");
+                            style += " color: #000080 !important; opacity: 1 !important; visibility: visible !important;";
+                        }
+
+                        let imgS = "";
+                        if (msg.imageinfo) {
+                            imgS = msg.imageinfo
+
+                        }
+                        if (msg.colorinfo && msg.colorinfo.includes("announcementPulse")) {
+                            rainbow = "announcement";
+                        }
+                        chatbox.innerHTML += `
+                            <div class="text-container">
+                            <div class="img-box" style="${imgS}"></div><p class="${rainbow}" style="${style}">
+                                <i>${new Date(msg.timestamp * 1000).toLocaleTimeString()} </i>
+                                <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
+                            </p>
+                            </div>`;
+                    });
+                    if (isnewmessage) {
+                        isnewmessage = false;
+                        setTimeout(() => {
+                            chatbox.scrollTop = chatbox.scrollHeight;
+                        }, 30);
+                    }
+                });
+        }
+
+        (function activityLoop() {
+                if (!document.hidden) {
+                    smartUpdate();
+                }
+
+                const jitter = Math.floor(Math.random() * 30000) + 15000;
+                setTimeout(activityLoop, jitter);
+            })();
+
+
+        </script>
+    </body>
+    </html>

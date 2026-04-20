@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, make_response
+from flask import Flask, render_template, request, jsonify, session, make_response, abort
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm.attributes import flag_modified
@@ -134,6 +134,15 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
+@app.route('/view/<page-name>')
+def serve_page(page_name):
+    if not page_name.endswith('.html'):
+        page_name += '.html'
+    template_path = os.path.join(app.root_path, 'templates', page_name)
+    if os.path.exists(template_path):
+        return page_name
+    else:
+        abort(404)
 
 @app.route('/api/v1/auth/headless-init', methods=['GET', 'POST'])
 def headless_init():
