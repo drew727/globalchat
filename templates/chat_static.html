@@ -318,13 +318,13 @@ body {
     <body>
 
     <nav id="navbar">
-        <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register</strong></button>
-        <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Home</strong></button>
-        <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click</strong></button>
-        <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory</strong></button>
-        <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop</strong></button>
-        <button class='btn' onclick="window.location.href='/api/v1/internal/content/asset-validation'"><strong>Wheel</strong></button>
-        <button class='btn' onclick="window.location.href='/api/v1/session/nodes/internal/node-performance-metrics'"><strong>Leaderboard</strong></button>
+        <button class='btn' id='register' onclick="window.SNS_ROUTER.rewritePage('register');"><strong>Register</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('chat_static');'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('click');"><strong>Click</strong></button>
+        <button class='btn' onclick='window.SNS_ROUTER.rewritePage("inventory");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('shop');"><strong>Shop</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('wheel');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('leaderboard');"><strong>Leaderboard</strong></button>
 
         <div id="bg-settings" style="margin-top: 10px;">
             <select name="bg-selector" id="choose-bg-color" style="width: 100%; padding: 12px; border-radius: 18px; background: white; color: #555; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); font-weight: 600; cursor: pointer;">
