@@ -1,0 +1,307 @@
+   <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Click!</title>
+        <style>body {
+            background-color: #000205;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background: radial-gradient(circle at center, #051020 0%, #000205 70%);
+        }
+
+#stars {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: 1px;
+    z-index: -1;
+    animation: galaxy-rotate 600s linear infinite;
+}
+
+@keyframes galaxy-rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+
+
+
+
+
+            #counter {
+    background-color: transparent;
+    color: white;
+    margin-bottom: 10px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+            #globes {
+                position: fixed;
+                background-color: black;
+                color: white;
+                margin-bottom: 10px;
+                top: 20px;
+                right: 20px;
+                font-size: 24px;
+                border: none;
+                height: 50px;
+                width: auto;
+            }
+            #globe {
+                position: relative;
+                outline: none;
+
+                width: 500px;
+            }
+
+ #navbar {
+    width: 270px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 20%;
+    left: 30px;
+    transform: translateY(-50%);
+    gap: 15px;
+    padding: 0;
+    z-index: 1000;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px 0;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    font-weight: 300;
+    text-transform: lowercase;
+    letter-spacing: 3px;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 15px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    position: relative;
+}
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    pointer-events: none;
+}
+.main > * {
+    pointer-events: auto;
+}
+.btn:hover {
+    color: #fff;
+    border-left: 1px solid #fff;
+    padding-left: 25px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+
+.btn-active {
+    color: #fff;
+    border-left: 2px solid #fff;
+    padding-left: 25px;
+}
+
+        #globe {
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        #globe:active {
+            transform: scale(0.98);
+        }
+    </style>
+        <script src="https://unpkg.com/three"></script>
+        <script src="https://unpkg.com/globe.gl"></script>
+        <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+    </head>
+
+    <body>
+
+
+
+<div id="stars"></div>
+
+    <nav id="navbar">
+        <button class='btn' id='register' onclick="window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('chat_static');'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+        <button class='btn' onclick='window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+  </nav>
+            <div id="globes"><p>Globes: </p></div>
+
+        <div class="main">
+        <button type="button" id='counter' onclick='clicked()'>loading...</button>
+
+        <div style="width: 300px; background: rgba(255,255,255,0.1); height: 10px; border-radius: 5px; margin-bottom: 20px; overflow: hidden;">
+        <div id="progress" style="width: 0%; background: #4CAF50; height: 100%; transition: width 0.3s;"></div></div>
+        <div id='globe'></div>
+    </div>
+
+        <script>
+        function generateStars(c) {
+            let stars = "";
+            for (i = 0; i < c; i++) {
+                const x = Math.floor(Math.random() * 3000) - 1500;
+                const y = Math.floor(Math.random() * 3000) - 1500;
+                const opacity = Math.random();
+                stars += `${x}px ${y}px rgba(255, 255, 255, ${opacity}), `;
+            }
+            return stars.slice(0, -2);
+        }
+        document.getElementById('stars').style.boxShadow = generateStars(1500);
+        window.onload = changebutton;
+            function changebutton() {
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest')
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+                });
+                frame()
+            }
+
+            if (window.location.protocol === 'http:') {
+                window.location.replace(window.location.href.replace('http:', 'https:'));
+            }
+            const radius = 100;
+            const rotatingglobe = document.getElementById('globe');
+            rotatingglobe.addEventListener('click', clicked)
+            document.addEventListener('keyup', (e) => {
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                    e.preventDefault();
+                    clicked();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
+                    e.preventDefault();
+
+                }
+            });
+
+            const globeimg = 'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg';
+            const bump = 'https://unpkg.com/three-globe/example/img/earth-topology.png';
+            const globe = Globe()(rotatingglobe)
+            globe.globeImageUrl(globeimg)
+            globe.bumpImageUrl(bump)
+            globe.showAtmosphere(true)
+            globe.atmosphereColor('#3a6ba5')
+            globe.atmosphereAltitude(0.25)
+            globe.controls().enabled = false;
+            globe.width(500);
+            globe.height(500);
+            let globelng = 0;
+            let rotationQueue = [];
+            let isRotating = false;
+            let idle = true;
+            let callbackTriggered = false;
+            let localCount = 0;
+            let next_ms = 0;
+            function clicked() {
+                localCount++;
+                counterupdate(localCount, next_ms);
+                rotationQueue.push(true);
+                postcount();
+                console.log(idle)
+                console.log(isRotating)
+                if (idle === true) {
+                    idle = false;
+                    processRotations();
+                }
+
+            }
+
+            function processRotations() {
+                if (isRotating) {
+                    return;
+                }
+                if (!(rotationQueue.length > 0)){
+                    idle = true;
+                    return
+
+                }
+
+                isRotating = true;
+                rotationQueue.shift();
+                globelng = globelng - 10;
+                const lat = globe.pointOfView().lat;
+                const alt = globe.pointOfView().altitude;
+                console.log(lat)
+                console.log(alt)
+                console.log(isRotating)
+                console.log(idle)
+                globe.pointOfView({lat: lat, lng: globelng, altitude: alt}, 50, () => {
+                    isRotating = false;
+                    callbackTriggered = true;
+                    if (rotationQueue.length === 0) {
+                        idle = true;
+                    } else {
+                        processRotations();
+                    }
+                });
+                setTimeout(() => {
+                    isRotating = false;
+                    processRotations();
+                }, 50);
+            }
+            function postcount() {
+                fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
+                    method: 'POST',
+                }).then(response => response.json()).then(data => {
+
+
+                    localCount = data.count;
+                    counterupdate(data.count, data.next_milestone);
+
+
+                    const globes = document.getElementById('globes');
+                    globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
+                    const percent = (data.count / data.next_milestone) * 100;
+                    document.getElementById('progress').style.width = percent + '%';
+
+                });
+            }
+            function counterupdate(count, milestone) {
+                if (milestone) next_ms = milestone;
+
+                const counter = document.getElementById('counter');
+                const milestoneText = milestone ? `Next Milestone: ${milestone}` : "Calculating...";
+                counter.innerHTML = `People Clicked This ${count} Times! ${milestoneText}`;
+}
+            function frame() {
+                fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment').then(response => response.json()).then(data => {
+                    counterupdate(data.count, data.next_milestone)
+                    const globes = document.getElementById('globes');
+                    globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
+                    const percent = (data.count / data.next_milestone) * 100;
+                    document.getElementById('progress').style.width = percent + '%';
+                });
+            }
+            setInterval(frame, 2000 + Math.floor(Math.random() * 5000) + 1);
+
+        </script>
+    </body>
+    </html>
