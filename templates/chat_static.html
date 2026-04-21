@@ -212,20 +212,23 @@ body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
     line-height: 1.4;
+    padding: 5px;
+    border-radius: 15px;
+    display: inline-block;
+    min-height: 30px;
+    max-width: 85%;
+}
+
+#chatbox p:not([style]):not(.rainbow):not(.announcement) {
     color: #444;
     background: rgba(255, 255, 255, 0.9);
-    padding-top: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    position: relative;
-    border-radius: 15px;
-    margin-top: 2px;
-    display: inline-block;
-    height: 30px;
-    max-width: 85%;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
+#chatbox p.rainbow, #chatbox p.announcement {
+    background: transparent !important;
+    box-shadow: none !important;
+}
 
 .img-box {
     width: 32px;
@@ -529,7 +532,8 @@ body {
             window.onload = initializeDOM();
             async function initializeDOM() {
                 authenticateUser();
-                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest')
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+                {credentials: 'include'})
                 .then(response => response.json())
                 .then(user => {
                     if (user.isguest === false) {
