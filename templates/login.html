@@ -129,7 +129,7 @@
                 .then(response => response.json()).then(data => {
                         if (data.status === "success"){
                             text.textContent = "Login Successful, redirecting to home page";
-                            setTimeout(() => { window.location.href = "/"; }, 1000);
+                            setTimeout(() => { window.location.replace('/'); }, 1000);
                         } else {
                             text.textContent = data.error;
                         }

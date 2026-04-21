@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory!</title>
+    <link rel="icon" type="image/png" href="https://systemnodesync.dpdns.org/static/download-removebg-preview.png">
+    <script src="https://systemnodesync.dpdns.org/static/DragDropTouch.js"></script>
+
+    <style>
+        #inv-grid {
+
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            margin-left: 280px;
+            margin-right: 300px;
+            margin-top: 5%;
+            height: auto;
+            max-height: none;
+            overflow-y: auto;
+        }
+        .item {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+
+        .swatch {
+            border: 2px solid rgba(0,0,0,0.6);
+            transition: transform 0.1s;
+            cursor: grab;
+            background-color: currentColor;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: none;
+            touch-action: none;
+            -webkit-user-drag: element;
+            -webkit-touch-callout: none;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .swatch:hover { transform: scale(1.1); }
+
+        .ct {
+        position: absolute;
+        background: white;
+        color: black;
+        font-size: 8px;
+        padding: 1px 4px;
+        border: 1px solid #000;
+        border-radius: 4px;
+        pointer-events: none;
+        }
+        .rarity-ct { top: -5px; left: -5px; }
+        .amount-ct { bottom: -5px; right: -5px; }
+#navbar {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 25%;
+    left: 25px;
+    transform: translateY(-50%);
+    gap: 12px;
+    padding: 20px 15px;
+    z-index: 1000;
+
+
+    background: rgba(255, 170, 150, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 170, 150, 0.2);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+.btn {
+    width: 100%;
+    padding: 14px 18px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    font-weight: 400;
+    text-transform: lowercase;
+    letter-spacing: 2px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.btn:hover {
+    color: #ffd8cc;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+    text-shadow: 0 0 8px rgba(255, 170, 150, 0.5);
+}
+
+
+.btn-active {
+    background: rgba(255, 170, 150, 0.15) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 170, 150, 0.4);
+    box-shadow: inset 0 0 15px rgba(255, 170, 150, 0.1);
+
+}
+.swatch:active {
+        cursor: grabbing;
+        transform: scale(0.95);
+    }.zone-container {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+#dropzone, #sellzone, #imagezone, #sellallzone {
+    width: 140px;
+    height: 140px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+
+
+#dropzone { border: 3px dashed #333; background: rgba(255, 255, 255, 0.3); }
+#sellzone { border: 3px dashed #ff4444; background: rgba(255, 68, 68, 0.1); color: #8b0000; }
+#imagezone { border: 3px dashed #007bff; background: rgba(0, 123, 255, 0.1); color: #004085; }
+#sellallzone { border: 3px dashed #670312; background: rgba(230, 175, 0, 0.2); color: #670312; }
+
+#dropzone:hover, #sellzone:hover, #imagezone:hover, #sellallzone:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.5);
+}
+    @keyframes breathe {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+#globecount {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+        </style>
+</head>
+
+<body>
+    <nav id="navbar">
+        <button class='btn' id='register' onclick="window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('chat_static');'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('click');"><strong>Click</strong></button>
+        <button class='btn' onclick='window.SNS_ROUTER.rewritePage("inventory");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('shop');"><strong>Shop</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('wheel');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('leaderboard');"><strong>Leaderboard</strong></button>
+    </nav>
+        <div id="inv-grid">Loading...</div>
+    <div class="zone-container">
+    <div id="dropzone">
+    Drag Color To Equip
+    </div>
+    <div id="sellzone">
+        Drag Color <br> To SELL
+    </div>
+    <div id="imagezone">
+    Drag Image To Equip
+</div>
+ <div id="sellallzone">
+    Drag Color <br> To SELL ALL BUT ONE<br> Of That Color
+</div>
+</div>
+    <img style="position: fixed;
+    top: 20px;
+    right: 25px; width: 20px; height: 20px;" src="https://systemnodesync.dpdns.org/static/download-removebg-preview.png"><div id="globecount"></div>
+    <script>
+    let dragging = false;
+    let justEquipped = false;
+    if (window.DragDropTouch) {
+        DragDropTouch._data.pressHoldDelayMS = 5;
+    }
+    window.onload = changebutton;
+    function changebutton() {
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+                    credentials: 'include'
+                })
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+
+                    document.getElementById('globecount').innerText = user.globes;
+                    get_inv();
+                });
+            }
+    function updateglobes() {
+        fetch('https://systemnodesync.dpdns.org/api/api/v2/user-profile/cache/sync-manifest', {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('globecount').innerText = user.globes;
+            });
+
+        }
+
+    document.addEventListener('dragstart', (e) => {
+       if (e.target.classList.contains('swatch')) {
+            dragging = true;
+            e.dataTransfer.setData("text/plain", e.target.dataset.name)
+            const style = window.getComputedStyle(e.target);
+            const isImage = style.backgroundImage !== "none";
+            let content = isImage ? style.backgroundImage : style.backgroundColor;
+            e.dataTransfer.setData("visual", content);
+
+       }
+
+    });
+    document.addEventListener("dragover", (e) => {
+        e.preventDefault();
+
+    });
+    document.addEventListener('dragend', () => {
+        dragging = false;
+
+    });
+
+    document.addEventListener('drop', (e) => {
+
+        e.preventDefault();
+        dragging = false;
+
+        const dropZone = document.getElementById("dropzone");
+        const sellZone = document.getElementById("sellzone");
+        const sellAllZone = document.getElementById("sellallzone");
+        const imageZone = document.getElementById("imagezone");
+        const isSellAllz = e.target.closest('#sellallzone') !== null;
+        const isSellz = e.target.closest('#sellzone') !== null;
+        const isDropz = e.target.closest('#dropzone') !== null;
+        const isImagez = e.target.closest('#imagezone') !== null;
+
+        const name = e.dataTransfer.getData("text/plain");
+        const visual = e.dataTransfer.getData("visual");
+        const isImage = visual.includes("url(");
+        if (isSellz) {
+
+            fetch('https://systemnodesync.dpdns.org/api/v1/assets/liquidation/deprovision-resource', {
+                credentials: 'include',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            }).then(response => response.json()).then((data) => {
+                sellZone.innerText = data.message;
+                get_inv();
+            })
+            get_inv();
+            updateglobes();
+            setTimeout(() => { sellZone.innerHTML = "Drag Color Here <br> To SELL";}, 2000);
+
+        } else if (isDropz) {
+            if (isImage) {
+                alert("Colors Only! Drag Color To Equip");
+                return;
+            }
+            fetch('https://systemnodesync.dpdns.org/sys/env/runtime/ui-configuration/set-preference', {
+                credentials: 'include',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            })
+
+            dropZone.style.background = visual;
+            document.body.style.background = visual;
+            dropZone.style.webkitTextStroke = "2px black";
+            dropZone.style.paintOrder = "stroke fill";
+            dropZone.style.color = "white";
+            dropZone.innerText = `Equipped: ${name}`;
+            dropZone.style.color = "#fff";
+            justEquipped = true;
+            setTimeout(() => { justEquipped = false; }, 1000)
+
+        } else if (isImagez) {
+            if (!isImage) {
+                alert("Images Only! Drag Image To Equip");
+                return;
+            }
+            fetch('https://systemnodesync.dpdns.org/sys/env/runtime/ui-configuration/set-image', {
+                credentials: 'include',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_name: name })
+            })
+            imageZone.style.background = "none";
+            imageZone.style.backgroundImage = visual;
+            imageZone.style.backgroundSize = "cover";
+            imageZone.style.backgroundPosition = "center";
+
+            imageZone.innerText = "";
+            justEquipped = true;
+            setTimeout(() => { justEquipped = false; }, 1000)
+        } else if (isSellAllz) {
+            const confirmed = confirm(`Are you sure you want to sell ALL but one ${name}?`);
+            if (confirmed) {
+                fetch('https://systemnodesync.dpdns.org/api/v1/assets/liquidation/deprovision-maximization', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item_name: name })
+                }).then(response => response.json()).then((data) => {
+                    sellAllZone.innerText = data.message;
+                    get_inv();
+                    updateglobes();
+                    setTimeout(() => { sellAllZone.innerHTML = "Drag Color <br> To SELL ALL BUT ONE<br> Of That Color";}, 3000);
+                });
+            }
+        }
+    });
+    function equipItem(name, color) {
+        fetch('https://systemnodesync.dpdns.org/sys/env/runtime/ui-configuration/set-preference', {
+            credentials: 'include',
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_name: name })
+        });
+
+        const dropZone = document.getElementById("dropzone");
+        dropZone.style.background = color;
+        document.body.style.background = color;
+        dropZone.innerText = `Equipped: ${name}`;
+        justEquipped = true;
+        setTimeout(() => { justEquipped = false; }, 2000);
+    }
+    function get_inv() {
+
+        if (dragging || justEquipped) return;
+        fetch('https://systemnodesync.dpdns.org/api/v3/user-profile/cache/sync-manifest?t=' + Date.now(), {
+            credentials: 'include'
+        })
+        .then(response => response.json())
+        .then(data => {
+            const dz = document.getElementById("dropzone");
+
+
+            if (data.equipped_info && dz) {
+                let eqs = data.equipped_info;
+                if (eqs === "TRIGGER:rainbow;") {
+                    eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
+                }
+                else if (eqs.includes("background")) {
+                const temp = document.createElement('div');
+                temp.style.cssText = eqs;
+                eqs = temp.style.background || temp.style.backgroundColor || eqs;
+            }
+
+            document.body.style.background = eqs;
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundClip = "border-box";
+            document.body.style.webkitBackgroundClip = "border-box";
+
+            dz.style.cssText = `
+                width: 140px; height: 140px; border-radius: 15px;
+                display: flex; align-items: center; justify-content: center;
+                text-align: center; font-weight: bold; padding: 10px;
+                box-sizing: border-box; transition: all 0.3s;
+                background: ${eqs};
+                -webkit-text-stroke: 2px black;
+                color: white;
+            `;
+            dz.innerText = `Equipped: ${data.equipped_item}`;
+            }
+
+
+            const ctn = document.getElementById('inv-grid');
+            if (ctn && data.items) {
+                const sortedItems = data.items.sort((a, b) => {
+                    const ta = a.itemtype === 'color' ? 1 : 2;
+                    const tb = b.itemtype === 'color' ? 1 : 2;
+
+    if (ta !== tb) {
+        return ta - tb;
+    }
+    return a.weight - b.weight;
+});
+                    ctn.innerHTML = sortedItems.map(item =>
+                {
+                let content = "";
+                let style = item.info;
+                const isImage = style.includes("url(");
+                if (item.name === "Deep_Sea" || item.info.includes("breathe")) {
+                    style = "color: #000080; background-color: #000080; font-weight: 800;";
+                    content = 'AAAA';
+                } else if (item.info === "TRIGGER:rainbow;") {
+                    style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
+                }
+
+                else if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
+                    content = 'AAAA';
+                    style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
+                }
+                // add later onclick="equipItem('${item.name}', \`${style}\` )"
+                return `
+    <div class="item">
+        <div class="swatch"
+             draggable="true"
+             data-name="${item.name}"
+
+             style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
+             <span style="pointer-events: none;">${content}</span>
+        </div>
+        <div class="ct rarity-ct">T${item.rarity}</div>
+        <div class="ct amount-ct">${item.count}</div>
+    </div>`;}).join('');
+
+            }
+        });
+    }
+    </script>
+</body>
+</html>
