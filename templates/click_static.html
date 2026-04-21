@@ -130,7 +130,7 @@
     </style>
         <script src="https://unpkg.com/three"></script>
         <script src="https://unpkg.com/globe.gl"></script>
-        <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+        <link rel="icon" type="image/png" href="https://systemnodesync.dpdns.org/static/download-removebg-preview.png">
     </head>
 
     <body>
@@ -141,7 +141,7 @@
 
     <nav id="navbar">
         <button class='btn' id='register' onclick="window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
-        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('chat_static');'"><strong>Home</strong></button>
+        <button class='btn' onclick="window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
         <button class='btn' onclick="window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
         <button class='btn' onclick='window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
         <button class='btn' onclick="window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
@@ -172,12 +172,14 @@
         document.getElementById('stars').style.boxShadow = generateStars(1500);
         window.onload = changebutton;
             function changebutton() {
-                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest')
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+                    credentials: 'include'
+                    })
                 .then(response => response.json())
                 .then(user => {
                     if (user.isguest === false) {
                         document.getElementById('register').innerText = user.username;
-                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                        document.getElementById('register').onclick = () => { window.location.href = 'https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest'; };
                     }
                 });
                 frame()
@@ -270,6 +272,7 @@
             function postcount() {
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
                     method: 'POST',
+                    credentials: 'include'
                 }).then(response => response.json()).then(data => {
 
 
@@ -292,7 +295,9 @@
                 counter.innerHTML = `People Clicked This ${count} Times! ${milestoneText}`;
 }
             function frame() {
-                fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment').then(response => response.json()).then(data => {
+                fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
+                    credentials: 'include'
+                    }).then(response => response.json()).then(data => {
                     counterupdate(data.count, data.next_milestone)
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
