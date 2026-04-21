@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login!</title>
+    <link rel="icon" type="image/png" href="https://systemnodesync.dpdns.org">
+    <style>
+        :root {
+            --bg-color: #0f0f12;
+            --card-bg: #1a1a20;
+            --accent-color: #50c878;
+            --text-color: #ffffff; /* Fixed to white for visibility */
+            --input-bg: #25252d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #form {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: var(--input-bg);
+            color: white; /* Changed to white for dark theme */
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        #login {
+            background-color: var(--accent-color);
+            color: #000;
+        }
+
+        #redirect {
+            background: transparent;
+            color: #888;
+            font-size: 0.85rem;
+            text-decoration: underline;
+            margin-top: 15px;
+        }
+
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.98); }
+
+        #status {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            height: 1.2rem;
+            color: #ff4d4d;
+        }
+    </style>
+</head>
+<body>
+    <h1>Login</h1>
+    <img src="https://systemnodesync.dpdns.org/static/download-removebg-preview.png" width='150px' height='150px'>
+    <div id="form">
+        <form id="submit" action="https://systemnodesync.dpdns.org/login" method="POST">
+            <input type="text" autocomplete="off" id="username_input" placeholder="Username">
+            <input type="password" autocomplete="off" id="password_input" placeholder="Password">
+            <button type="button" id='login' onclick='send_login()'>Login</button>
+        </form>
+    </div>
+    <button id='redirect' onclick="window.SNS_ROUTER.rewritePage('register_static');">Don't have an account yet? Click to register.</button>
+    <p id="status"></p>
+
+    <script>
+        const statusText = document.getElementById('status');
+
+        window.onload = function() {
+            hideform();
+        };
+
+        function hideform() {
+            // Absolute URL and credentials required for static file CORS
+            fetch('https://systemnodesync.dpdns.org/user/info', {
+                credentials: 'include'
+            })
+            .then(response => response.json())
+            .then(user => {
+                if (user && user.isguest === false) {
+                    window.SNS_ROUTER.rewritePage('chat_static');
+                }
+            })
+            .catch(err => console.log("Not logged in."));
+        }
+
+        function send_login() {
+            const nameinput = document.getElementById('username_input').value;
+            const password = document.getElementById('password_input').value;
+
+            statusText.textContent = "Authenticating...";
+
+            fetch('https://systemnodesync.dpdns.org/sys/auth/session/token-negotiation', {
+                method: 'POST',
+                credentials: 'include', // Essential for session cookies
+                body: `username=${encodeURIComponent(nameinput)}&password=${encodeURIComponent(password)}`,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success"){
+                    statusText.style.color = "#50c878";
+                    statusText.textContent = "Login Successful!";
+                    setTimeout(() => { window.SNS_ROUTER.rewritePage('chat_static'); }, 1000);
+                } else {
+                    statusText.style.color = "#ff4d4d";
+                    statusText.textContent = data.error || "Invalid credentials";
+                }
+            })
+            .catch(err => {
+                statusText.textContent = "Connection error to server.";
+            });
+        }
+    </script>
+</body>
+</html>
