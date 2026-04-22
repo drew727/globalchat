@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+
+        <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000 !important;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+@keyframes rainbow-flash {
+    0%, 100% {
+        color: #ff00ea;
+        text-shadow: 0 0 4px #ff00ea, 0 0 8px rgba(255, 0, 234, 0.6);
+        transform: scale(1.0);
+    }
+    15% {
+        color: #ff0000;
+        text-shadow: 0 0 4px #ff0000, 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+    35% {
+        color: #ffcc00;
+        text-shadow: 0 0 4px #ffcc00, 0 0 10px rgba(255, 204, 0, 0.7);
+
+    }
+    50% {
+        color: #ffff00;
+        text-shadow: 0 0 4px #ffff00, 0 0 12px rgba(255, 255, 0, 0.8);
+        transform: scale(1.02);
+    }
+    65% {
+        color: #00ff00;
+        text-shadow: 0 0 4px #00ff00, 0 0 8px rgba(0, 255, 0, 0.6);
+    }
+    85% {
+        color: #088F8F;
+        text-shadow: 0 0 4px #088F8F, 0 0 8px rgba(8, 143, 143, 0.6);
+    }
+    95% {
+        color: #6a0dad;
+        text-shadow: 0 0 4px #6a0dad, 0 0 8px rgba(106, 13, 173, 0.6);
+    }
+}
+
+        #leaderboard {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin-left: 200px;
+            align-items: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            background-color: #000;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background: #1a1a1a;
+            color: white;
+            border: 1px solid #333;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #333;
+        }
+
+        table {
+            width: 100%;
+            max-width: 1000px;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid #222;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #111;
+        }
+
+.rainbow {
+
+    font-weight: 900;
+    font-size: 1.1em;
+    letter-spacing: 1.5px;
+    animation: rainbow-flash 3s linear infinite;
+    -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.5);
+    paint-order: stroke fill;
+}
+
+
+
+        .user-name {
+            color: white;
+        }
+
+            #navbar {
+                width: 200px;
+                display: flex;
+                flex-direction: column;
+                position: fixed;
+                top: 40px;
+                left: 20px;
+                gap: 10px;
+                padding: 0;
+            }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0d1117;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 4px;
+            border: 1px solid #30363d;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+    }
+    .btn:hover {
+        background-color: #1b3d54;
+        border-color: #46dde8;
+        box-shadow: 0 0 8px rgba(70, 221, 232, 0.4);
+    }
+        </style>
+    </head>
+    <body>
+        <nav id="navbar">
+
+        <button class='btn' id='register' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+        <button class='btn' onclick='parent.window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button></nav>
+        <div id="leaderboard">
+            <div id="controls">
+                <button onclick="updatelb('messages')">Top Messages</button>
+                <button onclick="updatelb('click_contribution')">Top Clicks</button>
+                <button onclick="updatelb('purchases_today')">Top Buyers</button>
+            </div>
+            <h2 id="title">
+                Leaderboard
+            </h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th id="count">Count</th>
+                    </tr>
+                </thead>
+                <tbody id="data"></tbody>
+            </table>
+        </div>
+        <script>
+        window.onload = changebutton;
+            function changebutton() {
+                fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+                {credentials: 'include'})
+                .then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+                });
+
+
+
+            }
+            async function updatelb(type) {
+                const resp = await fetch(`https://systemnodesync.dpdns.org/api/v2/session/nodes/data-cluster-pools/${type}`, {
+                    credentials: 'include'
+                });
+                const data = await resp.json()
+                const tbody = document.getElementById('data')
+                const title = document.getElementById('title')
+                const column = document.getElementById('count')
+                title.innerText = type.replace('_', ' ').toUpperCase();
+                if (type === 'messages') {
+                    column.innerText = 'Messages Today';
+                } else if (type === 'click_contribution') {
+                    column.innerText = 'Clicks Contributed Between Milestones';
+                } else {
+                    column.innerText = 'Purchases Today';
+                }
+                tbody.innerHTML = '';
+                data.output.forEach((user, index) => {
+                    const countVal = (user[2] !== undefined && user[2] !== null) ? user[2].toLocaleString() : 0;
+                    let colorStyle = user[1] ? user[1] : "color: white";
+                    colorStyle = colorStyle.replace('color: black;')
+                    let classStyle = '';
+                    if (colorStyle == 'TRIGGER:rainbow;') {
+                        colorStyle = '';
+                        classStyle = 'rainbow';
+                    }
+
+                    const row = `
+                    <tr>
+                        <td style="color: #444;">#${index + 1}</td>
+                        <td style="${colorStyle}"><strong class="${classStyle}">${user[0]}</strong></td>
+                        <td style="color: #fff;">${countVal}</td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+                });
+            }
+
+            updatelb('messages');
+        </script>
+    </body>
+</html>
