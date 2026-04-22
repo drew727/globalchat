@@ -330,6 +330,7 @@
             if (confirmed) {
                 fetch('https://systemnodesync.dpdns.org/api/v1/assets/liquidation/deprovision-maximization', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ item_name: name })
                 }).then(response => response.json()).then((data) => {
