@@ -397,14 +397,23 @@ def send_msg():
         if uid == 5:
             db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
             db.session.commit()
+            return jsonify({"status": "success", "message": ""}), 201
         else:
             db.session.add(Message(userid=1, text=str(user) + ", sorry you can't do that", room_id=room_id))
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
         if uid in mods:
+            if message_text.startswith("/add-globes"):
+                splittext = message_text.split(None, 2)
+                username_to_get_globes = splittext[1].strip().replace('"', ' ')
+                amount_to_add = splittext[2].strip().replace('"', ' ')
+                targ_user = Users.query.filter_by(username=username_to_get_globes).first()
+                targ_user.globes += amount_to_add
+                db.session.add(Message(userid=1, text=f"{amount_to_add} globes given to {user.username}.", room_id=room_id))
+                db.session.commit()
+                return jsonify({"status": "success", "message": "Globes added"}), 201
             if message_text.startswith("/panic"):
-
                 status_msg = toggle_panic()
                 db.session.add(Message(userid=1, text=f"SYSTEM: {status_msg}", room_id=room_id))
                 db.session.commit()
