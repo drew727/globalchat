@@ -503,6 +503,25 @@ body {
 
             input.addEventListener('focus', smartUpdate);
             input.addEventListener('input', smartUpdate);
+            input.addEventListener('click', smartUpdate);
+            window.addEventListener("scroll", smartUpdate);
+            window.addEventListener("click", smartUpdate);
+            // handle movement for updates
+            let isMoving = false;
+            let stopTimer;
+
+            window.addEventListener('mousemove', () => {
+                if (!isMoving) {
+                    isMoving = true;
+                    smartupdate();
+                }
+            clearTimeout(stopTimer);
+
+
+            stopTimer = setTimeout(() => {
+                isMoving = false;
+            }, 200);
+            });
             const etrigger = document.querySelector('#emoji-trigger');
             const epicker = document.querySelector('#picker');
             window.addEventListener("focus", smartUpdate);
