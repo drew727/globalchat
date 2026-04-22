@@ -358,72 +358,77 @@
         justEquipped = true;
         setTimeout(() => { justEquipped = false; }, 2000);
     }
-// Pre-target elements to avoid repeated lookups
 const dz = document.getElementById("dropzone");
 const ctn = document.getElementById('inv-grid');
 
 function get_inv() {
     if (dragging || justEquipped) return;
 
-    // 1. Try to load from Cache immediately for "Instant" feel
-    const cached = localStorage.getItem('inv_cache');
-    if (cached) renderInventory(JSON.parse(cached));
-
     fetch('https://systemnodesync.dpdns.org/api/v3/user-profile/cache/sync-manifest?t=' + Date.now(), {
         credentials: 'include'
     })
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
-        localStorage.setItem('inv_cache', JSON.stringify(data)); // Update cache
-        renderInventory(data);
-    });
-}
-
-function renderInventory(data) {
-    if (!data) return;
-
-    if (data.equipped_info && dz) {
-        let eqs = data.equipped_info === "TRIGGER:rainbow;"
-            ? "linear-gradient(to right, red, orange, yellow, green, blue, violet)"
-            : data.equipped_info;
-
-        document.body.style.background = eqs;
-        document.body.style.backgroundSize = "cover";
-        dz.style.background = eqs;
-        dz.innerText = `Equipped: ${data.equipped_item}`;
-    }
-
-    if (ctn && data.items) {
-        data.items.sort((a, b) => {
-            const ta = a.itemtype === 'color' ? 1 : 2;
-            const tb = b.itemtype === 'color' ? 1 : 2;
-            return ta - tb || a.weight - b.weight;
-        });
-
-        ctn.innerHTML = data.items.map(item => {
-            let content = "";
-            let style = item.info;
-            const isImage = style.includes("url(");
-
-            if (item.name === "Deep_Sea" || style.includes("breathe")) {
-                style = "color: #000080; background-color: #000080; font-weight: 800;";
-                content = 'AAAA';
-            } else if (style === "TRIGGER:rainbow;") {
-                style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
+        // --- EQUIPPED LOGIC ---
+        if (data.equipped_info && dz) {
+            let eqs = data.equipped_info;
+            if (eqs === "TRIGGER:rainbow;") {
+                eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
+            } else if (eqs.includes("background")) {
+                const temp = document.createElement('div');
+                temp.style.cssText = eqs;
+                eqs = temp.style.background || temp.style.backgroundColor || eqs;
             }
 
-            return `
+            document.body.style.background = eqs;
+            document.body.style.backgroundSize = "cover";
+            document.body.style.backgroundClip = "border-box";
+            document.body.style.webkitBackgroundClip = "border-box";
+
+            // Optimized: Set style in one go using template literal
+            dz.style.cssText = `width: 140px; height: 140px; border-radius: 15px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; padding: 10px; box-sizing: border-box; transition: all 0.3s; background: ${eqs}; -webkit-text-stroke: 2px black; color: white;`;
+            dz.innerText = `Equipped: ${data.equipped_item}`;
+        }
+
+        // --- GRID LOGIC ---
+        if (ctn && data.items) {
+            // Faster sort: pre-calculating types in the expression
+            data.items.sort((a, b) => {
+                const ta = a.itemtype === 'color' ? 1 : 2;
+                const tb = b.itemtype === 'color' ? 1 : 2;
+                return ta !== tb ? ta - tb : a.weight - b.weight;
+            });
+
+            // Map everything to one giant string then inject once (Fastest DOM method)
+            ctn.innerHTML = data.items.map(item => {
+                let content = "";
+                let style = item.info;
+                const isImage = style.includes("url(");
+
+                if (item.name === "Deep_Sea" || style.includes("breathe")) {
+                    style = "color: #000080; background-color: #000080; font-weight: 800;";
+                    content = 'AAAA';
+                } else if (style === "TRIGGER:rainbow;") {
+                    style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
+                } else if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
+                    content = 'AAAA';
+                    style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
+                }
+
+                return `
                 <div class="item">
                     <div class="swatch" draggable="true" data-name="${item.name}"
-                         style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
+                         style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
                          <span style="pointer-events: none;">${content}</span>
                     </div>
                     <div class="ct rarity-ct">T${item.rarity}</div>
                     <div class="ct amount-ct">${item.count}</div>
                 </div>`;
-        }).join('');
-    }
+            }).join('');
+        }
+    });
 }
+
 
     </script>
 </body>
