@@ -431,13 +431,14 @@ body {
                 //now save navbar accross pages
                 const navbar = document.getElementById('navbar');
                 const computedStyle = window.getComputedStyle(navbar);
-                stylesToBeSaved = {};
-                for (let i = 0; i < computedStyles.length; i++) {
-                    const prop = computed[i];
-                    stylesToGetSaved[prop] = computedStyle.getPropertyValue(prop);
+                const stylesToBeSaved = {};
+                for (let i = 0; i < computedStyle.length; i++) {
+                    const prop = computedStyle[i];
+                    stylesToBeSaved[prop] = computedStyle.getPropertyValue(prop);
                 }
-                localStorage.setItem('navbarStyle', JSON.stringify(stylesToGetSaved));
+                localStorage.setItem('navbarStyle', JSON.stringify(stylesToBeSaved));
             }
+
             document.getElementById('choose-bg-color').addEventListener('change', function() {
                 applyTheme(this.value);
             });
