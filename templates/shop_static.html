@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Shop!</title>
+        <link rel="icon" type="image/png" href="/static/download-removebg-preview.png">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+
+        <style>
+
+        @keyframes rainbow-flash {
+            0% { color: #800080; }
+            10%   { color: #ff0000; }
+            25%  { color: #ff8000; }
+            30%  { color: #ffff00; }
+            40%  { color: #00ff00; }
+            65%  { color: #0000ff; }
+            80% { color: #ff0000; }
+            100% { color: #800080; }
+        }
+        .rainbow {
+            animation: rainbow-flash 3s infinite linear;
+            font-weight: bold;
+            color: inherit;
+        }
+        body {
+            background-image: linear-gradient(to bottom, #FFFBF5, #FFEDE6, #FFDCD2);
+            height: 100vh;
+            overflow: visible;
+        }
+        #packages {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            margin-left: 260px;
+            height: auto;
+            min-height: 60vh;
+            width: auto;
+            max-width: calc(100% - 300px);
+
+            gap: 10px;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(16px);
+            height: 63vh;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow:
+            0 10px 40px rgba(255, 160, 122, 0.2),
+            inset 0 0 15px rgba(255, 255, 255, 0.2);
+            color: #333;
+        }
+    .package-container {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(to right, #4A3B37, #FF8C69, #E9967A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: "Montserrat", "Quicksand";
+            font-weight: 700;
+            font-weight: 800;
+            font-size: 3.0rem;
+            letter-spacing: 3px;
+            margin-top: 15px;
+            margin-bottom: 5px;
+
+        }
+        .buybtn {
+
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            outline: 4px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            padding: 2px 10px;
+            cursor: pointer;
+            margin-top: 0px;
+            min-width: 180px;
+            width: auto;
+            height: auto;
+            font-family: "Quicksand", sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: #4A3B37;
+            text-transform: uppercase;
+            min-height: 30px;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow:
+            0 8px 25px rgba(255, 160, 122, 0.5),
+            inset 0 1px 3px rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease-in-out;
+            position: relative;
+    }
+
+    #globes {
+        position: fixed;
+        top: 0px;
+        right: 20px;
+        background: transparent;
+        font-family: "Montserrat", "Quicksand";
+        font-weight: 700;
+        font-weight: 800;
+        font-size: 2.0rem;
+        letter-spacing: 3px;
+        margin-top: 0px;
+        margin-bottom: 5px;
+    }
+
+    .pack-header {
+        grid-column: span 2;
+        margin: 0;
+        text-align: center;
+        font-family: "Quicksand", sans-serif;
+        font-weight: 700;
+        color: #4A3B37;
+        margin-bottom: 5px;
+    }
+    .buybtn:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow:
+        0 4px 15px rgba(255, 255, 255, 0.5),
+        0 8px 20px rgba(255, 160, 122, 0.2);
+    }
+
+
+    .buybtn:active {
+        transform: translateY(1px);
+        box-shadow: 0 4px 15px rgba(255, 160, 122, 0.4);
+    }
+    .previewbox {
+
+        width: 180px;
+        height: 210px;
+        margin: 0;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        box-sizing: border-box;
+        border-radius: 15px;
+        border: 1.5px solid rgba(255, 255, 255, 0.3);
+        box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.3),
+                0 4px 10px rgba(0, 0, 0, 0.2);
+        display: grid;
+
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 8px;
+        padding: 20px;
+        overflow: hidden;
+        justify-content: center;
+        align-content: center;
+    }
+    .rates-btn {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(74, 59, 55, 0.2);
+    border-radius: 20px;
+    font-family: "Quicksand", sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 3px 10px;
+    margin-left: 8px;
+    color: #4A3B37;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    vertical-align: middle;
+}
+    .innerbox {
+        width: 65px;
+        margin: 0;
+        height: 65px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 15%;
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+        cursor: pointer;
+    }
+
+    #red { background-color: #FF0000; }
+    #orange { background-color: #FFA500; }
+    #blue { background-color: #1DA6E0; }
+    #green { background-color: #1DE068; }#navbar {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 40px;
+    left: 20px;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(255, 160, 122, 0.1);
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+
+    background: rgba(74, 59, 55, 0.1);
+    backdrop-filter: blur(5px);
+
+
+    color: #4A3B37;
+    font-family: "Quicksand", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 12px;
+    outline: 2px solid rgba(255, 255, 255, 0.1);
+
+
+    box-shadow: 0 4px 15px rgba(255, 160, 122, 0.2);
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out;
+}
+
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateX(5px);
+    border-color: #FF8C69;
+    color: #000;
+    box-shadow: 0 0 20px rgba(255, 140, 105, 0.4);
+}
+
+
+#status-container {
+    position: fixed;
+    top: 400px;
+    left: 20px;
+    width: 220px;
+    height: 35vh;
+
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.85rem;
+    box-shadow: 0 8px 32px rgba(255, 160, 122, 0.1);
+}
+    #status {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+        </style>
+    </head>
+    <body>
+        <nav id="navbar">
+
+        <button class='btn' id='register' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+        <button class='btn' onclick='parent.window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+        </nav>
+        <h1>SHOP!</h1>
+
+    <div id="packages">
+        <div id="globes">
+            <p>Globes:
+                <span id="globecount">loading...</span>
+                <img src="https://systemnodesync.dpdns.org/static/download-removebg-preview.png" width='30px' height='30px'>
+            </p>
+        </div>
+
+        <div class="package-container">
+            <div class="previewbox">
+                <p class="pack-header">Color Pack
+                    <button class="rates-btn" onclick="viewitemrates('color')">View Rates</button>
+                </p>
+                <div id="red" class="innerbox"></div>
+                <div id="orange" class="innerbox"></div>
+                <div id="blue" class="innerbox"></div>
+                <div id="green" class="innerbox"></div>
+            </div>
+            <button id="btn-color" class="buybtn" onclick="purchase('color')">Buy for <span id="price-color"></span> globes</button>
+        </div>
+        <div class="package-container">
+            <div class="previewbox">
+                <p class="pack-header">
+                    Shape Pack
+                    <button class="rates-btn" onclick="viewitemrates('shape')">View Rates</button>
+                </p>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Tesseract.webp');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Torus.webp');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Cube.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Shapes/Circle.jpeg');"></div>
+
+            </div>
+        <button id="btn-shape" class="buybtn" onclick="purchase('shape')">
+            Buy for <span id="price-shape">1000</span> globes
+        </button>
+        </div>
+        <div class="package-container">
+            <div class="previewbox">
+                <p class="pack-header">
+                    Element Pack
+                    <button class="rates-btn" onclick="viewitemrates('element')">View Rates</button>
+                </p>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Bismuth.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Carbon.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Magnesium.jpeg');"></div>
+                <div class="innerbox" style="background-image: url('https://hqhhjiudsbvicwaamvbg.supabase.co/storage/v1/object/public/Elements/Uranium.jpeg');"></div>
+
+            </div>
+        <button id="btn-element" class="buybtn" onclick="purchase('element')">
+            Buy for <span id="price-element">900</span> globes
+        </button>
+        </div>
+
+        <span class="buybtn" id="pending">0 items loading...</span>
+
+    </div>
+    <div id="status-container">
+        <div id="status"></div>
+    </div>
+
+    <script>
+
+    let pendingPurchases = 0;
+    let syncTimeout;
+    const PACK_CONFIG = {
+        'color': {'base_price': 150, 'scaling': 1.02, 'item_type': 'color'},
+        'shape':  {'base_price': 1000, 'scaling': 1.0, 'item_type': 'shape'},
+        'element':  {'base_price': 900, 'scaling': 1.0, 'item_type': 'element'},
+
+    }
+    window.onload = function() {
+
+        fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+        {credentials: 'include'}).then(res => res.json()).then(user => {
+            if (!user.isguest) {
+                document.getElementById('register').innerText = user.username;
+                document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+            }
+            document.getElementById('globecount').innerText = user.globes;
+        });
+
+
+        Object.keys(PACK_CONFIG).forEach(packId => {
+        fetch(`https://systemnodesync.dpdns.org/api/v1/system/scaling/load-coefficient/${packId}`, {
+            credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(data => {
+                const pEl = document.getElementById(`price-${packId}`);
+                if (pEl) pEl.innerText = data.price;
+            });
+    });
+}
+
+
+
+        function updateglobes() {
+            if (pendingPurchases > 0) return;
+            fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+            {credentials: 'includehttps://systemnodesync.dpdns.org'})
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('globecount').innerText = user.globes;
+                });
+
+            }
+async function viewitemrates(packType) {
+    try {
+
+        const response = await fetch(`https://systemnodesync.dpdns.org/api/v1/metadata/schema/pack-descriptors/${packType}`, {
+            credentials: 'include'
+        });
+        const items = await response.json();
+
+        if (!items || items.length === 0) {
+            alert("No rate data available for this pack.");
+            return;
+        }
+
+
+        const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0), 0);
+
+
+        const output = items
+            .map(item => {
+                const percent = ((item.weight / totalWeight) * 100);
+                return {
+                    percent: percent,
+                    text: `${item.name.replace('_', ' ')}: ${percent.toFixed(2)}%`
+                };
+            })
+            .sort((a, b) => b.percent - a.percent)
+            .map(line => line.text)
+            .join("\n");
+
+        alert(`${packType.toUpperCase()} PACK RATES:\n\n${output}`);
+    } catch (error) {
+        console.error("Error fetching rates:", error);
+        alert("Failed to load rates. Please try again.");
+    }
+}
+
+
+
+    function purchase(packId) {
+        let gElement = document.getElementById('globecount');
+        let pElement = document.getElementById(`price-${packId}`);
+        let btn = document.getElementById(`btn-${packId}`);
+        let g = parseInt(gElement.innerText);
+        let price = parseInt(pElement.innerText);
+        let config = PACK_CONFIG[packId];
+        if (g >= price) {
+            gElement.innerText = g - price;
+
+            let newp = Math.floor(price * config.scaling);
+            pElement.innerText = newp
+            btn.innerHTML = `Buy for <span id="price-${packId}">${newp}</span> globes`;
+            document.getElementById('pending').innerHTML = `${pendingPurchases + 1} items loading... refrain from purchasing for the next few seconds to finish.`;
+            pendingPurchases++;
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(() => syncPurchases(packId), 800);
+        } else {
+            alert("Not enough globes!");
+        }
+    }
+        function syncPurchases(packId) {
+            if (pendingPurchases === 0) return;
+            const amountToSync = pendingPurchases;
+            pendingPurchases = 0;
+            fetch(`https://systemnodesync.dpdns.org/api/v1/transactional/resource-allocation/commit/${packId}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ batch_count: amountToSync})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "Success") {
+                    document.getElementById(`btn-${packId}`).innerHTML = `Buy for <span id="price-${packId}">${data.price}</span> globes`;
+                    document.getElementById('globecount').innerText = data.new_balance;
+                    handleVisuals(data.items_won);
+
+        }
+    });
+}
+function handleVisuals(items) {
+    let i = 0;
+    let list = document.getElementById('status');
+    let container = document.getElementById('status-container');
+
+    let loop = setInterval(() => {
+        let item = items[i];
+        let entry = document.createElement('div');
+
+
+        if (item.info === "TRIGGER:rainbow;") {
+            entry.className = "rainbow";
+            entry.innerText = "You Won " + item.name;
+        } else {
+            entry.innerText = "You Won " + item.name;
+
+            entry.style.cssText = item.info;
+        }
+
+
+        entry.style.padding = "5px";
+        entry.style.borderBottom = "1px solid rgba(0,0,0,0.05)";
+        document.getElementById('pending').innerHTML = `${items.length - 1 - i} items loading... refrain from purchasing for the next few seconds to finish.`;
+
+        list.appendChild(entry);
+
+
+        container.scrollTop = container.scrollHeight;
+
+        i++;
+        if (i >= items.length) {
+            clearInterval(loop);
+        }
+    }, 180);
+}
+
+
+    </script>
+    </body>
+</html>

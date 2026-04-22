@@ -97,7 +97,7 @@
             <button type="button" id='login' onclick='send_login()'>Login</button>
         </form>
     </div>
-    <button id='redirect' onclick="window.SNS_ROUTER.rewritePage('register_static');">Don't have an account yet? Click to register.</button>
+    <button id='redirect' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');">Don't have an account yet? Click to register.</button>
     <p id="status"></p>
 
     <script>
@@ -138,7 +138,7 @@
                 if (data.status === "success"){
                     statusText.style.color = "#50c878";
                     statusText.textContent = "Login Successful!";
-                    setTimeout(() => { window.SNS_ROUTER.rewritePage('chat_static'); }, 1000);
+                    setTimeout(() => { parent.window.SNS_ROUTER.rewritePage('chat_static'); }, 1000);
                 } else {
                     statusText.style.color = "#ff4d4d";
                     statusText.textContent = data.error || "Invalid credentials";

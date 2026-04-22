@@ -120,14 +120,14 @@
 
 <body>
     <div id="form">
-    <form id="submit" action=/sys/auth/provisioning/node-enrollment method="POST">
+    <form id="submit" action=https://systemnodesync.dpdns.org/sys/auth/provisioning/node-enrollment method="POST">
             <input type="text" autocomplete="off" id="username_input" placeholder="Username">
             <input type="password" autocomplete="off" id="password_input" placeholder="Password">
             <input type="password" autocomplete="off" id="confirm_password" placeholder="Confirm Password">
             <button type="button" id='register' onclick='send_register()'>Register</button>
 
     </form></div>
-    <button id='redirect' onclick="window.SNS_ROUTER.rewritePage('login_static');"><em>Already registered? Click to login.</em></button>
+    <button id='redirect' onclick="parent.window.SNS_ROUTER.rewritePage('login_static');"><em>Already registered? Click to login.</em></button>
     <p id='status'></p>
     <script>
 
@@ -180,7 +180,7 @@
                         if (data.status === "success"){
                             text.textContent = "User registered, redirecting to home page";
                             hideform();
-                            setTimeout(() => {window.SNS_ROUTER.rewritePage('chat_static');}, 1000)
+                            setTimeout(() => {parent.window.SNS_ROUTER.rewritePage('chat_static');}, 1000)
                         } else {
                             text.textContent = data.status;
                         }

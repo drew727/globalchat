@@ -272,14 +272,14 @@
     </head>
     <body>
         <nav id="navbar">
-            <button class='btn' id='register' onclick="window.location.href='/sys/auth/provisioning/node-enrollment'"><strong>Register</strong></button>
-            <button class='btn' onclick="window.location.href='/api/v1/session/sync/view-instance.html'"><strong>Home</strong></button>
-            <button class='btn' onclick="window.location.href='/api/v1/internal/telemetry/nodes/reconciliation-buffer/system-diagnostics'"><strong>Click</strong></button>
-            <button class='btn' onclick='window.location.href = "/sys/local-storage/mount-points/registry"'><strong>Inventory</strong></button>
-            <button class='btn' onclick="window.location.href='/internal/assets/resource-catalog/deployment-manifest'"><strong>Shop</strong></button>
-            <button class='btn' onclick="window.location.href='/api/v1/internal/content/asset-validation'"><strong>Wheel</strong></button>
-            <button class='btn' onclick="window.location.href='/api/v1/session/nodes/internal/node-performance-metrics'"><strong>Leaderboard</strong></button>
 
+        <button class='btn' id='register' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+        <button class='btn' onclick='parent.window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
         </nav>
         <h1>SHOP!</h1>
 
@@ -287,7 +287,7 @@
         <div id="globes">
             <p>Globes:
                 <span id="globecount">loading...</span>
-                <img src="/static/download-removebg-preview.png" width='30px' height='30px'>
+                <img src="https://systemnodesync.dpdns.org/static/download-removebg-preview.png" width='30px' height='30px'>
             </p>
         </div>
 
@@ -355,7 +355,8 @@
     }
     window.onload = function() {
 
-        fetch('/api/v2/user-profile/cache/sync-manifest').then(res => res.json()).then(user => {
+        fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+        {credentials: 'include'}).then(res => res.json()).then(user => {
             if (!user.isguest) {
                 document.getElementById('register').innerText = user.username;
                 document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
@@ -365,7 +366,9 @@
 
 
         Object.keys(PACK_CONFIG).forEach(packId => {
-        fetch(`/api/v1/system/scaling/load-coefficient/${packId}`)
+        fetch(`https://systemnodesync.dpdns.org/api/v1/system/scaling/load-coefficient/${packId}`, {
+            credentials: 'include'
+        })
             .then(res => res.json())
             .then(data => {
                 const pEl = document.getElementById(`price-${packId}`);
@@ -378,7 +381,8 @@
 
         function updateglobes() {
             if (pendingPurchases > 0) return;
-            fetch('/api/v2/user-profile/cache/sync-manifest')
+            fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
+            {credentials: 'includehttps://systemnodesync.dpdns.org'})
                 .then(response => response.json())
                 .then(user => {
                     document.getElementById('globecount').innerText = user.globes;
@@ -388,7 +392,9 @@
 async function viewitemrates(packType) {
     try {
 
-        const response = await fetch(`/api/v1/metadata/schema/pack-descriptors/${packType}`);
+        const response = await fetch(`https://systemnodesync.dpdns.org/api/v1/metadata/schema/pack-descriptors/${packType}`, {
+            credentials: 'include'
+        });
         const items = await response.json();
 
         if (!items || items.length === 0) {
@@ -446,8 +452,9 @@ async function viewitemrates(packType) {
             if (pendingPurchases === 0) return;
             const amountToSync = pendingPurchases;
             pendingPurchases = 0;
-            fetch(`/api/v1/transactional/resource-allocation/commit/${packId}`, {
+            fetch(`https://systemnodesync.dpdns.org/api/v1/transactional/resource-allocation/commit/${packId}`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ batch_count: amountToSync})
             })
