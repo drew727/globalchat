@@ -409,10 +409,14 @@ def send_msg():
                 username_to_get_globes = splittext[1].strip().replace('"', ' ')
                 amount_to_add = splittext[2].strip().replace('"', ' ')
                 targ_user = Users.query.filter_by(username=username_to_get_globes).first()
-                targ_user.globes += amount_to_add
-                db.session.add(Message(userid=1, text=f"{amount_to_add} globes given to {user.username}.", room_id=room_id))
-                db.session.commit()
-                return jsonify({"status": "success", "message": "Globes added"}), 201
+                if targ_user:
+                    targ_user.globes += amount_to_add
+                    db.session.add(Message(userid=1, text=f"{amount_to_add} globes given to {user.username}.", room_id=room_id))
+                    db.session.commit()
+                    return jsonify({"status": "success", "message": "Globes added"}), 201
+                else:
+                    db.session.add(Message(userid=1, text=f"Globe add Error: User '{v}' not found.", room_id=room_id))
+                    db.session.commit()
             if message_text.startswith("/panic"):
                 status_msg = toggle_panic()
                 db.session.add(Message(userid=1, text=f"SYSTEM: {status_msg}", room_id=room_id))
