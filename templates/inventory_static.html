@@ -26,6 +26,7 @@
         }
 
         .swatch {
+            content-visibility: auto;
             border: 2px solid rgba(0,0,0,0.6);
             transition: transform 0.1s;
             cursor: grab;
@@ -392,14 +393,12 @@ function get_inv() {
 
         // --- GRID LOGIC ---
         if (ctn && data.items) {
-            // Faster sort: pre-calculating types in the expression
             data.items.sort((a, b) => {
                 const ta = a.itemtype === 'color' ? 1 : 2;
                 const tb = b.itemtype === 'color' ? 1 : 2;
                 return ta !== tb ? ta - tb : a.weight - b.weight;
             });
 
-            // Map everything to one giant string then inject once (Fastest DOM method)
             ctn.innerHTML = data.items.map(item => {
                 let content = "";
                 let style = item.info;
