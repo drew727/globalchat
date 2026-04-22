@@ -207,16 +207,31 @@
         DragDropTouch._data.pressHoldDelayMS = 5;
     }
     function loadNavbar() {
-        const savedStyles = localStorage.getItem('navbarStyle');
-        if (savedStyles) {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('navbarStyle');
+        if (savedNavStyles) {
             const navbar = document.getElementById('navbar');
-            const stylesObj = JSON.parse(savedStyles);
+            const stylesObj = JSON.parse(savedNavStyles);
             let cssString = "";
             for (const prop in stylesObj) {
                 cssString += `${prop}: ${stylesObj[prop]}; `;
             }
 
             navbar.style.cssText = cssString;
+        }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn');
+            const stylesObj = JSON.parse(savedBtnStyles);
+
+
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            buttons.forEach(btn => {
+                btn.style.cssText = cssString;
+            });
         }
     }
 
