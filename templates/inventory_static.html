@@ -210,15 +210,17 @@
         const savedStyles = localStorage.getItem('navbarStyle');
         if (savedStyles) {
             const navbar = document.getElementById('navbar');
-            const stylesObj = JSON.parse(savedStyles);\
+            const stylesObj = JSON.parse(savedStyles);
             let cssString = "";
             for (const prop in stylesObj) {
                 cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            navbar.style.cssText = cssString;
+        }
     }
 
-    navbar.style.cssText = cssString;
-}
-    }
+
     window.onload = changebutton;
     function changebutton() {
         loadNavbar();
