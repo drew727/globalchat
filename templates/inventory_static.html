@@ -206,8 +206,22 @@
     if (window.DragDropTouch) {
         DragDropTouch._data.pressHoldDelayMS = 5;
     }
+    function loadNavbar() {
+        const savedStyles = localStorage.getItem('navbarStyle');
+        if (savedStyles) {
+            const navbar = document.getElementById('navbar');
+            const stylesObj = JSON.parse(savedStyles);\
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+    }
+
+    navbar.style.cssText = cssString;
+}
+    }
     window.onload = changebutton;
     function changebutton() {
+        loadNavbar();
                 fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
                     credentials: 'include'
                 })

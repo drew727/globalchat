@@ -427,19 +427,29 @@ body {
 
 
                 localStorage.setItem('userSelectedTheme', theme);
+
+                //now save navbar accross pages
+                const navbar = document.getElementById('navbar');
+                const computedStyle = window.getComputedStyle(navbar);
+                stylesToBeSaved = {};
+                for (let i = 0; i < computedStyles.length; i++) {
+                    const prop = computed[i];
+                    stylesToGetSaved[prop] = computedStyle.getPropertyValue(prop);
+                }
+                localStorage.setItem('navbarStyle', JSON.stringify(stylesToGetSaved));
             }
             document.getElementById('choose-bg-color').addEventListener('change', function() {
                 applyTheme(this.value);
             });
             function initSNS() {
-    const savedTheme = localStorage.getItem('userSelectedTheme') || 'canva';
-    const selector = document.getElementById('choose-bg-color');
+                const savedTheme = localStorage.getItem('userSelectedTheme') || 'canva';
+                const selector = document.getElementById('choose-bg-color');
 
-    if (selector) {
-        selector.value = savedTheme;
-        applyTheme(savedTheme);
-    }
-}
+                    if (selector) {
+                        selector.value = savedTheme;
+                        applyTheme(savedTheme);
+                    }
+                }
             initSNS();
             function authenticateUser() {
                 try {
