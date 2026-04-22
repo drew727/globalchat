@@ -429,7 +429,7 @@ def send_msg():
                 tuser = Users.query.filter_by(username=target_username).first()
                 if tuser:
                     tuser.ismuted = False
-                    db.session.add(Message(userid=1, text=f"{user.username} has been unmuted.", room_id=room_id))
+                    db.session.add(Message(userid=1, text=f"{target_username} has been unmuted by {user.username}.", room_id=room_id))
                     db.session.commit()
                 else:
                     db.session.add(Message(userid=1, text=f"Unmute Error: User '{target_username}' not found.", room_id=room_id))
