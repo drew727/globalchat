@@ -285,13 +285,13 @@
 
     });
 
+    const sellZone = document.getElementById("sellzone");
     document.addEventListener('drop', (e) => {
 
         e.preventDefault();
         dragging = false;
 
         const dropZone = document.getElementById("dropzone");
-        const sellZone = document.getElementById("sellzone");
         const sellAllZone = document.getElementById("sellallzone");
         const imageZone = document.getElementById("imagezone");
         const isSellAllz = e.target.closest('#sellallzone') !== null;
@@ -393,7 +393,6 @@
     }
 const dz = document.getElementById("dropzone");
 const ctn = document.getElementById('inv-grid');
-    const sellZone = document.getElementById("sellzone");
 
     ctn.addEventListener('mouseover', (e) => {
         const swatch = e.target.closest('.swatch');
