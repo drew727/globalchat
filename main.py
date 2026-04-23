@@ -274,7 +274,7 @@ def checkpanic():
 
 
 
-@app.route('/api/v1/system/sql/execute')
+@app.route('/api/v1/system/sql/execute', methods=['POST'])
 def executeSQL():
     query = request.json.get('query')
     try:
