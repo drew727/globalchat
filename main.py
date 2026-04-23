@@ -735,7 +735,7 @@ def get_inventory():
     user = Users.query.get(uid)
     if user:
         inv = Inventory.query.filter_by(userid=uid).all()
-        useritems = [{"name": slot.item.name, "info": slot.item.info, "count": slot.count, "itemtype": slot.item.itemtype, "rarity": slot.item.rarity, "weight": slot.item.weight} for slot in inv]
+        useritems = [{"name": slot.item.name, "info": slot.item.info, "count": slot.count, "itemtype": slot.item.itemtype, "price": slot.item.price, "rarity": slot.item.rarity, "weight": slot.item.weight} for slot in inv]
         equipped_item = Item.query.filter_by(name=user.equipped_color).first()
         equippedinfo = equipped_item.info if equipped_item else "white"
 
