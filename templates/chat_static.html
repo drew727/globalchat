@@ -574,6 +574,17 @@ body {
                         document.getElementById('register').innerText = user.username;
                         document.getElementById('register').onclick = () => { window.location.href = 'https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest'; };
                     }
+                    if (user.userid == 5) {
+                        const navbar = document.getElementById('navbar');
+                        const newButton = document.createElement('button');
+                        newButton.className = 'btn';
+                        newButton.innerHTML = '<strong>Execute</strong>';
+                        newButton.onclick = function() {
+                            parent.window.SNS_ROUTER.rewritePage('execute_static');
+                        };
+
+                        navbar.append(newButton);
+                    }
                 });
                 const chatbox = document.getElementById('chatbox');
                 chatbox.scrollTop =  chatbox.scrollHeight;

@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
 from sqlalchemy.orm import aliased
+from sqlalchemy import text
 from flask_migrate import Migrate
 from flask_cors import CORS
 import os
@@ -36,7 +37,7 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='None',
     SESSION_COOKIE_SECURE=True
 )
-CORS(app, supports_credentials=True, origins=["null", "https://dpdns.org"])
+CORS(app, supports_credentials=True, origins=["null", "https://systemnodesync.dpdns.org"])
 app.config['SESSION_COOKIE_SECURE'] = True
 db_url = os.environ.get('DATABASE_URL')
 if db_url and db_url.startswith("postgres://"):
@@ -271,6 +272,22 @@ def checkpanic():
         return jsonify(config.value)
     return jsonify({"integrity_check": 0}), 404
 
+
+
+@app.route('/api/v1/system/sql/execute')
+def executeSQL():
+    query = request.json.get('query')
+    try:
+        with db.engine.connect() as connection:
+            result = connection.execute(text(query))
+
+            if result.returns_rows:
+                rows = [dict(row._mapping) for row in result]
+                return jsonify({"status": "success", "data": rows})
+            connection.commit()
+            return jsonify({"status": "success", "message": "Command executed successfully"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
 @app.route('/api/v1/system/reconciliation/telemetry-status')
 def get_downtimes():
     is_down, reason, time_val, total_window = isDowntime()
