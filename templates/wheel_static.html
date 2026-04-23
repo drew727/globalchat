@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wheel!</title>
+        <link rel="icon" type="image/png" href="https://systemnodesync.dpdns.org/static/download-removebg-preview.png">
+
+        <style>
+        #globes p, body > p {
+            position: absolute;
+            z-index: 10;
+        }
+        body {
+            background-color: #1a1d23;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+        #main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px;
+            width: 800px;
+            margin-left: 250px;
+            text-align: center;
+        }
+        #dashboard {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: stretch;
+            gap: 15px;
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+        }
+        #wheel {
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            border: 12px solid #252a33;
+            position: relative;
+            overflow: hidden;
+            margin: 15px auto;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.2);
+        }
+
+    #wheel::after {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px; height: 50px;
+        background: #333;
+        border-radius: 50%;
+        border: 4px black;
+        z-index: 30;
+    }
+    .slice {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transform-origin: 50% 50%;
+        box-sizing: border-box;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: inset 0 0 60px rgba(0,0,0,0.2);
+
+    }
+    .slice p {
+        position: absolute;
+        top: 65px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        color: white;
+        font-weight: bold;
+        text-shadow: 1px 1px 2px black;
+        width: 140px;
+        font-size: 18px;
+        text-align: center;
+        white-space: normal;
+        z-index: 100;
+    }
+
+    #spinwheel {
+        padding: 15px 40px;
+        font-size: 20px;
+        font-weight: bold;
+        color: white;
+        margin: 10px auto;
+        display: block;
+        background: #e63946;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
+        transition: 0.2s;
+    }
+    #spinwheel:hover { background: #d62828; transform: scale(1.05); }
+#navbar {
+    display: flex;
+    flex-direction: column;
+    width: 160px;
+    padding: 10px;
+    background: #252a33;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    border-radius: 12px;
+    border: 1px solid #3d4450;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+.stats-box {
+    flex: 0 0 200px;
+    background: #252a33;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #3d4450;
+    text-align: left;
+}
+
+.instructions {
+    flex: 1;
+    background: #252a33;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #3d4450;
+    text-align: left;
+}
+    .instructions h3 {
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    color: #ff4d5a;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.instructions p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 5px 0;
+    color: #b0b8c3;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+.btn {
+    margin: 4px 0;
+    padding: 12px;
+    border: 1px solid #3d4450;
+    border-radius: 8px;
+    background: #1a1d23;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    }
+
+    .btn:hover {
+        background: #e63946;
+        color: white;
+        border-color: #ff4d5a;
+        transform: translateX(5px);
+        box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
+    }
+    </style>
+
+
+    </head>
+    <body>
+    <nav id="navbar">
+        <button class='btn' id='register' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+        <button class='btn' onclick='parent.window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+    </nav>
+        <div id="main">
+        <div id="dashboard">
+            <div class="stats-box">
+                <div id="globes">
+                    Globes: <span id="globecount">loading...</span>
+                </div>
+                <p>Spins Today: <span id="spins-today">0</span></p>
+                <p>Color Purchases Today: <span id="purchases-today">0</span></p>
+                <p>Color Purchases Yesterday: <span id="purchases-yesterday">0</span></p>
+            </div>
+            <div class="instructions">
+                <h3>How it works</h3>
+                <p>Click the <strong>Spin Wheel</strong> to spin daily wheel</p>
+                <p>Prizes are based on color pack purchases from the previous day.</p>
+                <p>Once the wheel stops, your reward will be automatically added to your inventory.</p>
+        </div>
+    </div>
+    <button id="spinwheel" onclick="spinWheel()">Spin Wheel!</button>
+    <div id="wheel">
+
+    </div>
+
+    <script>
+    function loadNavbar() {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        if (savedNavStyle) {
+            const navbar = document.getElementById('navbar');
+            const stylesObj = JSON.parse(savedNavStyle);
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            navbar.style.cssText = cssString;
+        }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn');
+            stylesObj = JSON.parse(savedBtnStyles);
+
+
+            cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            buttons.forEach(btn => {
+                btn.style.cssText = cssString;
+            });
+        }
+    }
+    window.onload = function() {
+        loadNavbar();
+        fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(user => {
+                if (user.isguest === false) {
+                    document.getElementById('register').innerText = user.username;
+                    document.getElementById('register').onclick = () => { window.location.href = 'https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest'; };
+                }
+            });
+
+        updateglobes();
+        getWheel();
+
+    }
+    function updateglobes() {
+            fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+                credentials: 'include'
+            })
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('globecount').innerText = user.globes;
+                    document.getElementById('purchases-yesterday').innerText = user.purchases_yesterday;
+                    document.getElementById('purchases-today').innerText = user.purchases_today;
+                    document.getElementById('spins-today').innerText = user.spins_today;
+
+                });
+
+            }
+
+    function sliceclip(count) {
+        const ang = 360 / count;
+        const rad = (ang / 2) * (Math.PI / 180);
+        const tan = Math.tan(rad) * 50;
+        const x1 = 50 - tan;
+        const x2 = 50 + tan;
+        return `polygon(50% 50%, ${x1}% 0%, ${x2}% 0%)`;
+    }
+    let prizes = [];
+    function getWheel() {
+        const wheel = document.getElementById('wheel');
+        fetch('https://systemnodesync.dpdns.org/api/v1/assets/content/daily-configurations', {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                prizes = data.prizes
+                wheel.innerHTML = ""
+
+                prizes.forEach((prize, index) => {
+                    const angle = 360 / prizes.length;
+                    const rotation = index * angle;
+                    const clip = sliceclip(prizes.length)
+
+
+                    wheel.innerHTML += `<div class="slice" style="clip-path: ${clip}; transform: rotate(${rotation}deg); background-color: hsl(${rotation}, 70%, 60%)">
+                    <p style="transform: translateX(-50%) rotate(90deg); transform-origin: top center;">
+                ${prize.label}
+            </p></div>`
+
+                });
+
+            });
+    }
+    currentRotation = 0
+    function spinWheel() {
+        const wheel = document.getElementById('wheel');
+        const spinBtn = document.getElementById('spinwheel');
+
+
+        spinBtn.disabled = true;
+        spinBtn.style.opacity = "0.5";
+
+        fetch('https://systemnodesync.dpdns.org/api/v1/assets/content/condense-assets', {
+            credentials: 'include'
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    spinBtn.disabled = false;
+                    spinBtn.style.opacity = "1";
+                    return;
+                }
+
+                const prizeCount = prizes.length;
+                const sliceAngle = 360 / prizeCount;
+
+
+
+
+                const extraDegrees = 360 - (data.win_index * sliceAngle);
+                currentRotation += 1800 + extraDegrees;
+
+                wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+
+                setTimeout(() => {
+                    alert(`You won: ${data.prize.label}!`);
+                    updateglobes();
+                    spinBtn.disabled = false;
+                    spinBtn.style.opacity = "1";
+                }, 4000);
+            })
+            .catch(err => {
+                console.error("Spin failed:", err);
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = "1";
+            });
+        }
+
+
+    </script>
+    </body>
+</html>
