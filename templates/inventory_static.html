@@ -285,12 +285,12 @@
 
     });
 
-    const sellZone = document.getElementById("sellzone");
     document.addEventListener('drop', (e) => {
 
         e.preventDefault();
         dragging = false;
 
+        const sellZone = document.getElementById("sellzone");
         const dropZone = document.getElementById("dropzone");
         const sellAllZone = document.getElementById("sellallzone");
         const imageZone = document.getElementById("imagezone");
@@ -384,16 +384,16 @@
             body: JSON.stringify({ item_name: name })
         });
 
-        const dropZone = document.getElementById("dropzone");
-        dropZone.style.background = color;
+        dz.style.background = color;
         document.body.style.background = color;
-        dropZone.innerText = `Equipped: ${name}`;
+        dz.innerText = `Equipped: ${name}`;
         justEquipped = true;
         setTimeout(() => { justEquipped = false; }, 2000);
     }
 const dz = document.getElementById("dropzone");
-const ctn = document.getElementById('inv-grid');
 
+const ctn = document.getElementById('inv-grid');
+    const sellZone = document.getElementById("sellzone");
     ctn.addEventListener('mouseover', (e) => {
         const swatch = e.target.closest('.swatch');
         if (swatch && sellZone) {
@@ -404,6 +404,8 @@ const ctn = document.getElementById('inv-grid');
     });
 
 function get_inv() {
+
+    const ctn = document.getElementById('inv-grid');
     if (dragging || justEquipped) return;
 
     fetch('https://systemnodesync.dpdns.org/api/v3/user-profile/cache/sync-manifest?t=' + Date.now(), {
