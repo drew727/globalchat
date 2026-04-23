@@ -235,8 +235,11 @@
         }
     }
 
-
-    window.onload = changebutton;
+    let dz;
+    window.onload = () => {
+        dz = document.getElementById("dropzone");
+        changebutton();
+    }
     function changebutton() {
         loadNavbar();
                 fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
@@ -390,7 +393,6 @@
         justEquipped = true;
         setTimeout(() => { justEquipped = false; }, 2000);
     }
-const dz = document.getElementById("dropzone");
 
 const ctn = document.getElementById('inv-grid');
     const sellZone = document.getElementById("sellzone");
@@ -418,7 +420,7 @@ function get_inv() {
             let eqs = data.equipped_info;
             if (eqs === "TRIGGER:rainbow;") {
                 eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
-            } else if (eqs.includes("background")) {
+            } else if (typeof eqs === string && eqs.includes("background")) {
                 const temp = document.createElement('div');
                 temp.style.cssText = eqs;
                 eqs = temp.style.background || temp.style.backgroundColor || eqs;
@@ -470,7 +472,9 @@ function get_inv() {
         <div class="ct amount-ct">${item.count}</div>
     </div>`;
 
-            }).join('');
+            }).join('').catch(() => {
+                ctn.innerHTML = "failed to load inventory";
+            });
         }
     });
 }
