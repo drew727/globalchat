@@ -406,78 +406,88 @@ const ctn = document.getElementById('inv-grid');
     });
 
 function get_inv() {
-
     const ctn = document.getElementById('inv-grid');
     if (dragging || justEquipped) return;
 
-    fetch('https://systemnodesync.dpdns.org/api/v3/user-profile/cache/sync-manifest?t=' + Date.now(), {
-        credentials: 'include'
-    })
-    .then(response => response.json())
-    .then(data => {
-        // --- EQUIPPED LOGIC ---
-        if (data.equipped_info && dz) {
-            let eqs = data.equipped_info;
-            if (eqs === "TRIGGER:rainbow;") {
-                eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
-            } else if (typeof eqs === string && eqs.includes("background")) {
-                const temp = document.createElement('div');
-                temp.style.cssText = eqs;
-                eqs = temp.style.background || temp.style.backgroundColor || eqs;
-            }
+    try {
+        fetch('https://systemnodesync.dpdns.org/api/v3/user-profile/cache/sync-manifest?t=' + Date.now(), {
+            credentials: 'include'
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            try {
+                // --- EQUIPPED LOGIC ---
+                if (data.equipped_info && dz) {
+                    let eqs = data.equipped_info;
+                    if (eqs === "TRIGGER:rainbow;") {
+                        eqs = "linear-gradient(to right, red, orange, yellow, green, blue, violet)";
+                    } else if (typeof eqs === 'string' && eqs.includes("background")) {
+                        const temp = document.createElement('div');
+                        temp.style.cssText = eqs;
+                        eqs = temp.style.background || temp.style.backgroundColor || eqs;
+                    }
 
-            document.body.style.background = eqs;
-            document.body.style.backgroundSize = "cover";
-            document.body.style.backgroundClip = "border-box";
-            document.body.style.webkitBackgroundClip = "border-box";
+                    document.body.style.background = eqs;
+                    document.body.style.backgroundSize = "cover";
+                    document.body.style.backgroundClip = "border-box";
+                    document.body.style.webkitBackgroundClip = "border-box";
 
-            // Optimized: Set style in one go using template literal
-            dz.style.cssText = `width: 140px; height: 140px; border-radius: 15px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; padding: 10px; box-sizing: border-box; transition: all 0.3s; background: ${eqs}; -webkit-text-stroke: 2px black; color: white;`;
-            dz.innerText = `Equipped: ${data.equipped_item}`;
-        }
-
-        // --- GRID LOGIC ---
-        if (ctn && data.items) {
-            data.items.sort((a, b) => {
-                const ta = a.itemtype === 'color' ? 1 : 2;
-                const tb = b.itemtype === 'color' ? 1 : 2;
-                return ta !== tb ? ta - tb : a.weight - b.weight;
-            });
-
-            ctn.innerHTML = data.items.map(item => {
-                let content = "";
-                let style = item.info;
-                const isImage = style.includes("url(");
-
-                if (item.name === "Deep_Sea" || style.includes("breathe")) {
-                    style = "color: #000080; background-color: #000080; font-weight: 800;";
-                    content = 'AAAA';
-                } else if (style === "TRIGGER:rainbow;") {
-                    style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
-                } else if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
-                    content = 'AAAA';
-                    style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
+                    dz.style.cssText = `width: 140px; height: 140px; border-radius: 15px; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: bold; padding: 10px; box-sizing: border-box; transition: all 0.3s; background: ${eqs}; -webkit-text-stroke: 2px black; color: white;`;
+                    dz.innerText = `Equipped: ${data.equipped_item}`;
                 }
 
-                return `
-    <div class="item">
-        <div class="swatch"
-             draggable="true"
-             data-name="${item.name}"
-             data-price="${item.price}"
-             style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
-             <span style="pointer-events: none;">${content}</span>
-        </div>
-        <div class="ct rarity-ct">T${item.rarity}</div>
-        <div class="ct amount-ct">${item.count}</div>
-    </div>`;
+                // --- GRID LOGIC ---
+                if (ctn && data.items) {
+                    data.items.sort((a, b) => {
+                        const ta = a.itemtype === 'color' ? 1 : 2;
+                        const tb = b.itemtype === 'color' ? 1 : 2;
+                        return ta !== tb ? ta - tb : a.weight - b.weight;
+                    });
 
-            }).join('').catch(() => {
-                ctn.innerHTML = "failed to load inventory";
-            });
-        }
-    });
+                    ctn.innerHTML = data.items.map(item => {
+                        let content = "";
+                        let style = item.info;
+                        const isImage = style.includes("url(");
+
+                        if (item.name === "Deep_Sea" || style.includes("breathe")) {
+                            style = "color: #000080; background-color: #000080; font-weight: 800;";
+                            content = 'AAAA';
+                        } else if (style === "TRIGGER:rainbow;") {
+                            style = "background: linear-gradient(to right, red, orange, yellow, green, blue, violet);";
+                        } else if (style.includes("text-stroke") || style.includes("text-shadow") || style.includes("clip: text")) {
+                            content = 'AAAA';
+                            style += " background-clip: border-box !important; -webkit-background-clip: border-box !important;";
+                        }
+
+                        return `
+            <div class="item">
+                <div class="swatch"
+                     draggable="true"
+                     data-name="${item.name}"
+                     data-price="${item.price}"
+                     style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
+                     <span style="pointer-events: none;">${content}</span>
+                </div>
+                <div class="ct rarity-ct">T${item.rarity}</div>
+                <div class="ct amount-ct">${item.count}</div>
+            </div>`;
+                    }).join('');
+                }
+            } catch (innerErr) {
+                if (ctn) ctn.innerHTML = "Logic Error: " + innerErr.message;
+            }
+        })
+        .catch(fetchErr => {
+            if (ctn) ctn.innerHTML = "Fetch/Network Error: " + fetchErr.message;
+        });
+    } catch (globalErr) {
+        if (ctn) ctn.innerHTML = "Global Error: " + globalErr.message;
+    }
 }
+
 
 
     </script>
