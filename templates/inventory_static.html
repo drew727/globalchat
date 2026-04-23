@@ -208,10 +208,10 @@
     }
     function loadNavbar() {
         const savedNavStyle = localStorage.getItem('navbarStyle');
-        const savedBtnStyles = localStorage.getItem('navbarStyle');
-        if (savedNavStyles) {
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        if (savedNavStyle) {
             const navbar = document.getElementById('navbar');
-            const stylesObj = JSON.parse(savedNavStyles);
+            const stylesObj = JSON.parse(savedNavStyle);
             let cssString = "";
             for (const prop in stylesObj) {
                 cssString += `${prop}: ${stylesObj[prop]}; `;
