@@ -375,20 +375,7 @@
             }
         }
     });
-    ctn.addEventListener('mouseover', (e) => {
-        const swatch = e.target.closest('.swatch');
-        if (swatch && sellZone) {
-            const name = swatch.getAttribute('data-name');
-            const price = swatch.getAttribute('data-price');
-            sellZone.innerText = `Sell ${name} for ${price}`;
-        }
-    });
 
-ctn.addEventListener('mouseout', (e) => {
-        if (e.target.closest('.swatch') && sellZone) {
-            sellZone.innerText = "Hover over an item to see sell price";
-        }
-    });
     function equipItem(name, color) {
         fetch('https://systemnodesync.dpdns.org/sys/env/runtime/ui-configuration/set-preference', {
             credentials: 'include',
@@ -406,6 +393,16 @@ ctn.addEventListener('mouseout', (e) => {
     }
 const dz = document.getElementById("dropzone");
 const ctn = document.getElementById('inv-grid');
+    const sellZone = document.getElementById("sellzone");
+
+    ctn.addEventListener('mouseover', (e) => {
+        const swatch = e.target.closest('.swatch');
+        if (swatch && sellZone) {
+            const name = swatch.getAttribute('data-name');
+            const price = swatch.getAttribute('data-price');
+            sellZone.innerText = `Sell ${name} for ${price}`;
+        }
+    });
 
 function get_inv() {
     if (dragging || justEquipped) return;
