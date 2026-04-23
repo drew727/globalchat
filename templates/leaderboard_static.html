@@ -178,7 +178,36 @@
             </table>
         </div>
         <script>
+            function loadNavbar() {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        if (savedNavStyle) {
+            const navbar = document.getElementById('navbar');
+            const stylesObj = JSON.parse(savedNavStyle);
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            navbar.style.cssText = cssString;
+        }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn');
+            stylesObj = JSON.parse(savedBtnStyles);
+
+
+            cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            buttons.forEach(btn => {
+                btn.style.cssText = cssString;
+            });
+        }
+    }
         window.onload = changebutton;
+        loadNavbar();
             function changebutton() {
                 fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest',
                 {credentials: 'include'})
@@ -188,6 +217,7 @@
                         document.getElementById('register').innerText = user.username;
                         document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
                     }
+
                 });
 
 

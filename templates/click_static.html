@@ -160,6 +160,35 @@
     </div>
 
         <script>
+        function loadNavbar() {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        if (savedNavStyle) {
+            const navbar = document.getElementById('navbar');
+            const stylesObj = JSON.parse(savedNavStyle);
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            navbar.style.cssText = cssString;
+        }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn');
+            stylesObj = JSON.parse(savedBtnStyles);
+
+
+            cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            buttons.forEach(btn => {
+                btn.style.cssText = cssString;
+            });
+        }
+    }
+    loadNavbar();
         function generateStars(c) {
             let stars = "";
             for (i = 0; i < c; i++) {
