@@ -729,7 +729,7 @@ def inc_click_counter():
 @app.route('/sys/local-storage/mount-points/registry')
 def inventory():
     return render_template("inventory.html")
-@app.route('/api/v3/user-profile/cache/sync-manifest')
+@app.route('/api/v3/user-profile/cache/sync-manifest', methods=['GET', 'OPTIONS'])
 def get_inventory():
     uid = session.get('userid')
     user = Users.query.get(uid)
