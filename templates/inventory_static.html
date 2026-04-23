@@ -221,10 +221,10 @@
         }
         if (savedBtnStyles) {
             const buttons = document.querySelectorAll('.btn');
-            const stylesObj = JSON.parse(savedBtnStyles);
+            stylesObj = JSON.parse(savedBtnStyles);
 
 
-            let cssString = "";
+            cssString = "";
             for (const prop in stylesObj) {
                 cssString += `${prop}: ${stylesObj[prop]}; `;
             }
