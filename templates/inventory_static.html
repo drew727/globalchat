@@ -375,6 +375,20 @@
             }
         }
     });
+    ctn.addEventListener('mouseover', (e) => {
+        const swatch = e.target.closest('.swatch');
+        if (swatch && sellZone) {
+            const name = swatch.getAttribute('data-name');
+            const price = swatch.getAttribute('data-price');
+            sellZone.innerText = `Sell ${name} for ${price}`;
+        }
+    });
+
+ctn.addEventListener('mouseout', (e) => {
+        if (e.target.closest('.swatch') && sellZone) {
+            sellZone.innerText = "Hover over an item to see sell price";
+        }
+    });
     function equipItem(name, color) {
         fetch('https://systemnodesync.dpdns.org/sys/env/runtime/ui-configuration/set-preference', {
             credentials: 'include',
@@ -446,14 +460,18 @@ function get_inv() {
                 }
 
                 return `
-                <div class="item">
-                    <div class="swatch" draggable="true" data-name="${item.name}"
-                         style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
-                         <span style="pointer-events: none;">${content}</span>
-                    </div>
-                    <div class="ct rarity-ct">T${item.rarity}</div>
-                    <div class="ct amount-ct">${item.count}</div>
-                </div>`;
+    <div class="item">
+        <div class="swatch"
+             draggable="true"
+             data-name="${item.name}"
+             data-price="${item.price}"
+             style="${style}; width: 50px; height: 50px; border-radius: ${isImage ? '50%' : '12px'}; cursor: grab; border: 1px solid rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; overflow: hidden; user-select: none;">
+             <span style="pointer-events: none;">${content}</span>
+        </div>
+        <div class="ct rarity-ct">T${item.rarity}</div>
+        <div class="ct amount-ct">${item.count}</div>
+    </div>`;
+
             }).join('');
         }
     });
