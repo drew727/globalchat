@@ -409,7 +409,7 @@ def send_msg():
     if user.ismuted or profanity.contains_profanity(user.username):
         return jsonify({"status": "success"}), 201
     message_text = profanity.censor(message_text)
-    if '*' in message_text or "nigg" in message_text.lower():
+    if '*' in message_text or "nigg" in message_text.lower() or "gger" in message_text.lower() or "gga" in message_text.lower() or "gg3r" in message_text.lower() or "n1g" in message_text.lower():
         db.session.add(Message(userid=1, text=f"{user.username}, sorry you can't do that", room_id=room_id))
         db.session.commit()
         return jsonify({"status": "success"}), 201
