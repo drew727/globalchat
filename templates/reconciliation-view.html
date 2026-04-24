@@ -54,7 +54,7 @@
         localStorage.setItem('sns_assigned_node', nodeID);
 
         setTimeout(() => {
-            window.location.href = '/';
+            parent.window.SNS_ROUTER.redirectPage('/chat_static')
         }, 1500);
     });
 
