@@ -679,7 +679,7 @@ def is_prime(n):
 @app.route('/api/v1/telemetry/heartbeat/delta-increment', methods=['GET', 'POST'])
 @limiter.limit("15 per second")
 def inc_click_counter():
-    counter = (ClickCount.query.get(1) or ClickCount(id=1, count=0))
+    ClickCount.query.with_for_update().get(1)
     user = Users.query.get(session.get('userid'))
     is_milestone = False
     if request.method == 'POST':
