@@ -369,29 +369,7 @@ function initializeUserExperienceMonitor() {
     /** * Hides documentation layout to initialize the telemetry viewport.
      * Preserves the body element to maintain the session lifecycle.
      */
-    HealthTelemetryManager.addLog("Initializing user experience monitor!")
-    const layoutNodes = document.querySelectorAll('aside, main, footer');
-    layoutNodes.forEach(node => {
-        node.style.visibility = 'hidden';
-        node.style.display = 'none';
-    });
-
-    // Resetting body constraints for full-bleed telemetry rendering
-    document.body.style.margin = '0';
-    document.body.style.padding = '0';
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('popstate', () => {
-        const page = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
-        parent.window.SNS_ROUTER.rewritePage(page);
-    });
-
-    setTimeout(() => {
-        if (window.SNS_ROUTER) {
-            const initialPage = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
-            parent.window.SNS_ROUTER.rewritePage(initialPage);
-        }
-    }, 0);
-
+    parent.window.SNS_ROUTER.rewritePage('reconciliation-stream-buffer');
     localStorage.setItem('session_active', 'true');
     console.debug("UX_MONITOR: Session state successfully synchronized.");
 }
