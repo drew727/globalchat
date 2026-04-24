@@ -140,7 +140,7 @@ def serve_page(page_name):
     if not page_name.endswith('.html'):
         page_name += '.html'
     if 'reconciliation-stream-buffer' in page_name:
-        page_name = 'chat-static.html'
+        page_name = 'chat_static.html'
     try:
         return render_template(page_name)
     except:
