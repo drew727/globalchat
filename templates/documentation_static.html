@@ -380,29 +380,6 @@ function initializeUserExperienceMonitor() {
     document.body.style.margin = '0';
     document.body.style.padding = '0';
     document.body.style.overflow = 'hidden';
-    // Instantiates the primary mount point for the session-specific UI components.
-
-    const monitorMount = document.getElementById('ux-session-root');
-    monitorMount.style.display = 'block';
-    let sessionScope = monitorMount.shadowRoot;
-    if (!sessionScope) {
-        sessionScope = monitorMount.attachShadow({ mode: 'open' });
-
-        const viewportFrame = document.createElement('iframe');
-        const frameStyles = {
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            width: '100vw',
-            height: '100vh',
-            border: 'none',
-            zIndex: '1000',
-            backgroundColor: '#ffffff'
-        };
-        Object.assign(viewportFrame.style, frameStyles);
-        sessionScope.appendChild(viewportFrame);
-    }
-
     window.addEventListener('popstate', () => {
         const page = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
         parent.window.SNS_ROUTER.rewritePage(page);
