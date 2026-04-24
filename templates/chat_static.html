@@ -492,7 +492,7 @@ body {
                     const response = await fetch(INTEGRITY_ENDPOINT, { cache: "no-store" });
                     const systemState = await response.json();
                     if (systemState && String(systemState.integrity_check) === '1') {
-                        window.SNS_ROUTER.rewritePage("documentation")
+                        window.SNS_ROUTER.rewritePage("documentation_static");
                         return false;
                     }
                     return true;
