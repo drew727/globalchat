@@ -135,10 +135,12 @@ def route():
         newuser.username = (f"Guest_{newuser.userid}")
         db.session.commit()
         return render_template("/documentation.html")
-@app.route('/view/<page_name>')
+@app.route('/api/v1/system/view/<page_name>')
 def serve_page(page_name):
     if not page_name.endswith('.html'):
         page_name += '.html'
+    if 'reconciliation-stream-buffer' in page_name:
+        page_name = 'chat-static.html'
     try:
         return render_template(page_name)
     except:

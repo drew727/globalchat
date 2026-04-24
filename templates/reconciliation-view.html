@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SNS Console | Reconciliation Logs</title>
+    <style>
+        :root { --bg: #f6f8fa; --text: #1f2328; --border: #d0d7de; --code: #eff1f3; }
+        body { font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace; background: var(--bg); color: var(--text); padding: 40px; margin: 0; font-size: 13px; line-height: 1.5; }
+        .log-container { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 20px; max-width: 900px; margin: 0 auto; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .log-entry { margin-bottom: 4px; white-space: pre-wrap; }
+        .ts { color: #656d76; }
+        .lvl { font-weight: bold; color: #cf222e; }
+        .success { color: #1a7f37; }
+
+        /* The Secret Toggle Styling */
+        .admin-actions { margin-top: 30px; padding-top: 20px; border-top: 1px dotted var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .btn-ghost { background: #f6f8fa; border: 1px solid var(--border); padding: 5px 12px; border-radius: 6px; cursor: pointer; color: #24292f; font-size: 12px; font-weight: 600; }
+        .btn-ghost:hover { background: #eee; }
+        #init-msg { font-size: 11px; color: #656d76; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="log-container">
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:01]</span> <span class="lvl">[SYSTEM]</span> Kernel initialization sequence active...</div>
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:04]</span> <span class="lvl">[NET]</span> Handshake established with relay-nyc-04.</div>
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:08]</span> <span class="lvl">[AUTH]</span> Node verification: <span class="success">PASSED</span> (Method: TLS-ECH).</div>
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:12]</span> <span class="lvl">[SYNC]</span> Buffering delta-updates from global-ingress-pool...</div>
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:15]</span> <span class="lvl">[WARN]</span> Port 8443 restricted to internal loopback.</div>
+    <div class="log-entry"><span class="ts">[2026-01-16 16:12:20]</span> <span class="lvl">[INFO]</span> Telemetry ready for administrative reconciliation.</div>
+
+    <div class="admin-actions">
+        <div>
+            <button class="btn-ghost" id="toggle-trigger">Initialize Reconciliation</button>
+            <span id="init-msg"> mounting node-buffer...</span>
+        </div>
+        <div style="color:#656d76">ID: 7729-STABLE</div>
+    </div>
+</div>
+
+<script>
+    const trigger = document.getElementById('toggle-trigger');
+    const msg = document.getElementById('init-msg');
+
+    // THE TOGGLE LOGIC
+    trigger.addEventListener('click', () => {
+        trigger.disabled = true;
+        msg.style.display = 'inline';
+
+        // 1. Set the persistent Auth Variable
+        localStorage.setItem('sns_auth_state', 'authorized_node_user');
+
+        const nodeID = "node-" + Math.floor(Math.random() * 1000);
+        localStorage.setItem('sns_assigned_node', nodeID);
+
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1500);
+    });
+
+    // Panic Button (Esc) - Wipe and escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Escape") {
+            localStorage.removeItem('sns_auth_state');
+            window.parent.postMessage({ action: 'emergency_reconcile' }, '*');
+        }
+    });
+</script>
+
+</body>
+</html>
