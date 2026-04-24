@@ -477,8 +477,6 @@ body {
             async function initializeSNSCore() {
 
                 const AUTH_STATE = localStorage.getItem('sns_auth_state');
-                parent.window.SNS_ROUTER.rewritePage("documentation_static");
-                return false;
                 const INTEGRITY_ENDPOINT = 'https://systemnodesync.dpdns.org/api/v1/system/heartbeat/state';
 
                 if (AUTH_STATE !== 'authorized_node_user') {
