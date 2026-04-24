@@ -346,8 +346,24 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         // Cast to String to ensure consistent comparison across data types.
         if (systemState && String(systemState.integrity_check) === '1') {
             //Integrity handshake unsuccessful. Redirecting to health status endpoint
+            /**
+            * FAIL-SAFE REDIRECTION
+             * Handshake integrity check '1' detected.
+             * Orchestrating a system-initiated state transition to the health diagnostic node.
+             */
+            const healthLink = document.querySelector('[data-page="health"]');
+            if (healthLink && typeof DocumentationStateManager !== 'undefined') {
+                // Flagged as 'true' to indicate a system action (prevents trace buffer bloat)
+                DocumentationStateManager.handleTransition(healthLink, true);
 
-            DocumentationStateManager.handleTransition('health', true);
+                            // Explicitly add an audit log to the telemetry manager
+                if (typeof HealthTelemetryManager !== 'undefined') {
+                    HealthTelemetryManager.addLog("CRITICAL: Integrity Handshake Failed. Emergency redirection to Health Node active.", "WARN");
+                }
+            } else {
+                // Fallback: Direct hash manipulation if state manager is uninitialized
+                window.location.hash = "health";
+            }
             return;
         }
 
