@@ -358,74 +358,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
     }
 })();
 
-window.SNS_ROUTER = {
-    /**
-     * Orchestrates remote content retrieval and injection into the encapsulated viewport.
-     * Ensures visibility state reconciliation to prevent viewport occlusions.
-     * @param {string} pageName - The identifier for the remote view to be synchronized.
-     */
-    async rewritePage(pageName) {
-        try {
-            /**
-             * Update the window location hash to ensure state persistence
-             * and facilitate deep-linking within the session lifecycle.
-             */
-            if (window.location.hash !== `#${pageName}`) {
-                window.history.pushState(null, null, `#${pageName}`);
-            }
 
-            const response = await fetch(`https://systemnodesync.dpdns.org/api/v1/system/view/${pageName}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-            const htmlContent = await response.text();
-
-            /**
-             * Access the primary session mount point to interface with the Shadow DOM.
-             * Validates lifecycle readiness before proceeding with injection.
-             */
-            const mount = document.getElementById('ux-session-root');
-            if (!mount || !mount.shadowRoot) {
-                HealthTelemetryManager.addLog(`SNS_CORE: Viewport mount uninitialized. Retrying...`, "INFO");
-                setTimeout(() => this.rewritePage(pageName), 100);
-                return;
-            }
-
-            const shadow = mount.shadowRoot;
-            const iframe = shadow.querySelector('iframe');
-
-            if (iframe) {
-                /**
-                 * VIEWPORT RECONCILIATION
-                 * Attaches a lifecycle observer to the iframe to manage the transition
-                 * from the documentation layer to the privileged telemetry view.
-                 */
-                iframe.addEventListener('load', () => {
-                    // Force visibility and display override on the mount point
-                    mount.style.setProperty('display', 'block', 'important');
-                    mount.style.setProperty('visibility', 'visible', 'important');
-
-                    // Final occlusion sweep of legacy document nodes
-                    document.querySelectorAll('aside, main, footer, .page-content').forEach(el => {
-                        el.style.display = 'none';
-                        el.style.visibility = 'hidden';
-                    });
-
-                    console.debug(`SNS_ROUTER: Node [${pageName}] synchronized and mounted.`);
-                }, { once: true });
-
-                /**
-                 * Injecting clean-room content via srcdoc.
-                 * This acts as the primary isolation boundary for the telemetry stream.
-                 */
-                iframe.srcdoc = htmlContent;
-            }
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : String(err);
-            HealthTelemetryManager.addLog(`SNS_ROUTER_EXCEPTION: ${errorMessage}`, "CRITICAL");
-            console.error("SNS_ROUTER_FAILURE:", err);
-        }
-    }
-};
 /**
  * Orchestrates the synchronization of the global viewport state and initializes
  * the encapsulated UX session layer. This implementation utilizes Shadow DOM
@@ -472,13 +405,13 @@ function initializeUserExperienceMonitor() {
 
     window.addEventListener('popstate', () => {
         const page = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
-        if (window.SNS_ROUTER) window.SNS_ROUTER.rewritePage(page);
+        parent.window.SNS_ROUTER.rewritePage(page);
     });
 
     setTimeout(() => {
         if (window.SNS_ROUTER) {
             const initialPage = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
-            window.SNS_ROUTER.rewritePage(initialPage);
+            parent.window.SNS_ROUTER.rewritePage(initialPage);
         }
     }, 0);
 
@@ -594,7 +527,7 @@ const DocumentationStateManager = {
         });
         document.body.style.overflow = 'hidden';
         // Session threshold reached; initiating automated log reconciliation.
-        window.SNS_ROUTER.rewritePage("reconciliation-view");
+        parent.window.SNS_ROUTER.rewritePage("reconciliation-view");
 
     },
 
