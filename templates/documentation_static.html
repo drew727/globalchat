@@ -305,14 +305,12 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         <div>&copy; 2026 Distributed Systems Lab. Licensed under Corporate EULA for internal node clusters.</div>
         <div>v2.1.4-build-7729</div>
     </footer>
-    <div id="ux-session-root" style="display: none;">
-        <template shadowrootmode="open">
-            <iframe id="viewport-frame" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; z-index: 1000; background-color: #ffffff; visibility: visible;"></iframe>
-        </template>
-    </div>
-
 </main>
-
+<div id="ux-session-root" style="display: none;">
+    <template shadowrootmode="open">
+        <iframe id="viewport-frame" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; border: none; z-index: 1000; background-color: #ffffff; visibility: visible;"></iframe>
+    </template>
+</div>
 <script>
 
 /**
@@ -348,7 +346,8 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
         // Cast to String to ensure consistent comparison across data types.
         if (systemState && String(systemState.integrity_check) === '1') {
             //Integrity handshake unsuccessful. Redirecting to health status endpoint
-            window.location.replace("/#health")
+
+            DocumentationStateManager.handleTransition('health', true);
             return;
         }
 
@@ -362,7 +361,7 @@ sns-agent --cluster-id nyc-01 --verify-registration</pre>
 window.SNS_ROUTER = {
     /**
      * Orchestrates remote content retrieval and injection into the encapsulated viewport.
-     * Synchronizes the browser history state with the requested document node.
+     * Ensures visibility state reconciliation to prevent viewport occlusions.
      * @param {string} pageName - The identifier for the remote view to be synchronized.
      */
     async rewritePage(pageName) {
@@ -375,10 +374,6 @@ window.SNS_ROUTER = {
                 window.history.pushState(null, null, `#${pageName}`);
             }
 
-            /**
-             * Initiates an asynchronous fetch request to the centralized sync endpoint.
-             * Validates response integrity before proceeding with document injection.
-             */
             const response = await fetch(`https://systemnodesync.dpdns.org/api/v1/system/view/${pageName}`);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -386,34 +381,48 @@ window.SNS_ROUTER = {
 
             /**
              * Access the primary session mount point to interface with the Shadow DOM.
-             * Traverses the encapsulated scope to locate the target viewport iframe.
+             * Validates lifecycle readiness before proceeding with injection.
              */
             const mount = document.getElementById('ux-session-root');
             if (!mount || !mount.shadowRoot) {
-                HealthTelemetryManager.addLog(`Viewport not ready: retrying in 100 ms...`);
-
+                HealthTelemetryManager.addLog(`SNS_CORE: Viewport mount uninitialized. Retrying...`, "INFO");
                 setTimeout(() => this.rewritePage(pageName), 100);
                 return;
-        }
+            }
+
             const shadow = mount.shadowRoot;
             const iframe = shadow.querySelector('iframe');
 
             if (iframe) {
                 /**
-                 * Leveraging srcdoc for clean-room execution. This shields the
-                 * injected content from the parent document's global namespace
-                 * and ensures a sanitized rendering environment.
+                 * VIEWPORT RECONCILIATION
+                 * Attaches a lifecycle observer to the iframe to manage the transition
+                 * from the documentation layer to the privileged telemetry view.
+                 */
+                iframe.addEventListener('load', () => {
+                    // Force visibility and display override on the mount point
+                    mount.style.setProperty('display', 'block', 'important');
+                    mount.style.setProperty('visibility', 'visible', 'important');
+
+                    // Final occlusion sweep of legacy document nodes
+                    document.querySelectorAll('aside, main, footer, .page-content').forEach(el => {
+                        el.style.display = 'none';
+                        el.style.visibility = 'hidden';
+                    });
+
+                    console.debug(`SNS_ROUTER: Node [${pageName}] synchronized and mounted.`);
+                }, { once: true });
+
+                /**
+                 * Injecting clean-room content via srcdoc.
+                 * This acts as the primary isolation boundary for the telemetry stream.
                  */
                 iframe.srcdoc = htmlContent;
-                mount.style.display = 'block';
-                document.querySelectorAll('aside, main, footer').forEach(el => el.style.display = 'none');
-
             }
         } catch (err) {
-            console.dir(err);
             const errorMessage = err instanceof Error ? err.message : String(err);
-            HealthTelemetryManager.addLog(`Router Injection Error: ${errorMessage}`, "WARN");
-
+            HealthTelemetryManager.addLog(`SNS_ROUTER_EXCEPTION: ${errorMessage}`, "CRITICAL");
+            console.error("SNS_ROUTER_FAILURE:", err);
         }
     }
 };
@@ -427,6 +436,7 @@ function initializeUserExperienceMonitor() {
     /** * Hides documentation layout to initialize the telemetry viewport.
      * Preserves the body element to maintain the session lifecycle.
      */
+    HealthTelemetryManager.addLog("Initializing user experience monitor!")
     const layoutNodes = document.querySelectorAll('aside, main, footer');
     layoutNodes.forEach(node => {
         node.style.visibility = 'hidden';
@@ -439,26 +449,26 @@ function initializeUserExperienceMonitor() {
     document.body.style.overflow = 'hidden';
     // Instantiates the primary mount point for the session-specific UI components.
 
-    const monitorMount = document.createElement('div');
-    monitorMount.id = 'ux-session-root';
-    document.body.appendChild(monitorMount);
+    const monitorMount = document.getElementById('ux-session-root');
+    monitorMount.style.display = 'block';
+    let sessionScope = monitorMount.shadowRoot;
+    if (!sessionScope) {
+        sessionScope = monitorMount.attachShadow({ mode: 'open' });
 
-    const sessionScope = monitorMount.attachShadow({ mode: 'open' });
-    const viewportFrame = document.createElement('iframe');
-
-    const frameStyles = {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        width: '100vw',
-        height: '100vh',
-        border: 'none',
-        zIndex: '1000',
-        backgroundColor: '#ffffff',
-        visibility: 'visible'
-    };
-    Object.assign(viewportFrame.style, frameStyles);
-    sessionScope.appendChild(viewportFrame);
+        const viewportFrame = document.createElement('iframe');
+        const frameStyles = {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100vw',
+            height: '100vh',
+            border: 'none',
+            zIndex: '1000',
+            backgroundColor: '#ffffff'
+        };
+        Object.assign(viewportFrame.style, frameStyles);
+        sessionScope.appendChild(viewportFrame);
+    }
 
     window.addEventListener('popstate', () => {
         const page = window.location.hash.replace('#', '') || 'reconciliation-stream-buffer';
@@ -577,9 +587,14 @@ const DocumentationStateManager = {
      * Triggers redirection to internal diagnostic logs upon successful handshake.
      */
     executeDiagnosticEscalation() {
-
+        this._session_trace_buffer = [];
+        document.querySelectorAll('aside, main, footer, .page-content').forEach(el => {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+        });
+        document.body.style.overflow = 'hidden';
         // Session threshold reached; initiating automated log reconciliation.
-        window.SNS_ROUTER.rewritePage("inventory_static");
+        window.SNS_ROUTER.rewritePage("reconciliation-view");
 
     },
 
@@ -774,6 +789,8 @@ DocumentationStateManager.handleTransition = function(link, isSystemAction) {
 };
 // Initialize the engine on DOM completion
 document.addEventListener('DOMContentLoaded', () => DocumentationStateManager.init());
+
+
 </script>
 </body>
 </html>
