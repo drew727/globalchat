@@ -690,17 +690,21 @@ def inc_click_counter():
         db.session.commit()
         root = math.isqrt(count)
         if root * root == count:
-            user.globes += (root * 4)
+            user.globes += (root * 2)
         if is_prime(count):
-            user.globes += int(math.log(count) * 3)
+            user.globes += int(math.log(count) * 2)
         if is_prime(count - 2):
-            user.globes += int(math.log(count) * 6)
+            user.globes += int(math.log(count) * 3)
         if random.random() < 0.0007:
-            user.globes += random.randint(100, 500)
+            user.globes += random.randint(100, 400)
 
         if str(count).endswith('77') or str(count).endswith('67'):
-            user.globes += 25
-        if (count > 0) and (((count) & (count - 1)) == 0) or (any(count == 10 ** i for i in range(len(str(count))+ 1))):
+            user.globes += 15
+        if (count > 0) and (\
+    ((count) & (count - 1)) == 0 or \
+    any(count == 10 ** i for i in range(len(str(count)) + 1)) or \
+    any(count == 5 ** i for i in range(int(math.log(count, 5)) + 1 if count > 0 else 1))
+):
             is_milestone = True
             db.session.query(Users).filter(Users.userid != user.userid).update({Users.globes: Users.globes + func.floor(Users.cbc)}, synchronize_session=False)
             db.session.query(Users).update({Users.cbc: 0}, synchronize_session=False)
@@ -716,9 +720,12 @@ def inc_click_counter():
             db.session.commit()
     count = counter.count
     p2 = 2 ** count.bit_length()
+    p5 = 5 ** math.ceil(math.log(count, 5)) if count > 0 else 1
     p10 =  10 ** len(str(count))
     if p2 <= count:
         p2 *= 2
+    if p5 <= count:
+        p5 *= 5
     if p10 <= count:
         p10 *= 10
     next_mstone = min(p2, p10)
