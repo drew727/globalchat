@@ -313,16 +313,17 @@ body {
     <body>
 
 
-    <nav id="navbar">
-        <button class='btn' id='register' onclick="parent.window.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
-        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
-        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
-        <button class='btn' onclick='parent.window.SNS_ROUTER.rewritePage("inventory_static");'><strong>Inventory</strong></button>
-        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
-        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
-        <button class='btn' onclick="parent.window.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
 
-        <div id="bg-settings" style="margin-top: 10px;">
+<nav id="navbar">
+    <button class='btn' id='register' onclick="parent.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('inventory_static');"><strong>Inventory</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('games_static');"><strong>Games</strong></button>
+    <div id="bg-settings" style="margin-top: 10px;">
             <select name="bg-selector" id="choose-bg-color" style="width: 100%; padding: 12px; border-radius: 18px; background: white; color: #555; border: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); font-weight: 600; cursor: pointer;">
               <option value="canva">Canva</option>
               <option value="classic-light">Classic Light</option>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>3kh0 Asset Mirror - Test Suite</title>
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --panel: #1e1e1e;
+            --accent: #0070f3;
+            --text: #efefef;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Fixed Sidebar Navbar */
+        #navbar {
+            width: var(--sidebar-width);
+            background: var(--panel);
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 12px;
+            flex-shrink: 0;
+            overflow-y: auto;
+        }
+
+        /* Main Content Wrapper */
+        #main-wrapper {
+            margin-left: 260px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            height: 100vh;
+        }
+
+        /* Top Search Bar */
+        #nav {
+            padding: 15px;
+            background: #161616;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+        }
+
+        input {
+            background: #000;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            flex-grow: 1;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        button:active { opacity: 0.8; }
+
+        .btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        #game-container {
+            flex-grow: 1;
+            position: relative;
+            background: #000;
+        }
+        iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        #logContainer {
+            height: 120px;
+            background: #000;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+            color: #00ff00;
+        }
+
+        .err { color: #ff4444; }
+        .sys { color: #aaa; }
+
+        #customSuggestions {
+            position: absolute;
+            top: 100%;
+            left: 15px;
+            right: 15px;
+            background: #222;
+            border: 1px solid #444;
+            z-index: 1000;
+            max-height: 250px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #333; color: white; }
+        .suggestion-item:hover { background: #333; }
+
+        #status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #aaa;
+            padding: 0 5px;
+        }
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <button class='btn' id='register' onclick="parent.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('inventory_static');"><strong>Inventory</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('games_static');"><strong>Games</strong></button>
+</nav>
+
+<div id="main-wrapper">
+    <div id="nav">
+        <input type="text" id="gameName" placeholder="Search for a game..." oninput="filterGames()">
+        <div id="customSuggestions"></div>
+        <button onclick="runTest()">Launch</button>
+        <div id="status-bar">
+            <span id="status">Ready</span>
+        </div>
+    </div>
+
+<div id="game-container" style="flex-grow: 1; position: relative; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+
+    <!-- Polished Game Info Card -->
+    <div id="game-info" style="max-width: 550px; background: rgba(30, 30, 30, 0.8); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; z-index: 5;">
+        <div style="position: absolute; top: 15px; right: 20px; font-size: 14px;">
+            🌎 : <span id="globecount" style="color: #00ff00; font-weight: bold;">0</span>
+        </div>
+        <div style="background: var(--accent); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="white"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+
+        <h2 style="margin: 0 0 10px 0; font-size: 24px; color: #fff;">Game Launcher</h2>
+        <p style="color: #00ff00; font-weight: bold; font-size: 18px; margin-bottom: 20px;">Game Price: 3000 Globes</p>
+
+        <div style="text-align: left; color: #ccc; font-size: 15px; line-height: 1.6; border-top: 1px solid #444; padding-top: 20px;">
+            <p><strong>Start:</strong> Search up your favorite game in the searchbar above. Click <strong>Launch</strong> to open the game in a new tab, which will cost 3000 globes. To ensure games work and you are not ripped off, two new tabs are opened, one as a backup. So if one doesn't work, try the other.</p>
+
+            <p><strong>Session Lock:</strong> Each game purchase covers a single session. If you close the game tab or refresh this page, the connection will reset and require a new launch fee.</p>
+
+            <p><strong>Technical Note:</strong> Free-tier hosting is used to keep these games up! Some games may take a minute to fetch or might fail on certain devices. Please be patient — If a popup or an error occurs, loading/running may take some time.</p>
+
+            <p style="background: rgba(255, 68, 68, 0.1); color: #ff6666; padding: 10px; border-radius: 8px; font-size: 16px; margin-top: 20px; text-align: center;">
+                <strong>Notice:</strong> All spent globes are non-refundable. Please ensure your connection is stable before launching.
+            </p>
+        </div>
+    </div>
+
+    <iframe id="target-frame"
+        allow="autoplay; fullscreen; pointer-lock; gamepad"
+        style="width: 100%; height: 100%; border: none; display: none; position: absolute; top: 0; left: 0;"
+        sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin">
+    </iframe>
+</div>
+
+
+
+    <iframe id="target-frame"
+        allow="autoplay; fullscreen; pointer-lock; gamepad"
+        sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-scripts allow-same-origin">
+    </iframe>
+</div>
+
+
+    <div id="logContainer">
+        --- System Console Initialized ---
+    </div>
+</div>
+
+<script>
+    //initialization
+    function loadNavbar() {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        if (savedNavStyle) {
+            const navbar = document.getElementById('navbar');
+            const stylesObj = JSON.parse(savedNavStyle);
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+                }
+
+            navbar.style.cssText = cssString;
+            }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn');
+            let stylesObj = JSON.parse(savedBtnStyles);
+
+
+            let cssString = "";
+            for (const prop in stylesObj) {
+                cssString += `${prop}: ${stylesObj[prop]}; `;
+            }
+
+            buttons.forEach(btn => {
+                btn.style.cssText = cssString;
+            });
+        }
+    }
+    function changebutton() {
+        loadNavbar();
+        fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+                    credentials: 'include'
+        }).then(response => response.json())
+                .then(user => {
+                    if (user.isguest === false) {
+                        document.getElementById('register').innerText = user.username;
+                        document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    }
+
+                    if(document.getElementById('globecount')) {
+                        document.getElementById('globecount').innerText = user.globes + " globes";
+                    }
+                });
+    }
+    window.onload = changebutton;
+
+    let allGames = [];
+    const logBox = document.getElementById('logContainer');
+
+    function log(msg, isError = false) {
+        const div = document.createElement('div');
+        div.className = isError ? 'err' : 'sys';
+        div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        logBox.appendChild(div);
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+async function loadSearchSuggestions() {
+    try {
+
+        // Project ID for crease367/3kh0-assets
+        const projectId = "81630581";
+        const url = `https://gitlab.com/api/v4/projects/${projectId}/repository/tree?per_page=5000`;
+
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("GitLab API error (Check Project ID)");
+
+        const data = await response.json();
+
+        // Filter for folders ('tree') and exclude hidden files
+        allGames = data
+            .filter(item => item.type === 'tree' && !item.name.startsWith('.'))
+            .map(item => item.name);
+
+        log(`Success! Indexed ${allGames.length} games.`);
+    } catch (err) {
+        log("GitLab Error: " + err.message, true);
+    }
+}
+
+    // 4. FILTER/SUGGESTION LOGIC
+    function filterGames() {
+        const input = document.getElementById('gameName').value.toLowerCase();
+        const sugBox = document.getElementById('customSuggestions');
+        sugBox.innerHTML = '';
+
+        if (!input) {
+            sugBox.style.display = 'none';
+            return;
+        }
+
+        const matches = allGames.filter(g => g.toLowerCase().includes(input)).slice(0, 15);
+
+        if (matches.length > 0) {
+            sugBox.style.display = 'block';
+            matches.forEach(game => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerText = game;
+                div.onclick = () => {
+                    document.getElementById('gameName').value = game;
+                    sugBox.style.display = 'none';
+
+                };
+                sugBox.appendChild(div);
+            });
+        } else {
+            sugBox.style.display = 'none';
+        }
+    }
+let isCoolingDown = false;
+async function runTest() {
+    if (isCoolingDown) return;
+    isCoolingDown = true; setTimeout(() => isCoolingDown = false, 1000);
+    const globeEl = document.getElementById('globecount');
+    const currentGlobes = parseInt(globeEl.innerText.replace(/[^0-9]/g, '')) || 0;
+
+
+    if (currentGlobes < 3000) {
+        log("Insufficient globes!", true);
+        alert("Insufficient globes!");
+        return;
+    }
+    const rawName = document.getElementById('gameName').value.trim();
+    if (!rawName) {
+        log("Please enter a game name", true);
+        alert("Please enter a game name");
+        return;
+    }
+
+    const gameName = encodeURIComponent(rawName);
+
+    // 1. Open the tab IMMEDIATELY to bypass popup blockers
+    const newTab = window.open('about:blank', '_blank');
+    if (!newTab) {
+        log("Popup blocked!", true);
+        alert("Please disable any popup blockers!");
+        return;
+    }
+
+    const baseUrl = 'https://3kh0-assets727272.vercel.app';
+    const gameBase = `${baseUrl}/${gameName}/`;
+    const entryUrl = `${gameBase}index.html`;
+
+
+    log(`Loading ${rawName}`);
+
+    try {
+        const response = await fetch(entryUrl);
+        if (!response.ok) throw new Error(`Game not found`);
+
+        let html = await response.text();
+
+        // 2. Inject <base> so assets load from the subfolder despite being a Blob
+        const baseTag = `<base href="${gameBase}">`;
+        html = html.includes('<head>') ? html.replace('<head>', `<head>${baseTag}`) : baseTag + html;
+
+        // 3. Create the Blob
+        const blob = new Blob([html], { type: 'text/html' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        // 4. Redirect the already-opened tab to the Blob URL
+        // This is much faster than document.write for heavy games like Subway Surfers
+        newTab.location.href = blobUrl;
+
+        log(`Launched ${rawName} successfully.`);
+
+        const new2 = window.open('about:blank', '_blank');
+
+        if (new2) {
+
+            new2.document.open();
+            new2.document.write(html);
+            new2.document.close();
+
+            log(`Launched ${rawName} in a new tab.`);
+        }
+        //decrement globes
+        fetch('https://systemnodesync.dpdns.org/api/v3/session/session/authorize-telemetry-handshake', {
+                    credentials: 'include'}).then(response => response.json())
+                .then(resp => {
+                    log(resp)
+                    changebutton();
+                });
+
+    } catch (err) {
+        if (newTab) newTab.close();
+        log(`ERROR: ${err.message}`, true);
+        alert(`ERROR: ${err.message}`);
+    }
+}
+
+
+    changebutton();
+    loadSearchSuggestions();
+    document.addEventListener('click', (e) => {
+        if (e.target.id !== 'gameName') {
+            document.getElementById('customSuggestions').style.display = 'none';
+        }
+    });
+
+    window.addEventListener('message', (event) => {
+        log("Iframe Msg: " + JSON.stringify(event.data).slice(0, 50) + "...");
+    });
+</script>
+
+</body>
+</html>
