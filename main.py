@@ -975,6 +975,29 @@ def leaderboard_page():
 def sync_logs():
     return render_template('sync_logs.html')
 
+@app.route('/api/v3/session/session/authorize-telemetry-handshake')
+def buy_game():
+    userid = session.get('userid')
+    user = Users.query.with_for_update().get(userid)
+    if not user: return jsonify({"message": "User not found"}), 401
+    time = datetime.now(timezone.utc)
+    if user:
+        if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
+            user.purchases_yesterday = user.purchases_today
+            user.purchases_today = 0
+            user.spins_today = 1
+
+        user.last_purchase_time = time
+        if user.globes >= 3000:
+            user.globes -= 3000
+        else:
+            return jsonify({"status": "Error", "message": "Not enough globes!"}), 401
+        db.session.commit()
+        db.session.refresh(user)
+        return jsonify({
+            "status": "Success"
+        })
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 
