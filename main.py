@@ -691,11 +691,11 @@ def inc_click_counter():
         db.session.commit()
         root = math.isqrt(count)
         if root * root == count:
-            user.globes += int(root * 1.5)
+            user.globes += int(root * 1.3)
         if is_prime(count):
-            user.globes += int(math.log(count) * 1.5)
-        if is_prime(count - 2):
-            user.globes += int(math.log(count) * 3)
+            user.globes += int(math.log(count) * 1)
+            if is_prime(count - 2):
+                user.globes += int(math.log(count) * 3)
         if random.random() < 0.0007:
             user.globes += random.randint(100, 400)
 
