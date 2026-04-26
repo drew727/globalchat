@@ -1022,7 +1022,7 @@ def try_luck(nodetype, amount):
     rng = secrets.SystemRandom()
     if nodetype == 'flip':
         user.globes -= amount
-        weights = [0] * 51 + [2 * amount] * 49
+        weights = [0] * 50.5 + [2 * amount] * 49.5
         won = secrets.choice(weights)
         user.globes += won
         db.session.commit()
@@ -1041,9 +1041,9 @@ def try_luck(nodetype, amount):
         if roll <= 3:
             won = -amount
         elif roll <= 5:
-            won = int(amount * 0.4)
+            won = int(amount * 0.5)
         else:
-            won = amount * 2
+            won = amount * 1.9
         user.globes += won
         db.session.commit()
         return jsonify({
