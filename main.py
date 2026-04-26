@@ -1022,8 +1022,8 @@ def try_luck(nodetype, amount):
     rng = secrets.SystemRandom()
     if nodetype == 'flip':
         user.globes -= amount
-        choices = [0, 2 * amount]
-        won = secrets.choice(choices)
+        weights = [0] * 55 + [2 * amount] * 45
+        won = secrets.choice(weights)
         user.globes += won
         db.session.commit()
         db.session.refresh(user)
@@ -1041,7 +1041,7 @@ def try_luck(nodetype, amount):
         if roll <= 3:
             won = -amount
         elif roll <= 5:
-            won = int(amount * 0.5)
+            won = int(amount * 0.4)
         else:
             won = amount * 2
         user.globes += won
@@ -1070,11 +1070,14 @@ def try_luck(nodetype, amount):
             "message": f"Ball landed in the {mult}x slot"
         })
     elif nodetype == 'crash':
+
         target = float(request.args.get('target'))
+        if rng.random() < 0.03:
+            return 1.00
         if target < 1.1:
             return jsonify({"status": "Error", "message": "Target too low!"}), 400
 
-        house_edge_factor = 0.98
+        house_edge_factor = 0.96
         actual_crash = house_edge_factor / (1 - rng.random())
 
         if target <= actual_crash:
