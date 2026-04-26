@@ -1022,7 +1022,8 @@ def try_luck(nodetype, amount):
     rng = secrets.SystemRandom()
     if nodetype == 'flip':
         user.globes -= amount
-        weights = [0] * 50.5 + [2 * amount] * 49.5
+        weights = [0] * 505 + [2 * amount] * 495
+        rng.shuffle(weights)
         won = secrets.choice(weights)
         user.globes += won
         db.session.commit()
