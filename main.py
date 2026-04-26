@@ -1056,7 +1056,7 @@ def try_luck(nodetype, amount):
     elif nodetype == 'plinko':
         rows = 8
         right_turns = sum(rng.choice([0, 1]) for _ in range(rows))
-        multipliers = [5, 1.8, 1.5, 0.3, 0, 0.3, 1.5, 1.8, 5]
+        multipliers = [5, 1.8, 1.5, 0.5, 0, 0.5, 1.5, 1.8, 5]
         mult = multipliers[right_turns]
         won = int(amount * (mult - 1))
         user.globes += won
