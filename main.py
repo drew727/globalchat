@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, jsonify, session, make_response, abort, Response
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, timezone
@@ -690,16 +691,16 @@ def inc_click_counter():
         db.session.commit()
         root = math.isqrt(count)
         if root * root == count:
-            user.globes += (root * 2)
+            user.globes += int(root * 1.5)
         if is_prime(count):
-            user.globes += int(math.log(count) * 2)
+            user.globes += int(math.log(count) * 1.5)
         if is_prime(count - 2):
             user.globes += int(math.log(count) * 3)
         if random.random() < 0.0007:
             user.globes += random.randint(100, 400)
 
-        if str(count).endswith('77') or str(count).endswith('67'):
-            user.globes += 15
+        if str(count).endswith('77'):
+            user.globes += 10
         if (count > 0) and (\
     ((count) & (count - 1)) == 0 or \
     any(count == 10 ** i for i in range(len(str(count)) + 1)) or \
@@ -1004,6 +1005,100 @@ def buy_game():
         return jsonify({
             "status": "Success"
         })
+
+@app.route('/api/v2/system/session/statistics/<nodetype>/<int:amount>')
+def try_luck(nodetype, amount):
+    userid = session.get('userid')
+    user = Users.query.with_for_update().get(userid)
+    if not user: return jsonify({"message": "User not found"}), 401
+    time = datetime.now(timezone.utc)
+    if user.last_purchase_time is None or user.last_purchase_time.date() < time.date():
+        user.purchases_yesterday = user.purchases_today
+        user.purchases_today = 0
+        user.spins_today = 1
+    user.last_purchase_time = time
+    if user.globes < amount:
+        return jsonify({"status": "Error", "message": "Not enough globes!"}), 401
+    rng = secrets.SystemRandom()
+    if nodetype == 'flip':
+        user.globes -= amount
+        choices = [0, 2 * amount]
+        won = secrets.choice(choices)
+        user.globes += won
+        db.session.commit()
+        db.session.refresh(user)
+        head_or_tail = "heads" if won > 0 else "tails"
+        return jsonify({
+            "status": "Success",
+            "globes": user.globes,
+            "globes_won": -1 * amount if won == 0 else amount,
+            "head_or_tail": 1 if won > 0 else 0,
+            "message": f"You flipped a {head_or_tail}!"
+
+        })
+    elif nodetype == 'dice':
+        roll = rng.randint(1, 6)
+        if roll <= 3:
+            won = -amount
+        elif roll <= 5:
+            won = int(amount * 0.5)
+        else:
+            won = amount * 2
+        user.globes += won
+        db.session.commit()
+        return jsonify({
+            "status": "Success",
+            "globes": user.globes,
+            "globes_won": won,
+            "roll": roll,
+            "message": f"You rolled a {roll}!"
+        })
+    elif nodetype == 'plinko':
+        rows = 8
+        right_turns = sum(rng.choice([0, 1]) for _ in range(rows))
+        multipliers = [5, 1.8, 1.2, 0.5, 0, 0.5, 1.2, 1.8, 5]
+        mult = multipliers[right_turns]
+        won = int(amount * (mult - 1))
+        user.globes += won
+        db.session.commit()
+        return jsonify({
+            "status": "Success",
+            "globes": user.globes,
+            "globes_won": won,
+            "right_turns": right_turns,
+            "multiplier": mult,
+            "message": f"Ball landed in the {mult}x slot"
+        })
+    elif nodetype == 'crash':
+        target = request.args.get('target')
+        if target < 1.1:
+            return jsonify({"status": "Error", "message": "Target too low!"}), 400
+
+        house_edge_factor = 0.98
+        actual_crash = house_edge_factor / (1 - rng.random())
+
+        if target <= actual_crash:
+            won = int(amount * (target - 1))
+            status_msg = f"Cashed out at {target}x! (Actual crash: {actual_crash:.2f}x)"
+            success = True
+        else:
+            won = -amount
+            status_msg = f"Crashed at {actual_crash:.2f}x before reaching {target}x."
+            success = False
+        user.globes += won
+        db.session.commit()
+
+        return jsonify({
+            "status": "Success",
+            "globes": user.globes,
+            "globes_won": won,
+            "target_multiplier": target,
+            "actual_crash": round(actual_crash, 2),
+            "won_challenge": success,
+            "message": status_msg
+        })
+    else:
+        return
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
