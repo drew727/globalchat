@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probability Lab | Statistical Analysis</title>
+    <style>
+        :root {
+            --accent: #a78bfa;
+            --bg-panel: rgba(255, 255, 255, 0.95);
+            --text-main: #334155;
+        }
+
+        @keyframes rainbow-flash {
+            0% { background-position: 0% center; transform: scale(1); }
+            50% { transform: scale(1.02); filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.3)); }
+            100% { background-position: 200% center; transform: scale(1); }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Fixed Sidebar Navigation - Restored Original Logic */
+        #navbar {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            width: 220px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 18px;
+            background: white;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #a78bfa, #818cf8);
+            color: white;
+            border-color: transparent;
+        }
+
+        .main-layout {
+            margin-left: 270px;
+            display: flex;
+            gap: 25px;
+            padding: 40px;
+            align-items: flex-start;
+            width: calc(100% - 270px);
+        }
+
+        /* Left Side: Controls */
+        .content-container {
+            flex: 0 0 400px;
+            padding: 35px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .rainbow-title {
+            font-weight: 800;
+            font-size: 1.6em;
+            background: linear-gradient(to right, #6366f1, #a855f7, #ec4899, #6366f1);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow-flash 5s linear infinite;
+            display: block;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        #balance-display {
+            font-size: 1.2rem;
+            color: #4338ca;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding: 12px 20px;
+            background: #eef2ff;
+            border-radius: 12px;
+            display: block;
+            text-align: center;
+        }
+
+        .input-label {
+            text-align: left;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 15px;
+            font-size: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            background: #1e293b;
+            color: white;
+            border-radius: 12px;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-action:hover { opacity: 0.9; }
+#stage-plinko {
+    display: none;
+    position: relative;
+    width: 280px;
+    height: 400px; /* Increased from 350px to fit pins */
+    background: #f1f5f9;
+    border-radius: 15px;
+    overflow: hidden;
+    padding-top: 10px; /* Space for ball to start */
+}
+
+        /* Right Side: Simulation Stage */
+        #animation-stage {
+            flex: 1;
+            height: 500px;
+            background: white;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #game-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f8fafc;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px dashed #cbd5e1;
+            min-height: 60px;
+            font-size: 0.95rem;
+        }
+
+        /* Game Specific CSS */
+        .coin-side {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 50%; backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; font-weight: 900; border: 4px solid white;
+        }
+        .heads { background: #fbbf24; color: #92400e; }
+        .tails { background: #818cf8; color: white; transform: rotateY(180deg); }
+
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <button class='btn' id='register' onclick="parent.SNS_ROUTER.rewritePage('register_static');"><strong>Register</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('chat_static');"><strong>Home</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('click_static');"><strong>Click</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('inventory_static');"><strong>Inventory</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('shop_static');"><strong>Shop</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('wheel_static');"><strong>Wheel</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('leaderboard_static');"><strong>Leaderboard</strong></button>
+    <button class='btn' onclick="parent.SNS_ROUTER.rewritePage('games_static');"><strong>Games</strong></button>
+</nav>
+
+<div class="main-layout">
+    <div class="content-container">
+        <span class="rainbow-title">Clicky Clicky</span>
+
+        <div id="balance-display">Globes: Loading...</div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+            <input type="checkbox" id="animToggle" checked onchange="isFastMode = !this.checked" style="width: auto; margin: 0;">
+            <label for="animToggle" style="font-size: 0.85rem; color: #64748b;">Visual Simulations Enabled</label>
+        </div>
+
+        <div class="input-label">Test Amount:</div>
+        <input type="number" id="betAmount" value="10" min="1">
+
+        <div id="crash-input" style="display: none;">
+            <div class="input-label">Target Multiplier:</div>
+            <input type="number" id="crashTarget" value="2.0" step="0.1" min="1.1">
+        </div>
+
+        <div class="game-grid">
+            <button class="btn-action" onclick="switchModule('flip'); play('flip')">Coin Flip</button>
+            <button class="btn-action" onclick="switchModule('dice'); play('dice')">Dice Roll</button>
+            <button class="btn-action" onclick="switchModule('plinko'); play('plinko')">Plinko</button>
+            <button class="btn-action" style="background: #ec4899;" onclick="switchModule('crash'); toggleCrash()">Crash Test</button>
+        </div>
+
+        <div id="game-result">System initialized. Awaiting parameters.</div>
+    </div>
+
+    <div id="animation-stage">
+        <div id="placeholder" style="color: #cbd5e1; font-weight: 600;">Simulation Output Area</div>
+
+        <div id="stage-flip" style="display: none;">
+            <div id="coin-ui" style="perspective: 1000px; width: 120px; height: 120px;">
+                <div id="coin" style="width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 2s cubic-bezier(0.15, 0.85, 0.35, 1.1);">
+                    <div class="coin-side heads">H</div>
+                    <div class="coin-side tails">T</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="stage-dice" style="display: none; font-size: 5rem; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">🎲</div>
+
+        <div id="stage-plinko" style="display: none; position: relative; width: 240px; height: 350px; background: #f1f5f9; border-radius: 15px; overflow: hidden;">
+            <div id="plinko-ball" style="position: absolute; width: 14px; height: 14px; background: #ec4899; border-radius: 50%; top: -20px; left: 50%; transform: translateX(-50%); transition: all 0.2s linear; z-index: 10;"></div>
+            <div id="plinko-pins" style="padding: 20px 0; display: flex; flex-direction: column; gap: 28px; align-items: center; color: #cbd5e1;">
+            </div>
+        </div>
+
+        <div id="stage-crash" style="display: none; font-size: 4rem; font-weight: 900; color: #6366f1;">1.00x</div>
+    </div>
+</div>
+
+<script>
+    let isFastMode = false;
+
+    // --- Core UI Management (Restored Original Logic) ---
+    function loadNavbar() {
+        const savedNavStyle = localStorage.getItem('navbarStyle');
+        const savedBtnStyles = localStorage.getItem('btnStyle');
+        const navbar = document.getElementById('navbar');
+        if (savedNavStyle && navbar) {
+            const stylesObj = JSON.parse(savedNavStyle);
+            for (const prop in stylesObj) navbar.style[prop] = stylesObj[prop];
+        }
+        if (savedBtnStyles) {
+            const buttons = document.querySelectorAll('.btn:not(.btn-action)');
+            const stylesObj = JSON.parse(savedBtnStyles);
+            buttons.forEach(btn => {
+                for (const prop in stylesObj) btn.style[prop] = stylesObj[prop];
+            });
+        }
+    }
+
+    function changebutton() {
+        loadNavbar();
+        fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', { credentials: 'include' })
+            .then(res => res.json())
+            .then(user => {
+                const regBtn = document.getElementById('register');
+                if (user.isguest === false && regBtn) {
+                    regBtn.innerText = user.username;
+                    regBtn.onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                }
+                const bal = document.getElementById('balance-display');
+                if(bal) bal.innerText = "Globes: " + (user.globes || 0);
+            }).catch(e => console.error("Sync failed", e));
+    }
+
+    window.onload = changebutton;
+
+function switchModule(nodetype) {
+    const stages = ['placeholder', 'stage-flip', 'stage-dice', 'stage-crash', 'stage-plinko'];
+    stages.forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.style.display = 'none';
+    });
+
+    const target = document.getElementById(`stage-${nodetype}`);
+    if(target) target.style.display = 'flex';
+
+if (nodetype === 'plinko') {
+    const pinContainer = document.getElementById('plinko-pins');
+    pinContainer.innerHTML = '';
+    pinContainer.style.gap = "18px";
+
+    // Generate Pins
+    for (let i = 0; i < 8; i++) {
+        const row = document.createElement('div');
+        row.style.display = "flex"; row.style.gap = "18px"; row.style.justifyContent = "center";
+
+        row.innerHTML = "●".repeat(i + 3).split('').map(p => `<span style="font-size: 8px; color: #cbd5e1;">${p}</span>`).join('');
+        pinContainer.appendChild(row);
+    }
+
+    // Add Multiplier Bins
+    const binRow = document.createElement('div');
+    binRow.style.display = "flex"; binRow.style.width = "100%"; binRow.style.marginTop = "5px";
+    const mults = [5, 1.8, 1.5, 0.5, 0, 0.5, 1.5, 1.8, 5];
+    binRow.innerHTML = mults.map(m => {
+        const color = m >= 1.5 ? "#10b981" : (m === 0 ? "#ef4444" : "#f59e0b");
+        return `<div style="flex:1; margin-left: 10px; font-size: 9px; font-weight: 800; color: white; background: ${color}; margin: 1px; border-radius: 3px; padding: 4px 0; text-align: center;">${m}</div>`;
+    }).join('');
+    binRow.style.paddingLeft = "15px";
+    pinContainer.appendChild(binRow);
+}
+
+    document.getElementById('game-result').innerText = "Module Loaded: " + nodetype;
+}
+
+    // --- Animation Logic (Restored & Optimized) ---
+    async function animateFlip(data) {
+        const coin = document.getElementById('coin');
+        const resultBox = document.getElementById('game-result');
+        coin.style.transition = 'none';
+        coin.style.transform = 'rotateY(0deg)';
+        void coin.offsetWidth;
+        coin.style.transition = 'transform 2s cubic-bezier(0.15, 0.85, 0.35, 1.1)';
+        const targetRotation = data.head_or_tail === 1 ? 1440 : 1620;
+        coin.style.transform = `rotateY(${targetRotation}deg)`;
+        setTimeout(() => finalizePlay(data), 2000);
+    }
+
+    async function animateDice(data) {
+        const diceEl = document.getElementById('stage-dice');
+        const faces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+        let count = 0;
+        const interval = setInterval(() => {
+            diceEl.innerText = faces[Math.floor(Math.random() * 6)];
+            if(count++ > 12) {
+                clearInterval(interval);
+                diceEl.innerText = faces[(data.roll || 1) - 1];
+                finalizePlay(data);
+            }
+        }, 80);
+    }
+async function animatePlinko(data) {
+    const ball = document.getElementById('plinko-ball');
+    const binIndex = data.right_turns || 0;
+
+    // 1. Reset Position
+    ball.style.transition = 'none';
+    ball.style.top = '5px';
+    ball.style.left = '50%';
+    void ball.offsetWidth;
+
+    // 2. Realistic Physics Transition (Back effect gives it a "hit" feel)
+    ball.style.transition = 'all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    let currentTop = 5;
+    let path = [50]; // Start at 50%
+
+    // 3. Generate a zig-zag path based on backend result
+    // This forces the ball to move left/right around pins
+    for (let i = 1; i <= 8; i++) {
+        let step = 50 + ((binIndex - 4) * (i / 8) * 10); // Trend toward final bin
+        let zigZag = (i % 2 === 0 ? 8 : -8); // Offset to avoid pin intersection
+        path.push(step + zigZag);
+    }
+
+    // 4. Run Animation
+    for (let i = 1; i < path.length; i++) {
+        await new Promise(r => setTimeout(r, 400));
+        currentTop += 34; // Moves down row by row
+
+        ball.style.top = `${currentTop}px`;
+        ball.style.left = `${path[i]}%`;
+
+        const rotation = i % 2 === 0 ? 15 : -15; // Jars the ball left/right on hit
+        ball.style.transform = `translateX(-50%) rotate(${rotation}deg) scale(1.15)`;
+        ball.style.boxShadow = `0 0 10px ${i % 2 === 0 ? '#ec4899' : '#fff'}`;
+    }
+
+    // 5. Drop into Bin
+    await new Promise(r => setTimeout(r, 400));
+    ball.style.transition = 'all 0.3s ease-in';
+    ball.style.top = `312px`;
+    // Align perfectly with the bin centers
+    ball.style.left = `${(binIndex + 0.5) * (100 / 9)}%`;
+
+    setTimeout(() => finalizePlay(data), 300);
+}
+
+
+
+
+    async function animateCrash(data) {
+        const stage = document.getElementById('stage-crash');
+        let current = 1.00;
+        const interval = setInterval(() => {
+            current += 0.05;
+            stage.innerText = current.toFixed(2) + "x";
+            if (current >= data.actual_crash || (data.won_challenge && current >= data.target_multiplier)) {
+                clearInterval(interval);
+                stage.style.color = data.won_challenge ? "#10b981" : "#ef4444";
+                finalizePlay(data);
+            }
+        }, 50);
+    }
+
+    function finalizePlay(data) {
+        const resBox = document.getElementById('game-result');
+        const balBox = document.getElementById('balance-display');
+        const color = data.globes_won >= 0 ? "#10b981" : "#ef4444";
+        balBox.innerText = `Globes: ${data.globes}`;
+        resBox.innerHTML = `
+            <div style="color: ${color}; font-weight: 800;">${data.message}</div>
+            <div style="font-size: 0.85rem; color: #64748b;">Result: ${data.globes_won >= 0 ? '+' : ''}${data.globes_won} globes</div>
+        `;
+    }
+
+    async function play(nodetype) {
+        const amount = document.getElementById('betAmount').value;
+        const resultBox = document.getElementById('game-result');
+        const balanceBox = document.getElementById('balance-display');
+
+        if (resultBox.innerText.includes("Processing")) return;
+        resultBox.innerHTML = "<span style='color: #6366f1;'>Processing data...</span>";
+
+        let url = `https://systemnodesync.dpdns.org/api/v2/system/session/statistics/${nodetype}/${amount}`;
+        if (nodetype === 'crash') url += `?target=${document.getElementById('crashTarget').value}`;
+
+        try {
+            const response = await fetch(url, { credentials: 'include' });
+            const data = await response.json();
+
+            if (data.status === "Success") {
+                if (isFastMode) {
+                    finalizePlay(data);
+                } else {
+                    document.getElementById('stage-crash').style.color = "#6366f1"; // reset color
+                    if (nodetype === 'flip') animateFlip(data);
+                    else if (nodetype === 'dice') animateDice(data);
+                    else if (nodetype === 'plinko') animatePlinko(data);
+                    else if (nodetype === 'crash') animateCrash(data);
+                }
+            } else {
+                resultBox.innerHTML = `<span style="color: #ef4444; font-weight: bold;">${data.message}</span>`;
+            }
+        } catch (err) {
+            resultBox.innerHTML = `<span style="color: #ef4444;">Connection Error: Check server status.</span>`;
+        }
+    }
+
+    function toggleCrash() {
+        const input = document.getElementById('crash-input');
+        if (input.style.display === "none") {
+            input.style.display = "block";
+            document.getElementById('game-result').innerText = "Define target multiplier for analysis.";
+        } else {
+            play('crash');
+        }
+    }
+</script>
+</body>
+</html>
