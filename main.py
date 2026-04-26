@@ -1070,7 +1070,7 @@ def try_luck(nodetype, amount):
             "message": f"Ball landed in the {mult}x slot"
         })
     elif nodetype == 'crash':
-        target = request.args.get('target')
+        target = float(request.args.get('target'))
         if target < 1.1:
             return jsonify({"status": "Error", "message": "Target too low!"}), 400
 
