@@ -149,7 +149,9 @@
 
             }
         window.onload = authenticateUser;
+
         function hideform() {
+
             fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
                     credentials: 'include'
                     })
@@ -159,6 +161,7 @@
                      document.getElementById('form').style.display = 'none';
                 }
             })
+
 
 
         }
@@ -180,9 +183,9 @@
                         if (data.status === "success"){
                             text.textContent = "User registered, redirecting to home page";
                             hideform();
-                            setTimeout(() => {parent.window.SNS_ROUTER.rewritePage('chat_static');}, 1000)
+                            setTimeout(() => {parent.window.SNS_ROUTER.rewritePage('chat_static');}, 500)
                         } else {
-                            text.textContent = data.status;
+                            text.textContent = data.error;
                         }
                     });
         }
