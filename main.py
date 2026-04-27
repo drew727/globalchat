@@ -488,6 +488,7 @@ def send_msg():
 
     else:
         db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
+        user.globes += 20
         db.session.commit()
     return jsonify({"status": "success"}), 201
 @app.route('/api/v1/internal/transport/buffer/stream-fetch', methods=['GET'])
