@@ -971,10 +971,27 @@ def leaderboard(nodetype):
         msg_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
             .outerjoin(Item, Users.equipped_color == Item.name) \
             .filter(func.date(Users.last_purchase_time) == today) \
+            .order_by(func.count(Message.id).desc()) \
+            .limit(10).all()
+    elif nodetype == 'globes':
+        msg_users = db.session.query(Users.username, Item.info, Users.globes) \
+            .outerjoin(Item, Users.equipped_color == Item.name) \
+            .filter(func.date(Users.last_purchase_time) == today) \
             .order_by(Users.purchases_today.desc()) \
             .limit(10).all()
+    elif nodetype == 'messages_ever':
+        msg_users = db.session.query(
+            Users.username,
+            Item.info,
+            func.count(Message.id).label('total_messages')
+            ).join(Message, Users.userid == Message.userid) \
+                 .outerjoin(Item, Users.equipped_color == Item.name) \
+                 .group_by(Users.userid, Users.username, Item.info) \
+                 .order_by(func.count(Message.id).desc()) \
+             .limit(10).all()
     clean_output = [list(user) for user in msg_users]
     return jsonify({"status": "Success", "output": clean_output})
+
 @app.route('/api/v1/session/nodes/internal/node-performance-metrics')
 def leaderboard_page():
     return render_template('/leaderboard.html')

@@ -163,7 +163,9 @@
 
         <div id="leaderboard">
             <div id="controls">
-                <button onclick="updatelb('messages')">Top Messages</button>
+                <button onclick="updatelb('messages_ever')">Messages Ever</button>
+                <button onclick="updatelb('globes')">Globes</button>
+                <button onclick="updatelb('messages')">Top Messages Today</button>
                 <button onclick="updatelb('click_contribution')">Top Clicks</button>
                 <button onclick="updatelb('purchases_today')">Top Buyers</button>
             </div>
@@ -238,8 +240,12 @@
                 title.innerText = type.replace('_', ' ').toUpperCase();
                 if (type === 'messages') {
                     column.innerText = 'Messages Today';
-                } else if (type === 'click_contribution') {
+                } elseif (type === 'messages_ever') {
+                    column.innerText = 'Messages Ever';
+                } {else if (type === 'click_contribution') {
                     column.innerText = 'Clicks Contributed Between Milestones';
+                } else if (type === 'globes') {
+                    column.innerText = 'Globes currently owned';
                 } else {
                     column.innerText = 'Purchases Today';
                 }
