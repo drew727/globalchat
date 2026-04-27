@@ -536,7 +536,7 @@ def register():
     if Users.query.filter_by(username=username).first():
         return jsonify({"error": "username is already taken"}), 409
     user = db.session.get(Users, uid)
-    if user and user.isguest:
+    if user:
         user.isguest = False
         user.setpassword(password)
         user.username = username
