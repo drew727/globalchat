@@ -699,6 +699,8 @@ def inc_click_counter():
                 user.globes += int(math.log(count) * 8)
         if random.random() < 0.0007:
             user.globes += random.randint(100, 400)
+        if random.random() < 0.01:
+            user.globes += random.randint(9, 15)
 
         if str(count).endswith('77'):
             user.globes += 10
