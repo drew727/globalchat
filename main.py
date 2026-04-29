@@ -1012,13 +1012,13 @@ def leaderboard(nodetype):
         msg_users = db.session.query(Users.username, Item.info, Users.purchases_today) \
             .outerjoin(Item, Users.equipped_color == Item.name) \
             .filter(func.date(Users.last_purchase_time) == today) \
-            .order_by(func.count(Message.id).desc()) \
+            .order_by(Users.purchases_today.desc()) \
             .limit(10).all()
     elif nodetype == 'globes':
         msg_users = db.session.query(Users.username, Item.info, Users.globes) \
             .outerjoin(Item, Users.equipped_color == Item.name) \
             .filter(func.date(Users.last_purchase_time) == today) \
-            .order_by(Users.purchases_today.desc()) \
+            .order_by(Users.globes.desc())\
             .limit(10).all()
     elif nodetype == 'messages_ever':
         msg_users = db.session.query(
