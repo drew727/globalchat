@@ -441,13 +441,13 @@
                         bar.style.boxShadow = 'none';
                         bar.style.filter = 'brightness(1)';
                     }
-                    if (data.count % 10 === 0) {
+                    if (data.count % 8 === 0) {
                         globe.atmosphereColor('#ff4500');
                         globe.atmosphereAltitude(0.35);
                         setTimeout(() => {
                         globe.atmosphereColor('#3a6ba5');
                         globe.atmosphereAltitude(0.25);
-                            }, 150);
+                            }, 300);
                     }
                 });
             }
