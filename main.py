@@ -438,6 +438,18 @@ def send_msg():
             else:
                 db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found or not enough globes.", room_id=room_id))
                 db.session.commit()
+        if message_text.startswith("/print-globes"):
+            splittext = message_text.split(None, 1)
+            username_to_show = splittext[1].strip().replace('"', ' ')
+            targ_user = Users.query.filter_by(username_to_show).first()
+            if targ_user:
+                user.globes -= amount_to_add
+                db.session.add(Message(userid=1, text=f"{targ_user.username} has {targ_user.globes} globes.", room_id=room_id))
+                db.session.commit()
+                return jsonify({"status": "success", "message": "Globes added"}), 201
+            else:
+                db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_show}' not found.", room_id=room_id))
+                db.session.commit()
         if uid in mods:
             if uid == 5:
                 if message_text.startswith("/add-globes"):
@@ -1066,8 +1078,7 @@ def try_luck(nodetype, amount):
     rng = secrets.SystemRandom()
     if nodetype == 'flip':
         user.globes -= amount
-        #weights = [0] * 505 + [2 * amount] * 495
-        weights = [0] * 500 + [2 * amount] * 50
+        weights = [0] * 504 + [2 * amount] * 496
         rng.shuffle(weights)
         won = secrets.choice(weights)
         user.globes += won
