@@ -424,6 +424,22 @@ def send_msg():
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
+        if message_text.startswith("/donate-globes"):
+            splittext = message_text.split(None, 2)
+            donor = splittext[1].strip().replace('"', ' ')
+            username_to_get_globes = splittext[2].strip().replace('"', ' ')
+            amount_to_add = int(splittext[3].strip().replace('"', ' '))
+            targ_user = Users.query.filter_by(username=username_to_get_globes).first()
+            donor_user = Users.query.filter_by(username=donor).first()
+            if targ_user:
+                targ_user.globes += amount_to_add
+                donor_user.globes -= amount_to_add
+                db.session.add(Message(userid=1, text=f"{donor_user.username} donated {amount_to_add} globes to {targ_user.username}.", room_id=room_id))
+                db.session.commit()
+                return jsonify({"status": "success", "message": "Globes added"}), 201
+            else:
+                db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                db.session.commit()
         if uid in mods:
             if uid == 5:
                 if message_text.startswith("/add-globes"):
