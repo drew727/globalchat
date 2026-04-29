@@ -218,6 +218,37 @@
             }
 
             navbar.style.cssText = cssString;
+            function frame() {
+
+                fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
+                    credentials: 'include'
+                    }).then(response => response.json()).then(data => {
+                    counterupdate(data.count, data.next_milestone)
+                    const globes = document.getElementById('globes');
+                    globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
+                    const percent = (data.count / data.next_milestone) * 100;
+                    const bar = document.getElementById('progress');
+                    bar.style.width = percent + '%';
+                    //add even more colors and prog later
+                    // also eventually scale star speed with cps
+                    if (percent > 90) {
+                        bar.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px #fff`;
+                        bar.style.filter = 'brightness(1.5)';
+                    } else {
+                        bar.style.boxShadow = 'none';
+                        bar.style.filter = 'brightness(1)';
+                    }
+                    if (data.count % 10 === 0) {
+                        globe.atmosphereColor('#ff4500');
+                        globe.atmosphereAltitude(0.35);
+                        setTimeout(() => {
+                        globe.atmosphereColor('#3a6ba5');
+                        globe.atmosphereAltitude(0.25);
+                            }, 150);
+                    }
+                });
+            }
+            setInterval(frame, 2000 + Math.floor(Math.random() * 5000) + 1);
         }
         if (savedBtnStyles) {
             const buttons = document.querySelectorAll('.btn');
@@ -431,12 +462,22 @@
                     const percent = (data.count / data.next_milestone) * 100;
                     const bar = document.getElementById('progress');
                     bar.style.width = percent + '%';
+                    //add even more colors and prog later
+                    // also eventually scale star speed with cps
                     if (percent > 90) {
                         bar.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px #fff`;
                         bar.style.filter = 'brightness(1.5)';
                     } else {
                         bar.style.boxShadow = 'none';
                         bar.style.filter = 'brightness(1)';
+                    }
+                    if (data.count % 10 === 0) {
+                        globe.atmosphereColor('#ff4500');
+                        globe.atmosphereAltitude(0.35);
+                        setTimeout(() => {
+                        globe.atmosphereColor('#3a6ba5');
+                        globe.atmosphereAltitude(0.25);
+                            }, 150);
                     }
                 });
             }
