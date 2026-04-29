@@ -316,11 +316,13 @@
             let localCount = 0;
             let next_ms = 0;
             function clicked(e) {
+
+                spawnParticles(e || window.event);
                 localCount++;
 
                 counterupdate(localCount, next_ms);
                 rotationQueue.push(true);
-                postcount(e);
+                postcount();
                 console.log(idle)
                 console.log(isRotating)
                 if (idle === true) {
@@ -363,7 +365,7 @@
                     processRotations();
                 }, 50);
             }
-            function postcount(e) {
+            function postcount() {
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
                     method: 'POST',
                     credentials: 'include'
@@ -376,7 +378,6 @@
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
                     if (data.globes % 10 === 0) {
-                    spawnParticles(e || window.event)
                         initializeSNSCore();
                     }
                     const percent = (data.count / data.next_milestone) * 100;
