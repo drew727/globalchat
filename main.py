@@ -467,8 +467,11 @@ def send_msg():
                         db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found.", room_id=room_id))
                         db.session.commit()
             if message_text.startswith("/announce"):
-                splittext = message_text.split(None, 2)
-                announcement_msg = splittext[1].strip().replace('"', ' ')
+                splittext = message_text.split(None, 1)
+                if len(splittext) > 1:
+                    announcement_msg = splittext[1].strip().replace('"', ' ')
+                else:
+                    announcement_msg = ""
                 if announcement_msg:
                     db.session.add(Message(userid=1, text=f"{announcement_msg}", room_id=room_id))
                     db.session.commit()
