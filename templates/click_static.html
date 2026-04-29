@@ -24,6 +24,13 @@
     z-index: -1;
     animation: galaxy-rotate 600s linear infinite;
 }
+.click-particle {
+    position: fixed;
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 9999;
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
 
 @keyframes galaxy-rotate {
     from { transform: rotate(0deg); }
@@ -218,6 +225,33 @@
         }
     }
     loadNavbar();
+    function spawnParticles(e) {
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'click-particle';
+
+        // Randomize size, color, and destination
+        const size = Math.random() * 8 + 4 + 'px';
+        const color = `hsl(${Math.random() * 360}, 70%, 70%)`; // Random rainbow colors
+        const x = (Math.random() - 0.5) * 200; // Random X direction
+        const y = (Math.random() - 0.5) * 200; // Random Y direction
+
+        Object.assign(particle.style, {
+            width: size, height: size, backgroundColor: color,
+            left: e.clientX + 'px', top: e.clientY + 'px'
+        });
+
+        document.body.appendChild(particle);
+
+        // Animate and Remove
+        setTimeout(() => {
+            particle.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+            particle.style.opacity = '0';
+        }, 10);
+        setTimeout(() => particle.remove(), 600);
+    }
+}
+
         function generateStars(c) {
             let stars = "";
             for (i = 0; i < c; i++) {
@@ -281,11 +315,12 @@
             let callbackTriggered = false;
             let localCount = 0;
             let next_ms = 0;
-            function clicked() {
+            function clicked(e) {
                 localCount++;
+
                 counterupdate(localCount, next_ms);
                 rotationQueue.push(true);
-                postcount();
+                postcount(e);
                 console.log(idle)
                 console.log(isRotating)
                 if (idle === true) {
@@ -328,7 +363,7 @@
                     processRotations();
                 }, 50);
             }
-            function postcount() {
+            function postcount(e) {
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
                     method: 'POST',
                     credentials: 'include'
@@ -340,7 +375,8 @@
 
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
-                    if (data.globes % 14 === 0) {
+                    if (data.globes % 10 === 0) {
+                    spawnParticles(e || window.event)
                         initializeSNSCore();
                     }
                     const percent = (data.count / data.next_milestone) * 100;
