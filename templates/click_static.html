@@ -87,7 +87,13 @@
     padding: 0;
     z-index: 1000;
 }
-
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  40% { transform: translate(3px, 2px) rotate(-1deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.critical-shake { animation: shake 0.2s heavy; }
 .btn {
     width: 100%;
     padding: 12px 0;
@@ -329,7 +335,10 @@
                 rotationQueue.push(true);
                 rotatingglobe.style.transform = 'scale(0.9)';
                 setTimeout(() => { rotatingglobe.style.transform = 'scale(1)'; }, 50);
-
+                if (Math.random() < 0.05) {
+                    rotatingglobe.classList.add('critical-shake');
+                    setTimeout(() => rotatingglobe.classList.remove('critical-shake'), 200);
+                }
                 const floatingText = document.createElement('div');
                 floatingText.innerText = '+1';
                 floatingText.style.position = 'fixed';
@@ -412,14 +421,23 @@
                 counter.innerHTML = `People Clicked This ${count} Times! ${milestoneText}`;
 }
             function frame() {
+
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
                     credentials: 'include'
                     }).then(response => response.json()).then(data => {
                     counterupdate(data.count, data.next_milestone)
                     const globes = document.getElementById('globes');
-                    globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
+                    globes.innerHTML = `<p>Globes: ${data.globes}</p>`;\
                     const percent = (data.count / data.next_milestone) * 100;
-                    document.getElementById('progress').style.width = percent + '%';
+                    const bar = document.getElementById('progress');
+                    bar.style.width = percent + '%';
+                    if (percent > 90) {
+                        bar.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px #fff`;
+                        bar.style.filter = 'brightness(1.5)';
+                    } else {
+                        bar.style.boxShadow = 'none';
+                        bar.style.filter = 'brightness(1)';
+                    }
                 });
             }
             setInterval(frame, 2000 + Math.floor(Math.random() * 5000) + 1);
