@@ -739,6 +739,9 @@ def inc_click_counter():
 
         if str(count).endswith('77'):
             user.globes += 10
+        x = str(count)[0]
+        if all(i == x for i in str(count)):
+            user.globes += count/2
         if (count > 0) and (\
     ((count) & (count - 1)) == 0 or \
     any(count == 10 ** i for i in range(len(str(count)) + 1)) or \
