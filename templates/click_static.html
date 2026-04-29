@@ -318,10 +318,25 @@
             function clicked(e) {
 
                 spawnParticles(e || window.event);
+
                 localCount++;
 
                 counterupdate(localCount, next_ms);
                 rotationQueue.push(true);
+                rotatingglobe.style.transform = 'scale(0.9)';
+                setTimeout(() => { rotatingglobe.style.transform = 'scale(1)'; }, 50);
+
+                const floatingText = document.createElement('div');
+                floatingText.innerText = '+1';
+                floatingText.style.position = 'fixed';
+                floatingText.style.left = (e?.clientX || window.innerWidth/2) + 'px';
+                floatingText.style.top = (e?.clientY || window.innerHeight/2) + 'px';
+                floatingText.style.color = '#ffd700';
+                floatingText.style.fontWeight = 'bold';
+                floatingText.style.pointerEvents = 'none';
+                floatingText.style.animation = 'floatUp 0.8s ease-out forwards';
+                document.body.appendChild(floatingText);
+                setTimeout(() => floatingText.remove(), 800);
                 postcount();
                 console.log(idle)
                 console.log(isRotating)
