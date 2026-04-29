@@ -443,7 +443,6 @@ def send_msg():
             username_to_show = splittext[1].strip().replace('"', ' ')
             targ_user = Users.query.filter_by(username_to_show).first()
             if targ_user:
-                user.globes -= amount_to_add
                 db.session.add(Message(userid=1, text=f"{targ_user.username} has {targ_user.globes} globes.", room_id=room_id))
                 db.session.commit()
                 return jsonify({"status": "success", "message": "Globes added"}), 201
