@@ -1066,7 +1066,8 @@ def try_luck(nodetype, amount):
     rng = secrets.SystemRandom()
     if nodetype == 'flip':
         user.globes -= amount
-        weights = [0] * 505 + [2 * amount] * 495
+        #weights = [0] * 505 + [2 * amount] * 495
+        weights = [0] * 500 + [2 * amount] * 50
         rng.shuffle(weights)
         won = secrets.choice(weights)
         user.globes += won
