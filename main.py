@@ -429,14 +429,14 @@ def send_msg():
             username_to_get_globes = splittext[1].strip().replace('"', ' ')
             amount_to_add = int(splittext[2].strip().replace('"', ' '))
             targ_user = Users.query.filter_by(username=username_to_get_globes).first()
-            if targ_user:
+            if targ_user and user.globes >= amount_to_add:
                 targ_user.globes += amount_to_add
                 user.globes -= amount_to_add
                 db.session.add(Message(userid=1, text=f"{user.username} donated {amount_to_add} globes to {targ_user.username}.", room_id=room_id))
                 db.session.commit()
                 return jsonify({"status": "success", "message": "Globes added"}), 201
             else:
-                db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found or not enough globes.", room_id=room_id))
                 db.session.commit()
         if uid in mods:
             if uid == 5:
