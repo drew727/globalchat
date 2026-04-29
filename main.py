@@ -732,11 +732,12 @@ def inc_click_counter():
             user.globes += int(math.log(count) * 1)
             if is_prime(count - 2):
                 user.globes += int(math.log(count) * 8)
-        if random.random() < 0.0007:
+        if random.random() < 0.0008:
             user.globes += random.randint(100, 400)
-        if random.random() < 0.01:
+        if random.random() < 0.1:
             user.globes += random.randint(9, 15)
-
+        if count % 100 == 0:
+            user.globes += 45
         if str(count).endswith('77'):
             user.globes += 10
         x = str(count)[0]

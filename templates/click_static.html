@@ -67,9 +67,13 @@
             #globe {
                 position: relative;
                 outline: none;
-
+                transition: transform 0.05s ease-in-out; cursor: pointer;
                 width: 500px;
             }
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100px); opacity: 0; }
+}
 
  #navbar {
     width: 270px;
