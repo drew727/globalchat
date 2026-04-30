@@ -19,7 +19,7 @@ import secrets
 import random
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-mods = [5, 7, 78, 62, 35]
+mods = [5, 7, 78, 62, 35, 2827]
 banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
@@ -463,6 +463,20 @@ def send_msg():
                         return jsonify({"status": "success", "message": "Globes added"}), 201
                     else:
                         db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                        db.session.commit()
+                if message_text.startswith("/ban"):
+                    splittext = message_text.split(None, 1)
+                    username_to_ban = splittext[1].strip().replace('"', ' ')
+
+                    targ_user = Users.query.filter_by(username=username_to_ban).first()
+
+                    if targ_user:
+                        banned.append(targ_user.userid)
+                        db.session.add(Message(userid=1, text=f"Status: success, code {targ_user.userid}.", room_id=room_id))
+                        db.session.commit()
+                        return jsonify({"status": "success", "message": "user banned"}), 201
+                    else:
+                        db.session.add(Message(userid=1, text=f"Error: user not found", room_id=room_id))
                         db.session.commit()
             if message_text.startswith("/remove-globes"):
                     splittext = message_text.split(None, 2)
