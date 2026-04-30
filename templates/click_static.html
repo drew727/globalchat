@@ -23,7 +23,11 @@
     height: 1px;
     z-index: -1;
     animation: galaxy-rotate 600s linear infinite;
+    transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+
 }
+
+.hyper-warp { transform: scale(2) rotate(10deg); filter: blur(2px); }
 .click-particle {
     position: fixed;
     pointer-events: none;
@@ -373,16 +377,26 @@ function spawnParticles(e) {
                     setTimeout(() => rotatingglobe.classList.remove('critical-shake'), 200);
                 }
                 const floatingText = document.createElement('div');
-                floatingText.innerText = '+1';
-                floatingText.style.position = 'fixed';
-                floatingText.style.left = (e?.clientX || window.innerWidth/2) + 'px';
-                floatingText.style.top = (e?.clientY || window.innerHeight/2) + 'px';
-                floatingText.style.color = '#ffd700';
-                floatingText.style.fontWeight = 'bold';
-                floatingText.style.pointerEvents = 'none';
-                floatingText.style.animation = 'floatUp 0.8s ease-out forwards';
+                const isCrit = Math.random() > 0.9;
+                floatingText.innerText = isCrit ? '+5 CRIT!' : '+1';
+                floatingText.style.cssText = `
+                    position: fixed;
+                    left: ${x}px;
+                    top: ${y}px;
+                    color: ${isCrit ? '#ff0055' : '#ffd700'};
+                    font-size: ${isCrit ? '30px' : '18px'};
+                    font-weight: 900;
+                    pointer-events: none;
+                    z-index: 1000;
+                    animation: floatUp 0.8s ease-out forwards;
+                `;
                 document.body.appendChild(floatingText);
                 setTimeout(() => floatingText.remove(), 800);
+                document.getElementById('stars').classList.add('hyper-warp');
+                clearTimeout(window.warpTimeout);
+                window.warpTimeout = setTimeout(() => {
+                    document.getElementById('stars').classList.remove('hyper-warp');
+                }, 500);
                 postcount();
                 console.log(idle)
                 console.log(isRotating)
