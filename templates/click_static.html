@@ -262,6 +262,37 @@
         setTimeout(() => particle.remove(), 600);
     }
 }
+function spawnParticles(e) {
+    // Get mouse pos or center of globe if keyboard is used
+    const x = e instanceof MouseEvent ? e.clientX : window.innerWidth / 2;
+    const y = e instanceof MouseEvent ? e.clientY : window.innerHeight / 2;
+
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'click-particle';
+        const size = Math.random() * 8 + 4 + 'px';
+        const color = `hsl(${Math.random() * 360}, 70%, 70%)`;
+
+        // Use translate3d for GPU acceleration (smoother 15+ CPS)
+        Object.assign(particle.style, {
+            width: size, height: size, backgroundColor: color,
+            left: '0px', top: '0px',
+            transform: `translate3d(${x}px, ${y}px, 0)`
+        });
+
+        document.body.appendChild(particle);
+
+        const destX = (Math.random() - 0.5) * 300;
+        const destY = (Math.random() - 0.5) * 300;
+
+        requestAnimationFrame(() => {
+            particle.style.transform = `translate3d(${x + destX}px, ${y + destY}px, 0) scale(0)`;
+            particle.style.opacity = '0';
+        });
+        setTimeout(() => particle.remove(), 600);
+    }
+}
+
 
         function generateStars(c) {
             let stars = "";
@@ -447,7 +478,7 @@
                         setTimeout(() => {
                         globe.atmosphereColor('#3a6ba5');
                         globe.atmosphereAltitude(0.25);
-                            }, 300);
+                            }, 100);
                     }
                 });
             }
