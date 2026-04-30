@@ -403,13 +403,13 @@ function spawnParticles(e) {
                 document.body.appendChild(floatingText);
                 setTimeout(() => floatingText.remove(), 800);
 
-                if (localCount % 8 === 0) {
+                if (localCount % 5 === 0) {
                         globe.atmosphereColor('#ff4500');
                         globe.atmosphereAltitude(0.35);
                         setTimeout(() => {
                         globe.atmosphereColor('#3a6ba5');
                         globe.atmosphereAltitude(0.25);
-                            }, 200);
+                            }, 50);
                     }
                 document.getElementById('stars').classList.add('hyper-warp');
                 clearTimeout(window.warpTimeout);
