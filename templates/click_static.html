@@ -403,13 +403,13 @@ function spawnParticles(e) {
                 document.body.appendChild(floatingText);
                 setTimeout(() => floatingText.remove(), 800);
 
-                if (localCount % 10 === 0) {
+                if (localCount % 8 === 0) {
                         globe.atmosphereColor('#ff4500');
                         globe.atmosphereAltitude(0.35);
                         setTimeout(() => {
                         globe.atmosphereColor('#3a6ba5');
                         globe.atmosphereAltitude(0.25);
-                            }, 100);
+                            }, 200);
                     }
                 document.getElementById('stars').classList.add('hyper-warp');
                 clearTimeout(window.warpTimeout);
@@ -471,7 +471,7 @@ function spawnParticles(e) {
 
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
-                    if (data.globes % 10 === 0) {
+                    if (data.globes % 15 === 0) {
                         initializeSNSCore();
                     }
                     const percent = (data.count / data.next_milestone) * 100;
