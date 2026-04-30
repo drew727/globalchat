@@ -29,8 +29,11 @@
 
     transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
-
-.hyper-warp { transform: scale(2) rotate(10deg); filter: blur(2px); }
+.hyper-warp {
+    transform: translate(-50%, -50%) scale(2) rotate(10deg);
+    filter: blur(2px);
+    opacity: 0.8;
+}
 .click-particle {
     position: fixed;
     pointer-events: none;
@@ -399,6 +402,15 @@ function spawnParticles(e) {
                 `;
                 document.body.appendChild(floatingText);
                 setTimeout(() => floatingText.remove(), 800);
+
+                if (localCount % 10 === 0) {
+                        globe.atmosphereColor('#ff4500');
+                        globe.atmosphereAltitude(0.35);
+                        setTimeout(() => {
+                        globe.atmosphereColor('#3a6ba5');
+                        globe.atmosphereAltitude(0.25);
+                            }, 100);
+                    }
                 document.getElementById('stars').classList.add('hyper-warp');
                 clearTimeout(window.warpTimeout);
                 window.warpTimeout = setTimeout(() => {
@@ -483,27 +495,40 @@ function spawnParticles(e) {
                     const globes = document.getElementById('globes');
                     globes.innerHTML = `<p>Globes: ${data.globes}</p>`;
                     const percent = (data.count / data.next_milestone) * 100;
-                    const bar = document.getElementById('progress');
-                    bar.style.width = percent + '%';
-                    //add even more colors and prog later
-                    // also eventually scale star speed with cps
-                    if (percent > 90) {
-                        bar.style.boxShadow = `0 0 ${Math.random() * 20 + 10}px #fff`;
-                        bar.style.filter = 'brightness(1.5)';
-                    } else {
-                        bar.style.boxShadow = 'none';
-                        bar.style.filter = 'brightness(1)';
-                    }
-                    if (data.count % 8 === 0) {
-                        globe.atmosphereColor('#ff4500');
-                        globe.atmosphereAltitude(0.35);
-                        setTimeout(() => {
-                        globe.atmosphereColor('#3a6ba5');
-                        globe.atmosphereAltitude(0.25);
-                            }, 100);
-                    }
+                    updateProgressBar(percent)
+
                 });
             }
+            function updateProgressBar(percent) {
+                const bar = document.getElementById('progress');
+                bar.style.width = percent + '%';
+
+                if (percent < 25) {
+                    bar.style.background = '#4CAF50'; // Boring green
+                    bar.style.boxShadow = 'none';
+                } else if (percent < 50) {
+                    bar.style.background = 'linear-gradient(90deg, #4CAF50, #8BC34A)';
+                    bar.style.boxShadow = '0 0 10px #8BC34A';
+                } else if (percent < 80) {
+                    bar.style.background = 'linear-gradient(90deg, #FFEB3B, #FF9800)';
+                    bar.style.animation = 'pulse 1s infinite'; // Add a CSS pulse
+                    bar.style.boxShadow = '0 0 20px #FF9800';
+                } else {
+                    bar.style.background = 'linear-gradient(90deg, #f44336, #9c27b0, #2196f3)'; // Rainbow
+                    bar.style.boxShadow = '0 0 30px #fff';
+                }
+
+                if (percent >= 100) triggerMilestone();
+            }
+            function triggerMilestone() {
+                const globe = document.getElementById('globe');
+                globe.style.transform = 'scale(1.5)';
+                setTimeout(() => globe.style.transform = 'scale(0)', 100);
+                for(let i=0; i<50; i++) spawnParticles({ clientX: window.innerWidth/2, clientY: window.innerHeight/2 });
+
+                setTimeout(() => { globe.style.transform = 'scale(1)'; }, 500);
+            }
+
             setInterval(frame, 2000 + Math.floor(Math.random() * 5000) + 1);
 
         </script>
