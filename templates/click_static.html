@@ -378,6 +378,10 @@ function spawnParticles(e) {
                 }
                 const floatingText = document.createElement('div');
                 const isCrit = Math.random() > 0.9;
+                const rect = rotatingglobe.getBoundingClientRect();
+                const x = e instanceof MouseEvent ? e.clientX : rect.left + rect.width / 2;
+                const y = e instanceof MouseEvent ? e.clientY : rect.top + rect.height / 2;
+
                 floatingText.innerText = isCrit ? '+5 CRIT!' : '+1';
                 floatingText.style.cssText = `
                     position: fixed;
