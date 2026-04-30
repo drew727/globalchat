@@ -441,7 +441,8 @@ def send_msg():
         if message_text.startswith("/print-globes"):
             splittext = message_text.split(None, 1)
             username_to_show = splittext[1].strip().replace('"', ' ')
-            targ_user = Users.query.filter_by(username_to_show).first()
+            targ_user = Users.query.filter_by(username=username_to_show).first()
+
             if targ_user:
                 db.session.add(Message(userid=1, text=f"{targ_user.username} has {targ_user.globes} globes.", room_id=room_id))
                 db.session.commit()
