@@ -436,14 +436,14 @@ function spawnParticles(e) {
 
                 isRotating = true;
                 rotationQueue.shift();
-                globelng = globelng - 60;
+                globelng = globelng - 40;
                 const lat = globe.pointOfView().lat;
                 const alt = globe.pointOfView().altitude;
                 console.log(lat)
                 console.log(alt)
                 console.log(isRotating)
                 console.log(idle)
-                globe.pointOfView({lat: lat, lng: globelng, altitude: alt}, 50, () => {
+                globe.pointOfView({lat: lat, lng: globelng, altitude: alt}, 75, () => {
                     isRotating = false;
                     callbackTriggered = true;
                     if (rotationQueue.length === 0) {
@@ -455,7 +455,7 @@ function spawnParticles(e) {
                 setTimeout(() => {
                     isRotating = false;
                     processRotations();
-                }, 50);
+                }, 75);
             }
             function postcount() {
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
