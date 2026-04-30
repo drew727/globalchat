@@ -679,15 +679,15 @@ body {
                             rainbow = "announcement";
                         }
                         chatbox.innerHTML += `
-    <div class="text-container">
-        <div class="img-box" style="${imgS}"></div>
-        <p class="${rainbow}" style="${style} width: 100%; position: relative;">
-            <i style="float: right; font-style: normal; margin-left: 10px; font-weight: normal; opacity: 0.7;">
-                ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-            </i>
-            <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
-        </p>
-    </div>`;
+                        <div class="text-container">
+                        <div class="img-box" style="${imgS}"></div>
+                            <p class="${rainbow}" style="${style} width: 100%; position: relative;">
+                            <i style="float: right; font-style: normal; margin-left: 10px; font-weight: normal; opacity: 0.7;">
+                                    ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                            </i>
+                            <strong id='guest'>${msg.username}</strong>|Tier ${msg.level}|: ${displayText}
+                        </p>
+                    </div>`;
                     if (isnewmessage) {
                         isnewmessage = false;
                         setTimeout(() => {
@@ -695,6 +695,8 @@ body {
                         }, 30);
                     }
                 });
+                }
+            });
         }
 
         (function activityLoop() {
