@@ -20,14 +20,12 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    width: 200vw;
-    height: 200vh;
+    width: 1px;
+    height: 1px;
     z-index: -1;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* Center the tiny point */
     animation: galaxy-rotate 600s linear infinite;
     pointer-events: none;
-
-    transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
 }
 .hyper-warp {
     transform: translate(-50%, -50%) scale(2) rotate(10deg);
