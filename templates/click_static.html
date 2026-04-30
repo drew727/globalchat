@@ -264,8 +264,9 @@
 }
 function spawnParticles(e) {
     // Get mouse pos or center of globe if keyboard is used
-    const x = e instanceof MouseEvent ? e.clientX : window.innerWidth / 2;
-    const y = e instanceof MouseEvent ? e.clientY : window.innerHeight / 2;
+    const rect = rotatingglobe.getBoundingClientRect();
+    const x = e instanceof MouseEvent ? e.clientX : rect.left + rect.width / 2;
+    const y = e instanceof MouseEvent ? e.clientY : rect.top + rect.height / 2;
 
     for (let i = 0; i < 8; i++) {
         const particle = document.createElement('div');
