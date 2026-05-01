@@ -30,7 +30,6 @@
             const userMatch = parentHash.match(/username=([^&?]+)/);
             const user = userMatch ? userMatch[1] : '';
 
-            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>, a`;
             fetch(`https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest?username=${user}`, {
                     credentials: 'include'
                     })
