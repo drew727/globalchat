@@ -26,9 +26,10 @@
     <body>
         <div id="display">Syncing Profile...</div>
         <script>
-            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>`;
             const params = location.hash.split('?')[1] || '';
             const user = new URLSearchParams(params).get('username') || '';
+
+            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>`;
             fetch(`https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest?username=${user}`, {
                     credentials: 'include'
                     })
