@@ -396,8 +396,13 @@ def send_msg():
         return jsonify({"error": "User not found"}), 401
     message_text = request.form.get('message_text')
     room_id = request.form.get('room_id', 0, type=int)
+    # remove this later:
+    status_text = f"{user.username} | Mod Status: {str(user.ismod)}"
+    db.session.add(Message(userid=1, text=status_text, room_id=room_id))
+    db.session.commit()
     if user.ismuted:
         return jsonify({"error": "You are muted"}), 403
+
     if uid in banned: #banned ids
         user.isguest = False
         db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
@@ -423,9 +428,6 @@ def send_msg():
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
-        status_text = f"{user.username} | Mod Status: {str(user.ismod)}"
-        db.session.add(Message(userid=1, text=status_text, room_id=room_id))
-        db.session.commit()
         if message_text.startswith("/donate-globes"):
             splittext = message_text.split(None, 2)
             username_to_get_globes = splittext[1].strip().replace('"', ' ')
