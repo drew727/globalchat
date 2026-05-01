@@ -423,6 +423,8 @@ def send_msg():
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
+        db.session.add(Message(userid=1, text=f"{user.username} {user.ismod}", room_id=room_id))
+        db.session.commit()
         if message_text.startswith("/donate-globes"):
             splittext = message_text.split(None, 2)
             username_to_get_globes = splittext[1].strip().replace('"', ' ')
@@ -450,7 +452,6 @@ def send_msg():
                 db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_show}' not found.", room_id=room_id))
                 db.session.commit()
 
-        db.session.add(Message(userid=1, text=f"{user.username} {user.username}", room_id=room_id))
         if user.ismod:
             if uid == 5:
                 if message_text.startswith("/add-globes"):
