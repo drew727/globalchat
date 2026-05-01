@@ -26,11 +26,11 @@
     <body>
         <div id="display">Syncing Profile...</div>
         <script>
-            const hash = window.location.hash;
-            const userMatch = hash.match(/username=([^&?]+)/);
+            const parentHash = window.parent.location.hash;
+            const userMatch = parentHash.match(/username=([^&?]+)/);
             const user = userMatch ? userMatch[1] : '';
 
-            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>`;
+            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>, a`;
             fetch(`https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest?username=${user}`, {
                     credentials: 'include'
                     })
