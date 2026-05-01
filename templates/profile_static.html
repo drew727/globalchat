@@ -26,13 +26,14 @@
     <body>
         <div id="display">Syncing Profile...</div>
         <script>
+            document.getElementById('display').innerHTML = `Fetching: <b>${user}</b>`;
             const params = location.hash.split('?')[1] || '';
             const user = new URLSearchParams(params).get('username') || '';
             fetch(`https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest?username=${user}`, {
                     credentials: 'include'
                     })
                 .then(response => response.json()).then(data => {
-    document.body.innerHTML = Object.entries(data).map(([key, val]) => `
+    document.body.innerHTML += Object.entries(data).map(([key, val]) => `
         <div class="data-card">
             <div class="label">${key.replace(/_/g, ' ')}</div>
             <div class="value ${typeof val === 'string' ? 'special' : ''}">
