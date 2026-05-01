@@ -423,7 +423,8 @@ def send_msg():
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
-        db.session.add(Message(userid=1, text=f"{user.username} {user.ismod}", room_id=room_id))
+        status_text = f"{user.username} | Mod Status: {str(user.ismod)}"
+        db.session.add(Message(userid=1, text=status_text, room_id=room_id))
         db.session.commit()
         if message_text.startswith("/donate-globes"):
             splittext = message_text.split(None, 2)
