@@ -474,7 +474,7 @@ def send_msg():
                         db.session.commit()
                         return jsonify({"status": "success", "message": "mod added"}), 201
                     else:
-                        db.session.add(Message(userid=1, text=f"Mod Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                        db.session.add(Message(userid=1, text=f"Mod Error: User '{username_to_mod}' not found.", room_id=room_id))
                         db.session.commit()
                 if message_text.startswith("/unmod"):
                     splittext = message_text.split(None, 1)
@@ -486,7 +486,7 @@ def send_msg():
                         db.session.commit()
                         return jsonify({"status": "success", "message": "mod added"}), 201
                     else:
-                        db.session.add(Message(userid=1, text=f"Mod Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                        db.session.add(Message(userid=1, text=f"Mod Error: User '{username_to_mod}' not found.", room_id=room_id))
                         db.session.commit()
                 if message_text.startswith("/ban"):
                     splittext = message_text.split(None, 1)
