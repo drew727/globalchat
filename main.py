@@ -513,7 +513,7 @@ def send_msg():
                         db.session.commit()
                         return jsonify({"status": "success", "message": "Globes removed"}), 201
                     else:
-                        db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_get_globes}' not found.", room_id=room_id))
+                        db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_lose_globes}' not found.", room_id=room_id))
                         db.session.commit()
             if message_text.startswith("/announce"):
                 splittext = message_text.split(None, 1)
