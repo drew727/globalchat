@@ -366,6 +366,8 @@ def userinfo():
     tusername = request.args.get('username')
     if tusername:
         user = Users.query.filter_by(username=tusername).first()
+        if not user:
+            return jsonify({"error": f"User {tusername} not found"}), 404
     else:
         user = Users.query.get(session.get('userid'))
     return jsonify({
