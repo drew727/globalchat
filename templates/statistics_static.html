@@ -290,7 +290,7 @@
                 const regBtn = document.getElementById('register');
                 if (user.isguest === false && regBtn) {
                     regBtn.innerText = user.username;
-                    regBtn.onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                    regBtn.onclick = () => { parent.window.SNS_ROUTER.rewritePage('profile_static'); };
                 }
                 const bal = document.getElementById('balance-display');
                 if(bal) bal.innerText = "Globes: " + (user.globes || 0);

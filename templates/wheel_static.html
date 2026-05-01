@@ -248,7 +248,7 @@
             .then(user => {
                 if (user.isguest === false) {
                     document.getElementById('register').innerText = user.username;
-                    document.getElementById('register').onclick = () => { window.location.href = 'https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest'; };
+                    document.getElementById('register').onclick = () => { parent.SNS_ROUTER.rewritePage('profile_static'); };
                 }
             });
 

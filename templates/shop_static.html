@@ -390,7 +390,7 @@
         {credentials: 'include'}).then(res => res.json()).then(user => {
             if (!user.isguest) {
                 document.getElementById('register').innerText = user.username;
-                document.getElementById('register').onclick = () => { window.location.href = '/api/v2/user-profile/cache/sync-manifest'; };
+                document.getElementById('register').onclick = () => {parent.window.SNS_ROUTER.rewritePage("profile_static");};
             }
             document.getElementById('globecount').innerText = user.globes;
         });
