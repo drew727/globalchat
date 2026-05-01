@@ -2,24 +2,24 @@
 <html>
     <head>
         <style>
-    body { background: #0b0e14; color: #fff; font-family: monospace; display: flex; justify-content: center; padding: 40px; }
-    #display {
-        background: rgba(255, 255, 255, 0.05);
+    body { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); font-family: 'Segoe UI', sans-serif; display: flex; flex-wrap: wrap; gap: 20px; padding: 40px; justify-content: center; }
+    .data-card {
+        background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid white;
         border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 0 30px rgba(0, 219, 222, 0.2);
-        white-space: pre-wrap;
-        /* Using your rainbow animation logic */
-        background-image: linear-gradient(to right, #ff00ea, #00dbde, #ff00ea);
-        background-size: 200% auto;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: flow 4s linear infinite;
+        padding: 20px;
+        width: 220px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        text-align: center;
     }
-    @keyframes flow { to { background-position: 200% center; } }
+    .data-card:hover { transform: translateY(-10px); box-shadow: 0 15px 35px rgba(167, 139, 250, 0.2); }
+    .label { font-size: 0.75rem; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-bottom: 8px; }
+    .value { font-size: 1.4rem; font-weight: 800; color: #333; word-break: break-all; }
+    .special { background: linear-gradient(to right, #ff00ea, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 </style>
+
 
     </head>
 
@@ -30,8 +30,15 @@
                     credentials: 'include'
                     })
                 .then(response => response.json()).then(data => {
-                        document.getElementById('display').innerText = JSON.stringify(data, null, 4);
-                    });
-        </script>
+    document.body.innerHTML = Object.entries(data).map(([key, val]) => `
+        <div class="data-card">
+            <div class="label">${key.replace(/_/g, ' ')}</div>
+            <div class="value ${typeof val === 'string' ? 'special' : ''}">
+                ${typeof val === 'number' ? val.toLocaleString() : val}
+            </div>
+        </div>
+    `).join('');
+});
+
     </body>
-</html>c
+</html>
