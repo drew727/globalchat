@@ -449,9 +449,9 @@ def send_msg():
             else:
                 db.session.add(Message(userid=1, text=f"Globe add Error: User '{username_to_show}' not found.", room_id=room_id))
                 db.session.commit()
+
+        db.session.add(Message(userid=1, text=f"{user.username} {user.username}", room_id=room_id))
         if user.ismod:
-            db.session.add(Message(userid=1, text=f"{user.username} is now a mod.", room_id=room_id))
-            db.session.commit()
             if uid == 5:
                 if message_text.startswith("/add-globes"):
                     splittext = message_text.split(None, 2)
