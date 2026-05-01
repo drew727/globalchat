@@ -62,6 +62,7 @@ class Users(db.Model):
     password = db.Column(db.String(150))
     isguest = db.Column(db.Boolean)
     ismuted = db.Column(db.Boolean)
+    ismod = db.Column(db.Boolean, default=False)
     globes = db.Column(db.Integer, default=0)
     cbc = db.Column(db.BigInteger, default=0)
     equipped_color = db.Column(db.String(20), default="Black")
