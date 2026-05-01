@@ -1,16 +1,37 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+    body { background: #0b0e14; color: #fff; font-family: monospace; display: flex; justify-content: center; padding: 40px; }
+    #display {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 0 30px rgba(0, 219, 222, 0.2);
+        white-space: pre-wrap;
+        /* Using your rainbow animation logic */
+        background-image: linear-gradient(to right, #ff00ea, #00dbde, #ff00ea);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: flow 4s linear infinite;
+    }
+    @keyframes flow { to { background-position: 200% center; } }
+</style>
 
     </head>
+
     <body>
+        <div id="display">Syncing Profile...</div>
         <script>
             fetch('https://systemnodesync.dpdns.org/api/v2/user-profile/cache/sync-manifest', {
                     credentials: 'include'
                     })
                 .then(response => response.json()).then(data => {
-                        document.body.innerText = JSON.stringify(data, null, 2);
+                        document.getElementById('display').innerText = JSON.stringify(data, null, 4);
                     });
         </script>
     </body>
-</html>
+</html>c
