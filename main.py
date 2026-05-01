@@ -397,13 +397,7 @@ def send_msg():
     message_text = request.form.get('message_text')
     room_id = request.form.get('room_id', 0, type=int)
     # remove this later:
-    try:
-        status_text = f"{user.username} | Mod Status: {str(user.ismod)}"
-        db.session.add(Message(userid=1, text=status_text, room_id=room_id))
-        db.session.commit()
-    except Exception as e:
-        db.session.add(Message(userid=1, text=e, room_id=room_id))
-        db.session.commit()
+
     if user.ismuted:
         return jsonify({"error": "You are muted"}), 403
 
