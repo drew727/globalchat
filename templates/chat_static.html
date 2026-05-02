@@ -688,15 +688,15 @@ body {
                             rainbow = "announcement";
                         }
                         chatbox.innerHTML += `
-                        <div class="text-container">
-                        <div class="img-box" style="${imgS}"></div>
+                            <div class="text-container">
+                            <div class="img-box" style="${imgS}"></div>
                             <p class="${rainbow}" style="${style} width: 100%; position: relative;">
-                            <i style="position: absolute; right: 5px; top: 5px; font-style: italic; font-size: 0.85em; color: #000 !important; -webkit-text-fill-color: #000 !important; font-weight: normal; opacity: 0.7;">
-                                ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                            </i>
-                            <strong id='guest'><a style="color: inherit; -webkit-text-fill-color: inherit;" onclick="parent.SNS_ROUTER.rewritePage(\'profile_static?username=${msg.username}\')">${msg.username}</a></strong>|Tier ${msg.level}|: ${displayText}
-                        </p>
-                    </div>`;
+                                <i style="position: absolute; right: 5px; top: 5px; font-style: italic; font-size: 0.85em; color: #000 !important; -webkit-text-fill-color: #000 !important; font-weight: normal; opacity: 0.7;">
+                                    ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                </i>
+                                <strong id='guest'><a style="color: inherit; -webkit-text-fill-color: inherit; background: inherit; -webkit-background-clip: text;" onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')">${msg.username}</a></strong> |Tier ${msg.level}|: ${displayText}
+                            </p>
+                        </div>`;
                     if (isnewmessage) {
                         isnewmessage = false;
                         setTimeout(() => {
