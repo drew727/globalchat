@@ -507,7 +507,7 @@ def send_msg():
                     else:
                         db.session.add(Message(userid=1, text=f"Mod Error: User '{username_to_mod}' not found.", room_id=room_id))
                         db.session.commit()
-                if message_text.startswith("/ban"):
+                if message_text.startswith("/ban-user"):
                     splittext = message_text.split(None, 1)
                     username_to_ban = splittext[1].strip().replace('"', ' ')
 
@@ -529,7 +529,7 @@ def send_msg():
                     if not BannedKeyword.query.filter_by(keyword=new_word).first():
                         db.session.add(BannedKeyword(keyword=new_word))
                         db.session.commit()
-                        reload_banned_words() # Sync the cache
+                        reload_banned_words()
                         db.session.add(Message(userid=1, text=f"Keyword '{new_word}' added to blacklist.", room_id=room_id))
                         db.session.commit()
                 return jsonify({"status": "success"}), 201
