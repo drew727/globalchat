@@ -694,7 +694,9 @@ body {
                                 <i style="position: absolute; right: 5px; top: 5px; font-style: italic; font-size: 0.85em; color: #000 !important; -webkit-text-fill-color: #000 !important; font-weight: normal; opacity: 0.7;">
                                     ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </i>
-                                <strong id='guest'><a style="color: inherit; -webkit-text-fill-color: transparent; background: inherit; -webkit-background-clip: text; display: inline; cursor: pointer;" onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')">${msg.username}</a>${msg.username}</strong> |Tier ${msg.level}|: ${displayText}
+                                <strong id='guest'>${msg.username}<a onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')"
+       style="position: absolute; inset: 0; cursor: pointer; z-index: 10;"></a>
+                                </strong> |Tier ${msg.level}|: ${displayText}
                             </p>
                         </div>`;
                     if (isnewmessage) {
