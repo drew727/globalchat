@@ -99,12 +99,18 @@ class Inventory(db.Model):
     count = db.Column(db.Integer, default=0)
     item = db.relationship('Item', backref='owners')
 class Message(db.Model):
-
     id = db.Column(db.Integer, primary_key=True)
     userid = db.Column(db.Integer, db.ForeignKey('users.userid'))
     text = db.Column(db.String(300))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     room_id = db.Column(db.Integer, default=0, index=True)
+
+class BannedKeyword(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    keyword = db.Column(db.String(50), unique=True, nullable=False)
+    @staticmethod
+    def get_all_keywords():
+        return [k.keyword.lower() for k in BannedKeyword.query.all()]
 class ClickCount(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     count = db.Column(db.Integer, default=1)
@@ -121,7 +127,12 @@ def force_ssl_param():
             return redirect(f"{url}?ssl_required=true", code=301)
 
 
+BANNED_WORDS_CACHE = set()
 
+def reload_banned_words():
+    global BANNED_WORDS_CACHE
+    with app.app_context():
+        BANNED_WORDS_CACHE = set(BannedKeyword.get_all_keywords())
 
 @app.route('/')
 def route():
@@ -414,18 +425,19 @@ def send_msg():
         return jsonify({"status": "error", "message": "Duplicate message ignored"}), 200
     if user.ismuted or profanity.contains_profanity(user.username):
         return jsonify({"status": "success"}), 201
-    message_text = profanity.censor(message_text)
-    if '*' in message_text or "nigg" in message_text.lower() or "gger" in message_text.lower() or "gga" in message_text.lower() or "gg3r" in message_text.lower() or "n1g" in message_text.lower():
-        db.session.add(Message(userid=1, text=f"{user.username}, sorry you can't do that", room_id=room_id))
+    lowercase_msg = message_text.lower()
+    is_blocked = any(word in lowercase_msg for word in BANNED_WORDS_CACHE)
+    if is_blocked:
+        db.session.add(Message(userid=1, text=f"{user.username}, sorry you can't do that.", room_id=room_id))
         db.session.commit()
-        return jsonify({"status": "success"}), 201
+        return jsonify({"status": "error", "message": "Prohibited content"}), 201
     if '<' in message_text or '>' in message_text:
         if uid == 5:
             db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
             db.session.commit()
             return jsonify({"status": "success", "message": ""}), 201
         else:
-            db.session.add(Message(userid=1, text=str(user) + ", sorry you can't do that", room_id=room_id))
+            db.session.add(Message(userid=1, text=str(user) + ", sorry you can't do that.", room_id=room_id))
             db.session.commit()
             return jsonify({"status": "error", "message": "HTML tags not allowed"}), 400
     if message_text.startswith('/'):
@@ -509,6 +521,31 @@ def send_msg():
                     else:
                         db.session.add(Message(userid=1, text=f"Error: user not found", room_id=room_id))
                         db.session.commit()
+            #mod only commands
+            if message_text.startswith("/ban-word"):
+                splittext = message_text.split(None, 1)
+                if len(splittext) > 1:
+                    new_word = splittext[1].strip().lower()
+                    if not BannedKeyword.query.filter_by(keyword=new_word).first():
+                        db.session.add(BannedKeyword(keyword=new_word))
+                        db.session.commit()
+                        reload_banned_words() # Sync the cache
+                        db.session.add(Message(userid=1, text=f"Keyword '{new_word}' added to blacklist.", room_id=room_id))
+                        db.session.commit()
+                return jsonify({"status": "success"}), 201
+
+            if message_text.startswith("/unban-word"):
+                splittext = message_text.split(None, 1)
+                if len(splittext) > 1:
+                    target_word = splittext[1].strip().lower()
+                    word_entry = BannedKeyword.query.filter_by(keyword=target_word).first()
+                    if word_entry:
+                        db.session.delete(word_entry)
+                        db.session.commit()
+                        reload_banned_words()
+                        db.session.add(Message(userid=1, text=f"Keyword '{target_word}' removed from blacklist.", room_id=room_id))
+                        db.session.commit()
+                return jsonify({"status": "success"}), 201
             if message_text.startswith("/remove-globes"):
                     splittext = message_text.split(None, 2)
                     username_to_lose_globes = splittext[1].strip().replace('"', ' ')
