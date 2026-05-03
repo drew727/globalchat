@@ -701,28 +701,6 @@ body {
                             </span>: ${displayText}
                             </p>
                         </div>`;
-                        chatbox.innerHTML += `
-    <div class="text-container" style="margin-bottom: 12px;">
-        <div class="img-box" style="${imgS}; border: 2px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"></div>
-        <p class="${rainbow}" style="${style} width: auto; max-width: 85%; position: relative; padding: 10px 15px; background: rgba(255, 255, 255, 0.7) !important; backdrop-filter: blur(10px); border-radius: 18px; border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-
-            <i style="position: absolute; right: 12px; top: -18px; font-style: normal; font-size: 10px; color: #888 !important; -webkit-text-fill-color: #888 !important; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
-                ${new Date(msg.timestamp * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-            </i>
-
-            <strong id='guest' style="position: relative; color: inherit; display: inline-block;">
-                ${msg.username}
-                <a onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')"
-                   style="position: absolute; inset: 0; cursor: pointer; z-index: 10;"></a>
-            </strong>
-
-            <span style="display: inline-flex !important; align-items: center !important; justify-content: center !important; background: rgba(255, 255, 255, 0.4) !important; backdrop-filter: blur(5px) !important; color: #555 !important; -webkit-text-fill-color: #555 !important; font-size: 10px !important; font-weight: 800 !important; border-radius: 6px !important; padding: 2px 6px !important; margin: 0 8px !important; border: 1px solid rgba(255,255,255,0.8) !important; vertical-align: middle !important; text-transform: uppercase;">
-                Tier ${msg.level}
-            </span>
-
-            <span style="color: #444; -webkit-text-fill-color: #444; font-weight: 500;">: ${displayText}</span>
-        </p>
-    </div>`;
                     if (isnewmessage) {
                         isnewmessage = false;
                         setTimeout(() => {
