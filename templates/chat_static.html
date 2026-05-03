@@ -696,7 +696,22 @@ body {
                                 </i>
                                 <strong id='guest'>${msg.username}<a onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')"
        style="position: absolute; inset: 0; cursor: pointer; z-index: 10;"></a>
-                                </strong> <span style="background: rgba(255,255,255,0.5) !important; color: #555 !important; -webkit-text-fill-color: #555 !important; padding: 2px 6px !important; border-radius: 12px !important; font-size: 11px !important; font-weight: bold !important; border: 1px solid rgba(0,0,0,0.1) !important; margin: 0 4px !important;">T${msg.level}</span>
+                                </strong> <span class="tier-bubble" style="
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2px 10px !important;
+    margin: 0 6px !important;
+    vertical-align: middle !important;
+    font-size: 0.7em !important;
+    /* The following will be synced to your .btn style */
+    background: ${document.querySelector('.btn').style.background || 'white'} !important;
+    color: ${document.querySelector('.btn').style.color || '#555'} !important;
+    -webkit-text-fill-color: ${document.querySelector('.btn').style.color || '#555'} !important;
+    border-radius: ${window.getComputedStyle(document.querySelector('.btn')).borderRadius} !important;
+    box-shadow: ${window.getComputedStyle(document.querySelector('.btn')).boxShadow} !important;
+    font-weight: ${window.getComputedStyle(document.querySelector('.btn')).fontWeight} !important;
+">T${msg.level}</span>
 : ${displayText}
                             </p>
                         </div>`;
