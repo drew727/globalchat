@@ -696,9 +696,8 @@ body {
                                 </i>
                                 <strong id='guest'>${msg.username}<a onclick="parent.SNS_ROUTER.rewritePage('profile_static?username=${msg.username}')"
        style="position: absolute; inset: 0; cursor: pointer; z-index: 10;"></a>
-                                </strong> <span style="display: inline-flex !important; align-items: center !important; justify-content: center !important; background: rgba(255, 255, 255, 0.2) !important; backdrop-filter: blur(8px) !important; color: white !important; -webkit-text-fill-color: white !important; font-size: 0.7rem !important; font-weight: 800 !important; border-radius: 50px !important; padding: 0 8px !important; height: 18px !important; margin: 0 6px !important; border: 1px solid rgba(255, 255, 255, 0.4) !important; vertical-align: baseline !important; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;">
-                                T${msg.level}
-                            </span>: ${displayText}
+                                </strong> <span style="display: inline-block !important; background: rgba(0,0,0,0.06) !important; color: #666 !important; -webkit-text-fill-color: #666 !important; font-size: 10px !important; font-weight: 700 !important; border-radius: 4px !important; padding: 1px 5px !important; margin: 0 4px !important; vertical-align: middle !important; border: 1px solid rgba(0,0,0,0.05) !important;">T${msg.level}</span>
+: ${displayText}
                             </p>
                         </div>`;
                     if (isnewmessage) {
