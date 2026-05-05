@@ -417,7 +417,6 @@ function spawnParticles(e) {
                         globe.atmosphereAltitude(0.25);
                             }, 50);
                     }
-                kickBackground();
                 document.getElementById('stars').classList.add('hyper-warp');
                 clearTimeout(window.warpTimeout);
                 window.warpTimeout = setTimeout(() => {
@@ -558,65 +557,8 @@ document.getElementById('ac-speed').addEventListener('input', function(e) {
         clicked(null);
     }, 1000 / cps);
 });
-const canvas = document.getElementById('bg-juice');
-const ctx = canvas.getContext('2d');
-let dots = [];
 
-// Resize handler
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-});
-window.dispatchEvent(new Event('resize'));
-
-class Dot {
-    constructor() {
-        this.reset();
-    }
-    reset() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.alpha = Math.random() * 0.5 + 0.1;
-    }
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
-    }
-    draw() {
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-// Populate
-for (let i = 0; i < 100; i++) dots.push(new Dot());
-
-function animateJuice() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    dots.forEach(dot => {
-        dot.update();
-        dot.draw();
-        // Slow down the "kick" velocity over time
-        dot.speedX *= 0.99;
-        dot.speedY *= 0.99;
-    });
-    requestAnimationFrame(animateJuice);
-}
-animateJuice();
-
-function kickBackground() {
-    dots.forEach(dot => {
-        dot.speedX += (Math.random() - 0.5) * 5;
-        dot.speedY += (Math.random() - 0.5) * 5;
-    });
-}
-
+// Update your existing clicked function to handle 'null' events properly
 const originalClicked = clicked;
 window.clicked = function(e) {
     // If 'e' is null (from autoclicker), create a fake center-point object
@@ -634,6 +576,5 @@ window.clicked = function(e) {
 
         </script>
     </body>
-    <canvas id="bg-juice" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1;"></canvas>
 
     </html>
