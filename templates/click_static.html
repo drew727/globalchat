@@ -179,7 +179,7 @@
 
             <div id="globes"><p>Globes: </p></div>
 <div id="autoclicker-ui" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px; border-radius: 18px; color: white; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2);">
-    <div style="font-size: 0.8em; font-weight: bold; margin-bottom: 5px;">SNS AUTO-NODE CLICKER</div>
+    <div style="font-size: 0.8em; font-weight: bold; margin-bottom: 5px;">AUTOCLICKER</div>
     <input type="range" id="ac-speed" min="0" max="20" value="0" style="width: 100%; cursor: pointer;">
     <div style="display: flex; justify-content: space-between; font-size: 0.7em; margin-top: 5px;">
         <span>OFF</span>
@@ -444,14 +444,14 @@ function spawnParticles(e) {
 
                 isRotating = true;
                 rotationQueue.shift();
-                globelng = globelng - 40;
+                globelng = globelng - 30;
                 const lat = globe.pointOfView().lat;
                 const alt = globe.pointOfView().altitude;
                 console.log(lat)
                 console.log(alt)
                 console.log(isRotating)
                 console.log(idle)
-                globe.pointOfView({lat: lat, lng: globelng, altitude: alt}, 75, () => {
+                globe.pointOfView({lat: lat, lng: globelng, altitude: alt}, 30, () => {
                     isRotating = false;
                     callbackTriggered = true;
                     if (rotationQueue.length === 0) {
@@ -460,10 +460,10 @@ function spawnParticles(e) {
                         processRotations();
                     }
                 });
-                setTimeout(() => {
+                setTimeout(() => {0
                     isRotating = false;
                     processRotations();
-                }, 75);
+                }, 30);
             }
             function postcount() {
                 fetch('https://systemnodesync.dpdns.org/api/v1/telemetry/heartbeat/delta-increment', {
