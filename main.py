@@ -19,6 +19,7 @@ import secrets
 import random
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from sqlalchemy.pool import NullPool
 banned = [129, 130, 131, 132, 105]
 #init app
 app = Flask(__name__)
@@ -31,6 +32,14 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "pool_timeout": 30,
     "connect_args": {
         "sslmode": "require"
+    }
+}
+#remove later
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "poolclass": NullPool,
+    "connect_args": {
+        "sslmode": "require",
+        "prepare_threshold": 0
     }
 }
 app.config.update(
