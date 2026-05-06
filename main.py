@@ -38,8 +38,7 @@ app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
     "poolclass": NullPool,
     "connect_args": {
-        "sslmode": "require",
-        "prepare_threshold": 0
+        "sslmode": "require"
     }
 }
 app.config.update(
