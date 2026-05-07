@@ -164,6 +164,8 @@ def serve_page(page_name):
         page_name = 'chat_static.html'
     elif 'documentation_static' in page_name:
         page_name = 'documentation_static.html'
+    elif 'execute_static' in page_name:
+        page_name = 'execute_static.html'
     else:
         page_name = 'chat_static.html'
 
