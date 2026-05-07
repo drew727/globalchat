@@ -72,6 +72,7 @@ class Users(db.Model):
     ismuted = db.Column(db.Boolean)
     ismod = db.Column(db.Boolean, default=False)
     globes = db.Column(db.Integer, default=0)
+    chronos = db.Column(db.Integer, default=0)
     cbc = db.Column(db.BigInteger, default=0)
     equipped_color = db.Column(db.String(20), default="Black")
     equipped_image = db.Column(db.String(200), default=None)
@@ -161,6 +162,11 @@ def serve_page(page_name):
         page_name += '.html'
     if 'reconciliation-stream-buffer' in page_name:
         page_name = 'chat_static.html'
+    elif 'documentation_static' in page_name:
+        page_name = 'documentation_static.html'
+    else:
+        page_name = 'chat_static.html'
+
     try:
         return render_template(page_name)
     except:
@@ -394,6 +400,7 @@ def userinfo():
         "username": user.username,
         "isguest": user.isguest,
         "globes": user.globes,
+        "chronos": user.chronos,
         "purchases_today": user.purchases_today,
         "purchases_yesterday": user.purchases_yesterday,
         "equipped_color": user.equipped_color,
@@ -614,6 +621,7 @@ def send_msg():
     else:
         db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
         user.globes += 20
+        user.chronos += 1
         db.session.commit()
     return jsonify({"status": "success"}), 201
 @app.route('/api/v1/internal/transport/buffer/stream-fetch', methods=['GET'])
@@ -639,6 +647,7 @@ def receive_msg():
     'colorinfo': color.info if color else "color: black",
     'level': color.rarity if color else 0,
     'imageinfo': img.info if img else None,
+    'chronos': user.chronos,
     'timestamp': msg.timestamp.timestamp()} for msg, user, color, img in results])
 
 

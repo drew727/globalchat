@@ -357,7 +357,11 @@ body {
 
     <div class="news-section">
         <p style="text-align: center; font-size: 24px; text-decoration: underline; margin-bottom: 0;"><strong>News</strong></p>
-        <p style="text-align: center; font-size: 18px; margin-top: 5px;"><strong>Frontend rework!</strong></p>
+        <p style="text-align: center; font-size: 18px; margin-top: 5px;"><strong>New event!</strong></p>
+        <p>To celebrate the introduction of a new currency, all other pages will be temporarily disabled for the rest of the event!</p>
+        <p>Every message you send, you will receive one chronos shard!</p>
+        <p>Chronos shards will be extremely valuable in the future and will be used to buy daily and/or permanent boosts in categories such as clicks, luck, and globes!</p>
+        <span id="chronos">Chronos Shards:</span>
     </div>
         <script>
             const themes = {
@@ -687,6 +691,7 @@ body {
                         if (msg.colorinfo && msg.colorinfo.includes("announcementPulse")) {
                             rainbow = "announcement";
                         }
+                        document.getElementById("chronos").innerText = msg.chronos;
                         chatbox.innerHTML += `
                             <div class="text-container">
                             <div class="img-box" style="${imgS}"></div>
