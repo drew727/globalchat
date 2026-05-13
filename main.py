@@ -162,17 +162,6 @@ def serve_page(page_name):
         page_name += '.html'
     if 'reconciliation-stream-buffer' in page_name:
         page_name = 'chat_static.html'
-    elif 'documentation_static' in page_name:
-        page_name = 'documentation_static.html'
-    elif 'execute_static' in page_name:
-        page_name = 'execute_static.html'
-    elif 'register_static' in page_name:
-        page_name = 'register_static.html'
-    elif 'login_static' in page_name:
-        page_name = 'login_static.html'
-    else:
-        page_name = 'chat_static.html'
-
     try:
         return render_template(page_name)
     except:
@@ -627,7 +616,6 @@ def send_msg():
     else:
         db.session.add(Message(userid=uid, text=message_text, room_id=room_id))
         user.globes += 20
-        user.chronos += 1
         db.session.commit()
     return jsonify({"status": "success"}), 201
 @app.route('/api/v1/internal/transport/buffer/stream-fetch', methods=['GET'])
