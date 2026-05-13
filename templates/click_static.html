@@ -178,6 +178,7 @@
 </nav>
 
             <div id="globes"><p>Globes: </p></div>
+<!--
 <div id="autoclicker-ui" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px; border-radius: 18px; color: white; margin-top: 10px; border: 1px solid rgba(255,255,255,0.2);">
     <div style="font-size: 0.8em; font-weight: bold; margin-bottom: 5px;">AUTOCLICKER</div>
     <input type="range" id="ac-speed" min="0" max="20" value="0" style="width: 100%; cursor: pointer;">
@@ -185,7 +186,7 @@
         <span>OFF</span>
         <span id="cps-label">0 CPS</span>
     </div>
-</div>
+</div>-->
 
         <div class="main">
         <button type="button" id='counter' onclick='clicked()'>loading...</button>
@@ -560,8 +561,7 @@ document.getElementById('ac-speed').addEventListener('input', function(e) {
 
 // Update your existing clicked function to handle 'null' events properly
 const originalClicked = clicked;
-window.clicked = function(e) {
-    // If 'e' is null (from autoclicker), create a fake center-point object
+window.clicked = function(e) {]
     if (!e) {
         const rect = rotatingglobe.getBoundingClientRect();
         e = {
