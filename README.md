@@ -1,0 +1,1 @@
+Chat application and game built in Python and HTML with a Flask backend. Uses Supabase DB. The project includes a "static mode" for every file, and a sneaky mask page with session based verification. I made this project in 2025/2026 over three months while I was in 9th grade.
