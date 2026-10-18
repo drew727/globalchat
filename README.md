@@ -1,4 +1,4 @@
-# GlobalChat (reconverse)
+# GlobalChat
 
 I built this as a learning project back in 9th grade (2025–2026). It’s a Flask chat + mini-game server with a tiny in-app economy (“globes”), lootboxes, leaderboards, and a deliberate “stealth mask” that makes the site look like a professional node/telemetry portal — until you open it the right way.
 
