@@ -80,8 +80,3 @@ sed -i 's/systemnodesync.dpdns.org/your-domain.example/g' templates/*.html main.
 - The stealth flow depends on client-side code and session state — don’t use it to hide anything illegal or harmful. Use responsibly.
 - Replace any example/fallback credentials in `main.py` and review CORS and admin access before exposing the app.
 - Again: not currently active — it’s a learning/demo project from 2025–2026.
-
-If you want, I can:
-- Turn this into a short portfolio blurb,
-- Draft a safe-prod checklist to lock down admin endpoints, or
-- Add a tiny seed script to create demo items and the `panic_switch` SystemConfig entry.
